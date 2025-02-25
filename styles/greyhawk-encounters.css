@@ -1,0 +1,112 @@
+/* styles/greyhawk-encounters.css */
+
+.greyhawk-encounters .form-group {
+  margin-bottom: 10px;
+}
+
+.greyhawk-encounters label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.greyhawk-encounters select,
+.greyhawk-encounters input[type="number"] {
+  width: 100%;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #999;
+  border-radius: 3px;
+  padding: 5px;
+  height: auto;
+}
+
+.greyhawk-encounters select option {
+  background-color: #fff;
+  color: #000;
+  padding: 3px;
+}
+
+.greyhawk-encounters button {
+  background-color: #4b5563;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 8px;
+  cursor: pointer;
+  margin-top: 5px;
+  width: 100%;
+}
+
+.greyhawk-encounters button:hover {
+  background-color: #374151;
+}
+
+.greyhawk-encounters .card {
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+
+.greyhawk-encounters .card-header {
+  background-color: #f0f0f0;
+  padding: 5px 10px;
+  font-weight: bold;
+  border-bottom: 1px solid #ddd;
+}
+
+.greyhawk-encounters .card-body {
+  padding: 10px;
+}
+
+/* Chat message styling */
+.greyhawk-result {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 5px;
+}
+
+.greyhawk-result h3 {
+  margin-top: 0;
+  color: #591403;
+  border-bottom: 1px solid #591403;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.greyhawk-result .calendar-info {
+  background-color: rgba(230, 230, 230, 0.7);
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.greyhawk-result .calendar-info h4 {
+  margin-top: 0;
+  color: #444;
+}
+
+/* Button in chat UI */
+.greyhawk-button {
+  background-color: #4b5563;
+  color: white;
+  border: 1px solid #374151;
+  border-radius: 3px;
+  padding: 5px 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  margin: 5px auto;
+}
+
+.greyhawk-button:hover {
+  background-color: #374151;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.greyhawk-button i {
+  margin-right: 5px;
+}

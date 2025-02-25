@@ -1,0 +1,37 @@
+{
+  "id": "greyhawk-encounters",
+  "title": "Greyhawk Random Encounters",
+  "description": "A module for rolling random encounters in the World of Greyhawk setting",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12"
+  },
+  "authors": [
+    {
+      "name": "BK Adams"
+    }
+  ],
+  "esmodules": [
+    "greyhawk-encounters.js"
+  ],
+  "styles": [
+    "styles/greyhawk-encounters.css"
+  ],
+  "templates": [
+    "templates/encounter-roller.hbs"
+  ],
+  "relationships": {
+    "optional": [
+      {
+        "id": "simple-calendar",
+        "type": "module",
+        "manifest": "https://github.com/vigoren/foundryvtt-simple-calendar/releases/latest/download/module.json",
+        "compatibility": {
+          "verified": "2.3.0"
+        }
+      }
+    ]
+  },
+  "socket": false
+}
