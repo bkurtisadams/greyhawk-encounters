@@ -486,6 +486,10 @@ class GreyhawkEncounters {
    * @returns {object} - Encounter result
    */
   static async rollOutdoorEncounter(terrain, population, timeOfDay, options = {}) {
+    // Get tables directly from wherever they're stored, without using this
+    const outdoorTables = GreyhawkEncounters.outdoorEncounterTables || game.greyhawk.outdoorEncounterTables;
+    const tables = outdoorTables[terrain]?.[population];
+    
     // If not specified, get time of day from Simple Calendar
     if (!timeOfDay && game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
       const timeInfo = this.getCurrentTimeInfo();
@@ -552,7 +556,7 @@ class GreyhawkEncounters {
     }
     
     // An encounter occurs! Determine what is encountered based on terrain
-    const encounterTables = this.getOutdoorEncounterTables();
+    const encounterTables = GreyhawkEncounters.getOutdoorEncounterTables();
     const table = encounterTables[terrain];
     
     if (!table) {
@@ -566,12 +570,12 @@ class GreyhawkEncounters {
     // Apply time of day modifications
     if (timeOfDay === 'night' || timeOfDay === 'midnight' || timeOfDay === 'predawn') {
       // Adjust for nocturnal creatures
-      modifiedTable = this.adjustTableForNightEncounters(modifiedTable);
+      modifiedTable = GreyhawkEncounters.adjustTableForNightEncounters(modifiedTable);
     }
     
     // Apply seasonal modifications
     if (options.season) {
-      modifiedTable = this.adjustTableForSeason(modifiedTable, options.season);
+      modifiedTable = GreyhawkEncounters.adjustTableForSeason(modifiedTable, options.season);
     }
     
     const typeRoll = new Roll('1d100');
@@ -592,7 +596,7 @@ class GreyhawkEncounters {
         await patrolRoll.evaluate();
 
       if (patrolRoll.total <= 5) { // 5 in 20 chance
-        return this.rollPatrolEncounter(options);
+        return GreyhawkEncounters.rollPatrolEncounter(options);
       }
     }
     
@@ -635,7 +639,7 @@ class GreyhawkEncounters {
         number: numberRoll.total,
         notes: encounterType.notes || '',
         season: options.season || null,
-        timeInfo: this.getCurrentTimeInfo()
+        timeInfo: GreyhawkEncounters.getCurrentTimeInfo()
       };
     } else {
       return {
@@ -650,7 +654,7 @@ class GreyhawkEncounters {
         number: encounterType.numbers || "See Monster Manual",
         notes: encounterType.notes || '',
         season: options.season || null,
-        timeInfo: this.getCurrentTimeInfo()
+        timeInfo: GreyhawkEncounters.getCurrentTimeInfo()
       };
     }
   }
@@ -740,7 +744,7 @@ class GreyhawkEncounters {
     });
     
     // Normalize the ranges
-    return this.normalizeTableRanges(nightTable);
+    return GreyhawkEncounters.normalizeTableRanges(nightTable);
   }
   
   /**
@@ -845,7 +849,7 @@ class GreyhawkEncounters {
     }
     
     // Normalize the ranges
-    return this.normalizeTableRanges(seasonTable);
+    return GreyhawkEncounters.normalizeTableRanges(seasonTable);
   }
   
   // Rest of the class methods go here (getRegionalTables, rollDungeonEncounter, etc.)
@@ -856,9 +860,9 @@ class GreyhawkEncounters {
    */
   static getRegionalTables() {
     return {
-      political: this.getPoliticalTables(),
-      geographical: this.getGeographicalTables(),
-      special: this.getSpecialTables()
+      political: GreyhawkEncounters.getPoliticalTables(),
+      geographical: GreyhawkEncounters.getGeographicalTables(),
+      special: GreyhawkEncounters.getSpecialTables()
     };
   }
   
@@ -1294,9 +1298,9 @@ async _render(force = false, options = {}) {
   await super._render(force, options);
   
   // After rendering, make sure all dropdowns have proper values
-  if (this.element) {
+  if (GreyhawkEncounters.element) {
     // Manually set the option text for each dropdown
-    this.element.find('.encounter-type-select option').each(function() {
+    GreyhawkEncounters.element.find('.encounter-type-select option').each(function() {
       const value = $(this).val();
       switch(value) {
         case 'regional': $(this).text('Regional (Greyhawk)'); break;
@@ -1309,7 +1313,7 @@ async _render(force = false, options = {}) {
       }
     });
     
-    this.element.find('.terrain-select option').each(function() {
+    GreyhawkEncounters.element.find('.terrain-select option').each(function() {
       const value = $(this).val();
       switch(value) {
         case 'plain': $(this).text('Plain'); break;
@@ -1322,7 +1326,7 @@ async _render(force = false, options = {}) {
       }
     });
     
-    this.element.find('.population-select option').each(function() {
+    GreyhawkEncounters.element.find('.population-select option').each(function() {
       const value = $(this).val();
       switch(value) {
         case 'dense': $(this).text('Dense'); break;
@@ -1331,7 +1335,7 @@ async _render(force = false, options = {}) {
       }
     });
     
-    this.element.find('.time-of-day-select option').each(function() {
+    GreyhawkEncounters.element.find('.time-of-day-select option').each(function() {
       const value = $(this).val();
       switch(value) {
         case 'morning': $(this).text('Morning'); break;
@@ -1344,10 +1348,10 @@ async _render(force = false, options = {}) {
     });
     
     // Set a default encounter type
-    const encounterTypeSelect = this.element.find('.encounter-type-select');
+    const encounterTypeSelect = GreyhawkEncounters.element.find('.encounter-type-select');
     if (encounterTypeSelect.val() === undefined || encounterTypeSelect.val() === '') {
       encounterTypeSelect.val('outdoor');
-      this._updateFormForEncounterType('outdoor', this.element);
+      GreyhawkEncounters._updateFormForEncounterType('outdoor', GreyhawkEncounters.element);
     }
   }
 }
@@ -1430,7 +1434,7 @@ async _rollEncounter(html) {
       } catch (error) {
         console.error("Error rolling time-aware encounter:", error);
         // Create a simple fallback result
-        result = this._createMockResult(options);
+        result = GreyhawkEncounters._createMockResult(options);
       }
     } else {
       try {
@@ -1438,13 +1442,13 @@ async _rollEncounter(html) {
       } catch (error) {
         console.error("Error rolling encounter:", error);
         // Create a simple fallback result
-        result = this._createMockResult(options);
+        result = GreyhawkEncounters._createMockResult(options);
       }
     }
     
     if (result) {
       // Format the result for chat message
-      this._displayEncounterResult(result, options);
+      GreyhawkEncounters._displayEncounterResult(result, options);
     } else {
       ui.notifications.error("Failed to generate encounter result.");
     }
@@ -1454,9 +1458,67 @@ async _rollEncounter(html) {
   }
 }
 
+/**
+ * Get outdoor encounter tables for different terrains
+ * @returns {object} - Outdoor encounter tables
+ */
+static getOutdoorEncounterTables() {
+  // Return a basic structure of encounter tables
+  return {
+    plain: [
+      { min: 1, max: 20, creature: "Bandits", numbers: "2d6", notes: "50% mounted" },
+      { min: 21, max: 35, creature: "Wolves", numbers: "2d4" },
+      { min: 36, max: 50, creature: "Militia Patrol", numbers: "3d4" },
+      { min: 51, max: 65, creature: "Merchant Caravan", numbers: "2d4+2" },
+      { min: 66, max: 80, creature: "Goblins", numbers: "3d6" },
+      { min: 81, max: 100, creature: "Travelers", numbers: "1d6" }
+    ],
+    forest: [
+      { min: 1, max: 15, creature: "Wolves", numbers: "2d4" },
+      { min: 16, max: 30, creature: "Bears", numbers: "1d4" },
+      { min: 31, max: 45, creature: "Elves", numbers: "2d6" },
+      { min: 46, max: 60, creature: "Goblins", numbers: "3d6" },
+      { min: 61, max: 75, creature: "Giant Spiders", numbers: "1d6" },
+      { min: 76, max: 90, creature: "Bandits", numbers: "2d6" },
+      { min: 91, max: 100, creature: "Forest Creatures", numbers: "2d4" }
+    ],
+    mountains: [
+      { min: 1, max: 20, creature: "Mountain Lions", numbers: "1d4" },
+      { min: 21, max: 40, creature: "Hill Giants", numbers: "1d3" },
+      { min: 41, max: 60, creature: "Orcs", numbers: "2d6" },
+      { min: 61, max: 80, creature: "Dwarves", numbers: "2d4" },
+      { min: 81, max: 100, creature: "Griffons", numbers: "1d3" }
+    ],
+    desert: [
+      { min: 1, max: 25, creature: "Nomads", numbers: "2d6" },
+      { min: 26, max: 50, creature: "Giant Scorpions", numbers: "1d4" },
+      { min: 51, max: 75, creature: "Dust Devils", numbers: "1d3" },
+      { min: 76, max: 100, creature: "Wyverns", numbers: "1d2" }
+    ],
+    hills: [
+      { min: 1, max: 25, creature: "Gnolls", numbers: "2d6" },
+      { min: 26, max: 50, creature: "Hobgoblins", numbers: "3d6" },
+      { min: 51, max: 75, creature: "Hill Giants", numbers: "1d3" },
+      { min: 76, max: 100, creature: "Ogres", numbers: "1d4" }
+    ],
+    scrub: [
+      { min: 1, max: 25, creature: "Lizardmen", numbers: "2d6" },
+      { min: 26, max: 50, creature: "Kobolds", numbers: "3d8" },
+      { min: 51, max: 75, creature: "Gnolls", numbers: "2d6" },
+      { min: 76, max: 100, creature: "Giant Ants", numbers: "2d6" }
+    ],
+    marsh: [
+      { min: 1, max: 25, creature: "Lizardmen", numbers: "2d8" },
+      { min: 26, max: 50, creature: "Giant Frogs", numbers: "1d6" },
+      { min: 51, max: 75, creature: "Crocodiles", numbers: "1d4" },
+      { min: 76, max: 100, creature: "Will-o-Wisps", numbers: "1d3" }
+    ]
+  };
+}
+
 // Helper method to create a mock result when the actual roll methods aren't working
 _createMockResult(options) {
-  const timeInfo = GreyhawkEncounters.getCurrentTimeInfo();
+  const timeInfo = this.getCurrentTimeInfo();
   
   switch (options.encounterType) {
     case 'outdoor':
@@ -1540,7 +1602,7 @@ _getRandomEncounterByTerrain(terrain) {
       return;
     }
     
-    const result = await GreyhawkEncounters.checkIfLost(terrain);
+    const result = await this.checkIfLost(terrain);
     
     // Format result for chat
     const chatData = {
@@ -1778,7 +1840,7 @@ const encounterRollerTemplate = `
     <label>Encounter Type:</label>
     <select name="encounterType" class="encounter-type-select">
       {{#each encounterTypes}}
-      <option value="{{this.id}}">{{this.label}}</option>
+      <option value="{{GreyhawkEncounters.id}}">{{GreyhawkEncounters.label}}</option>
       {{/each}}
     </select>
   </div>
@@ -1813,7 +1875,7 @@ const encounterRollerTemplate = `
     <label>Region Type:</label>
     <select name="regionType" class="region-type-select">
       {{#each regionTypes}}
-      <option value="{{this.id}}">{{this.label}}</option>
+      <option value="{{GreyhawkEncounters.id}}">{{GreyhawkEncounters.label}}</option>
       {{/each}}
     </select>
   </div>
@@ -1830,7 +1892,7 @@ const encounterRollerTemplate = `
     <label>Terrain:</label>
     <select name="terrain" class="terrain-select">
       {{#each terrainTypes}}
-      <option value="{{this.id}}">{{this.label}}</option>
+      <option value="{{GreyhawkEncounters.id}}">{{GreyhawkEncounters.label}}</option>
       {{/each}}
     </select>
   </div>
@@ -1839,7 +1901,7 @@ const encounterRollerTemplate = `
     <label>Population Density:</label>
     <select name="population" class="population-select">
       {{#each populationTypes}}
-      <option value="{{this.id}}">{{this.label}}</option>
+      <option value="{{GreyhawkEncounters.id}}">{{GreyhawkEncounters.label}}</option>
       {{/each}}
     </select>
   </div>
@@ -1848,7 +1910,7 @@ const encounterRollerTemplate = `
     <label>Time of Day:</label>
     <select name="timeOfDay" class="time-of-day-select">
       {{#each timesOfDay}}
-      <option value="{{this.id}}">{{this.label}}</option>
+      <option value="{{GreyhawkEncounters.id}}">{{GreyhawkEncounters.label}}</option>
       {{/each}}
     </select>
   </div>
