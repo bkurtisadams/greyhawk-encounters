@@ -464,7 +464,8 @@ class GreyhawkEncounters {
     }
     
     // Roll on the table
-    const roll = await new Roll('1d100').evaluate({async: true});
+    const roll = new Roll('1d20');
+    await roll.evaluate();
     const result = this.getResultFromTable(modifiedTable, roll.total);
     
     // Return the result with time information
@@ -536,7 +537,8 @@ class GreyhawkEncounters {
     }
     
     // Roll for encounter
-    const encounterRoll = await new Roll(`1d${encounterChance}`).evaluate({async: true});
+    const encounterRoll = new Roll(`1d${encounterChance}`);
+    await encounterRoll.evaluate();
     
     if (encounterRoll.total !== 1) {
       return { 
@@ -572,7 +574,8 @@ class GreyhawkEncounters {
       modifiedTable = this.adjustTableForSeason(modifiedTable, options.season);
     }
     
-    const typeRoll = await new Roll('1d100').evaluate({async: true});
+    const typeRoll = new Roll('1d100');
+    await typeRoll.evaluate();
     let encounterType = null;
     
     for (const entry of modifiedTable) {
@@ -584,7 +587,10 @@ class GreyhawkEncounters {
     
     // If in inhabited area, check if this is a patrol
     if (population !== 'uninhabited' && population !== 'wilderness') {
-      const patrolRoll = await new Roll('1d20').evaluate({async: true});
+      /* const patrolRoll = await new Roll('1d20').evaluate({async: true}); */
+      const patrolRoll = new Roll('1d20');
+        await patrolRoll.evaluate();
+
       if (patrolRoll.total <= 5) { // 5 in 20 chance
         return this.rollPatrolEncounter(options);
       }
@@ -612,7 +618,10 @@ class GreyhawkEncounters {
     
     if (numberRange && numberRange.includes('-')) {
       [minNum, maxNum] = numberRange.split('-').map(n => parseInt(n));
-      const numberRoll = await new Roll(`1d${maxNum - minNum + 1} + ${minNum - 1}`).evaluate({async: true});
+      /* const numberRoll = await new Roll(`1d${maxNum - minNum + 1} + ${minNum - 1}`).evaluate({async: true}); */
+      const numberRoll = new Roll(`1d${maxNum - minNum + 1} + ${minNum - 1}`);
+        await numberRoll.evaluate();
+
       
       return {
         result: "Encounter",
