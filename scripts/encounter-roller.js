@@ -27,16 +27,27 @@ export class GreyhawkEncounterRoller extends Application {
     return {
       useSimpleCalendar,
       timeInfo,
-      encounterTypes: [
-        // Greyhawk-specific
-        { id: 'regional_greyhawk', label: 'Greyhawk Regional (World of Greyhawk)' },
-        // DMG Standard
-        { id: 'outdoor', label: 'Outdoor (DMG Standard)' },
-        { id: 'dungeon', label: 'Dungeon (DMG Standard)' },
-        { id: 'underwater', label: 'Underwater (DMG Standard)' },
-        { id: 'airborne', label: 'Airborne (DMG Standard)' },
-        { id: 'astral', label: 'Astral Plane (DMG Standard)' },
-        { id: 'ethereal', label: 'Ethereal Plane (DMG Standard)' }
+      terrainTypes: [
+        { id: 'plain', label: 'Plain' },
+        { id: 'scrub', label: 'Scrub' },
+        { id: 'forest', label: 'Forest' },
+        { id: 'desert', label: 'Desert' },
+        { id: 'hills', label: 'Hills' },
+        { id: 'mountains', label: 'Mountains' },
+        { id: 'marsh', label: 'Marsh' }
+      ],
+      populationTypes: [
+        { id: 'dense', label: 'Dense' },
+        { id: 'moderate', label: 'Moderate' },
+        { id: 'uninhabited', label: 'Uninhabited/Wilderness' }
+      ],
+      timesOfDay: [
+        { id: 'morning', label: 'Morning' },
+        { id: 'noon', label: 'Noon' },
+        { id: 'evening', label: 'Evening' },
+        { id: 'night', label: 'Night' },
+        { id: 'midnight', label: 'Midnight' },
+        { id: 'predawn', label: 'Pre-dawn' }
       ],
       regionTypes: [
         { 
@@ -84,6 +95,11 @@ export class GreyhawkEncounterRoller extends Application {
           ]
         }
       ],
+      patrolTypes: [
+        { id: "elves_knights", label: "Elves, Knights" },
+        { id: "elven_patrol", label: "Elven Patrol" },
+        // other patrol types...
+      ],
       terrainTypes: [
         { id: 'plain', label: 'Plain' },
         { id: 'scrub', label: 'Scrub' },
@@ -111,22 +127,40 @@ export class GreyhawkEncounterRoller extends Application {
   
   activateListeners(html) {
     super.activateListeners(html);
-    const useSimpleCalendar = game.settings.get('greyhawk-encounters', 'useSimpleCalendar');
-    html.find('.simple-calendar-info').toggle(useSimpleCalendar);
     
-    // Event listener for encounter type dropdown
-    html.find('select[name="encounterType"]').change(ev => {
-      const selectedType = ev.currentTarget.value;
-      this._updateFormForEncounterType(selectedType, html);
+    // Toggle between DMG and WoG systems
+    html.find('select[name="encounterSystem"]').change(ev => {
+      const system = ev.currentTarget.value;
+      html.find('.dmg-system-container').toggle(system === 'dmg');
+      html.find('.wog-system-container').toggle(system === 'wog');
+      
+      // Update appropriate encounter type options
+      if (system === 'dmg') {
+        this._updateDmgOptions(html.find('select[name="dmgEncounterType"]').val(), html);
+      } else {
+        this._updateWogOptions(html.find('select[name="wogEncounterType"]').val(), html);
+      }
     });
     
-    // Event listener for region type dropdown
+    // DMG encounter type
+    html.find('select[name="dmgEncounterType"]').change(ev => {
+      const type = ev.currentTarget.value;
+      this._updateDmgOptions(type, html);
+    });
+    
+    // WoG encounter type
+    html.find('select[name="wogEncounterType"]').change(ev => {
+      const type = ev.currentTarget.value;
+      this._updateWogOptions(type, html);
+    });
+    
+    // Region type change
     html.find('select[name="regionType"]').change(ev => {
-      const selectedType = ev.currentTarget.value;
-      this._updateRegionList(selectedType, html);
+      const type = ev.currentTarget.value;
+      this._updateRegionList(type, html);
     });
     
-    // Toggle Simple Calendar usage
+    // Calendar toggle
     html.find('input[name="useSimpleCalendar"]').change(ev => {
       const checked = ev.currentTarget.checked;
       game.settings.set('greyhawk-encounters', 'useSimpleCalendar', checked);
@@ -135,66 +169,99 @@ export class GreyhawkEncounterRoller extends Application {
     });
     
     // Roll encounter button
-    // Roll encounter button
     html.find('.roll-encounter-button').click(ev => {
-        this._rollEncounter(html);
-      });
-      
-      // Check if lost button
-      html.find('.check-lost-button').click(ev => {
-        this._checkLost(html);
-      });
-      
-      // Initialize the form with default encounter type
-      this._updateFormForEncounterType('outdoor', html);
-      
-      // Show region options if regional encounter is selected
-      const currentEncounterType = html.find('select[name="encounterType"]').val();
-      if (currentEncounterType === 'regional') {
-        html.find('.region-options').show();
-        console.log("Showing region options");
-        
-        // Initialize the region dropdown with the first regionType
-        this._updateRegionList('political', html);
-      }
+      this._rollEncounter(html);
+    });
+    
+    // Check if lost button
+    html.find('.check-lost-button').click(ev => {
+      this._checkLost(html);
+    });
+    
+    // Initialize with default DMG system
+    html.find('.dmg-system-container').show();
+    this._updateDmgOptions('outdoor', html);
+  }
+
+  _updateDmgOptions(encounterType, html) {
+    // Hide all DMG options first
+    html.find('.dmg-outdoor-options').hide();
+    html.find('.dmg-dungeon-options').hide();
+    html.find('.dmg-underwater-options').hide();
+    html.find('.dmg-planar-options').hide();
+    
+    // Show the appropriate options based on encounter type
+    switch (encounterType) {
+      case 'outdoor':
+        html.find('.dmg-outdoor-options').show();
+        break;
+      case 'dungeon':
+        html.find('.dmg-dungeon-options').show();
+        break;
+      case 'underwater':
+        html.find('.dmg-underwater-options').show();
+        break;
+      case 'astral':
+      case 'ethereal':
+        html.find('.dmg-planar-options').show();
+        break;
     }
+  }
+  
+  _updateWogOptions(encounterType, html) {
+    // Hide all WoG options first
+    html.find('.wog-regional-options').hide();
+    html.find('.wog-patrol-options').hide();
+    
+    // Show the appropriate options based on encounter type
+    switch (encounterType) {
+      case 'regional':
+        html.find('.wog-regional-options').show();
+        this._updateRegionList('political', html);
+        break;
+      case 'patrol':
+        html.find('.wog-patrol-options').show();
+        break;
+    }
+  }
     
     _updateFormForEncounterType(encounterType, html) {
-      console.log(`Updating form for encounter type: ${encounterType}`);
-      
-      // Hide all option sections first
-      html.find('.region-options').hide();
-      html.find('.outdoor-options').hide();
-      html.find('.dungeon-options').hide();
-      html.find('.underwater-options').hide();
-      html.find('.planar-options').hide();
-      
-      // Then show only the relevant section
-      switch (encounterType) {
-        case 'regional_greyhawk':
+        console.log(`Updating form for encounter type: ${encounterType}`);
+        
+        // Hide all option sections first
+        html.find('.region-options').hide();
+        html.find('.outdoor-options').hide();
+        html.find('.dungeon-options').hide();
+        html.find('.underwater-options').hide();
+        html.find('.planar-options').hide();
+        
+        // Then show only the relevant section
+        switch (encounterType) {
+            case 'regional_greyhawk':
             html.find('.region-options').show();
             break;
-          case 'outdoor':
+            case 'outdoor':
             html.find('.outdoor-options').show();
             if (!game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
-              html.find('.time-of-day-group').show();
+                html.find('.time-of-day-group').show();
             }
             break;
-        case 'dungeon':
-          html.find('.dungeon-options').show();
-          break;
-        case 'underwater':
-          html.find('.underwater-options').show();
-          break;
-        case 'astral':
-        case 'ethereal':
-          html.find('.planar-options').show();
-          break;
-      }
-      
-      // For debugging
-      console.log("Region options visible:", html.find('.region-options').is(':visible'));
-    }
+            case 'dungeon':
+            html.find('.dungeon-options').show();
+            break;
+            case 'underwater':
+            html.find('.underwater-options').show();
+            break;
+            case 'astral':
+            case 'ethereal':
+            html.find('.planar-options').show();
+            break;
+            // Remove the patrol case
+        }
+        
+        // For debugging
+        console.log("Region options visible:", html.find('.region-options').is(':visible'));
+        }
     
     _updateRegionList(regionType, html) {
       console.log(`Updating region list for type: ${regionType}`);
@@ -218,79 +285,90 @@ export class GreyhawkEncounterRoller extends Application {
     }
     
     async _rollEncounter(html) {
-      try {
-        const encounterType = html.find('select[name="encounterType"]').val() || 'outdoor';
-        let options = { encounterType: encounterType };
-        
-        switch (encounterType) {
-            case 'regional_greyhawk': {
-                const specificRegion = html.find('select[name="region"]').val() || 'greyhawk';
-                options = { ...options, specificRegion: specificRegion };
+        try {
+          const system = html.find('select[name="encounterSystem"]').val();
+          
+          if (system === 'dmg') {
+            // Handle DMG encounter system
+            const encounterType = html.find('select[name="dmgEncounterType"]').val();
+            let options = { encounterType };
+            
+            switch (encounterType) {
+              case 'outdoor': {
+                const terrain = html.find('select[name="terrain"]').val() || 'plain';
+                const population = html.find('select[name="population"]').val() || 'moderate';
+                let timeOfDay = 'noon';
                 
-                // Call the Greyhawk-specific regional encounter method
-                const result = await GreyhawkEncounters._rollRegionalEncounter(options);
+                if (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
+                  const timeInfo = GreyhawkEncounters.getCurrentTimeInfo();
+                  if (timeInfo && timeInfo.timeOfDay) timeOfDay = timeInfo.timeOfDay;
+                } else {
+                  timeOfDay = html.find('select[name="timeOfDay"]').val() || 'noon';
+                }
                 
-                // Display result
-                GreyhawkEncounters._displayEncounterResult(result, options);
+                options = { ...options, terrain, population, timeOfDay };
                 break;
               }
-          case 'outdoor': {
-            const terrain = html.find('select[name="terrain"]').val() || 'plain';
-            const population = html.find('select[name="population"]').val() || 'moderate';
-            let timeOfDay = 'noon';
-            
-            if (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
-              const timeInfo = GreyhawkEncounters.getCurrentTimeInfo();
-              if (timeInfo && timeInfo.timeOfDay) timeOfDay = timeInfo.timeOfDay;
-            } else {
-              timeOfDay = html.find('select[name="timeOfDay"]').val() || 'noon';
+              case 'dungeon': {
+                const dungeonLevel = parseInt(html.find('input[name="dungeonLevel"]').val()) || 1;
+                options = { ...options, dungeonLevel };
+                break;
+              }
+              case 'underwater': {
+                const waterType = html.find('select[name="waterType"]').val() || 'fresh';
+                const depth = html.find('select[name="depth"]').val() || 'shallow';
+                options = { ...options, waterType, depth };
+                break;
+              }
             }
             
-            options = { ...options, terrain: terrain, population: population, timeOfDay: timeOfDay };
-            break;
+            // Roll and display DMG encounter
+            let result;
+            if (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
+              result = await GreyhawkEncounters.rollTimeAwareEncounter(options);
+            } else {
+              result = await GreyhawkEncounters.rollEncounter(options);
+            }
+            
+            if (result) {
+              GreyhawkEncounters._displayEncounterResult(result, options);
+            }
+            
+          } else {
+            // Handle WoG encounter system
+            const encounterType = html.find('select[name="wogEncounterType"]').val();
+            
+            if (encounterType === 'regional') {
+              const regionType = html.find('select[name="regionType"]').val();
+              const region = html.find('select[name="region"]').val();
+              
+              const result = await GreyhawkEncounters._rollRegionalEncounter({
+                specificRegion: region
+              });
+              
+              GreyhawkEncounters._displayEncounterResult(result, {
+                encounterType: 'regional',
+                specificRegion: region
+              });
+              
+            } else if (encounterType === 'patrol') {
+              const patrolType = html.find('select[name="patrolType"]').val() || 'patrol_heavy';
+              
+              const result = await GreyhawkEncounters.rollPatrolEncounter({
+                patrolType: patrolType
+              });
+              
+              GreyhawkEncounters._displayEncounterResult(result, {
+                encounterType: 'patrol',
+                patrolType: patrolType
+              });
+            }
           }
-          case 'dungeon': {
-            const dungeonLevel = parseInt(html.find('input[name="dungeonLevel"]').val()) || 1;
-            options = { ...options, dungeonLevel: dungeonLevel };
-            break;
-          }
-          case 'underwater': {
-            const waterType = html.find('select[name="waterType"]').val() || 'fresh';
-            const depth = html.find('select[name="depth"]').val() || 'shallow';
-            options = { ...options, waterType: waterType, depth: depth };
-            break;
-          }
+        } catch (error) {
+          console.error("Error in _rollEncounter:", error);
+          ui.notifications.error("Error generating encounter.");
         }
-        
-        console.log("Rolling encounter with options:", options);
-        let result = null;
-        
-        if (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
-          try {
-            result = await GreyhawkEncounters.rollTimeAwareEncounter(options);
-          } catch (error) {
-            console.error("Error rolling time-aware encounter:", error);
-            result = GreyhawkEncounters._createMockResult(options);
-          }
-        } else {
-          try {
-            result = await GreyhawkEncounters.rollEncounter(options);
-          } catch (error) {
-            console.error("Error rolling encounter:", error);
-            result = GreyhawkEncounters._createMockResult(options);
-          }
-        }
-        
-        if (result) {
-          GreyhawkEncounters._displayEncounterResult(result, options);
-        } else {
-          ui.notifications.error("Failed to generate encounter result.");
-        }
-      } catch (error) {
-        console.error("Error in _rollEncounter:", error);
-        ui.notifications.error("Error generating encounter.");
       }
-    }
     
     async _checkLost(html) {
       const terrain = html.find('select[name="terrain"]').val();

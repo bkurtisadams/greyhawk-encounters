@@ -4,6 +4,7 @@ import { GREYHAWK_REGIONAL_TABLES } from '../data/greyhawk-regions.js';
 import { GREYHAWK_GEOGRAPHICAL_TABLES } from '../data/greyhawk-geography.js';
 import DMG_TABLES from '../data/dmg-monster-tables.js'; // This imports all the DMG tables
 import SUBTABLES from '../data/subtables.js'; // Import the subtables if needed
+import { rollPatrolEncounter, GREYHAWK_PATROL_TYPES } from '../data/greyhawk-patrols.js';
 
 // Main module class
 export class GreyhawkEncounters {
@@ -107,55 +108,48 @@ export class GreyhawkEncounters {
   }
   
   // Roll a patrol encounter
-  static async rollPatrolEncounter(options) {
-    // Determine patrol type based on region or other factors
-    const patrolType = options.patrolType || "Standard";
+  static async rollPatrolEncounter(options = {}) {
+    const patrolType = options.patrolType || "patrol_heavy";
     
-    // Determine leader level (6-8)
-    const leaderLevel = Math.floor(Math.random() * 3) + 6;
+    // Use our new patrol encounter generator
+    const patrolInfo = rollPatrolEncounter(patrolType);
     
-    // Determine lieutenant level (4-5)
-    const lieutenantLevel = Math.floor(Math.random() * 2) + 4;
+    // Format leader information
+    const leaderLevel = Math.floor(Math.random() * 3) + 6; // 6-8
+    const lieutenantLevel = Math.floor(Math.random() * 2) + 4; // 4-5
+    const sergeantLevel = Math.floor(Math.random() * 2) + 2; // 2-3
     
-    // Determine sergeant level (2-3)
-    const sergeantLevel = Math.floor(Math.random() * 2) + 2;
-    
-    // Determine number of 1st level fighters (3-4)
-    const firstLevelFighters = Math.floor(Math.random() * 2) + 3;
-    
-    // Determine number of soldiers (13-24)
-    const soldiers = Math.floor(Math.random() * 12) + 13;
-    
-    // Determine if a cleric or magic-user accompanies the patrol
-    const spellcasterRoll = Math.floor(Math.random() * 100) + 1;
+    // Format special members - integrate with our new patrol generator
     let spellcaster = null;
-    
-    if (spellcasterRoll <= 40) {
-      // Cleric of 6th or 7th level
-      const clericLevel = Math.floor(Math.random() * 2) + 6;
-      spellcaster = {
-        class: "Cleric",
-        level: clericLevel
-      };
-    } else if (spellcasterRoll <= 100) {
-      // Magic-user of 5th to 8th level
-      const mageLevel = Math.floor(Math.random() * 4) + 5;
-      spellcaster = {
-        class: "Magic-User",
-        level: mageLevel
-      };
+    if (patrolInfo.specialMembers.length > 0) {
+      const special = patrolInfo.specialMembers[0];
+      if (special.type === 'C' || special.type === 'D') {
+        const levelRange = special.level.split("-");
+        const clericLevel = Math.floor(Math.random() * (parseInt(levelRange[1]) - parseInt(levelRange[0]) + 1)) + parseInt(levelRange[0]);
+        spellcaster = {
+          class: special.type === 'C' ? "Cleric" : "Druid",
+          level: clericLevel
+        };
+      } else if (special.type === 'MU' || special.type === 'I') {
+        const levelRange = special.level.split("-");
+        const mageLevel = Math.floor(Math.random() * (parseInt(levelRange[1]) - parseInt(levelRange[0]) + 1)) + parseInt(levelRange[0]);
+        spellcaster = {
+          class: special.type === 'MU' ? "Magic-User" : "Illusionist",
+          level: mageLevel
+        };
+      }
     }
     
     return {
       result: "Patrol Encounter",
-      patrolType: patrolType,
+      patrolType: patrolInfo.name,
       leader: { level: leaderLevel, class: "Fighter" },
       lieutenant: { level: lieutenantLevel, class: "Fighter" },
       sergeant: { level: sergeantLevel, class: "Fighter" },
-      firstLevelFighters: firstLevelFighters,
-      troops: soldiers,
+      firstLevelFighters: Math.floor(Math.random() * 2) + 3, // 3-4
+      troops: patrolInfo.totalTroops,
       spellcaster: spellcaster,
-      notes: "Mounted unless terrain prevents it. Leaders on warhorses. Plate mail, shield, lance, flail, and long sword for fighters. Soldiers have chain/scale mail, shield, bow/crossbow, and hand weapon."
+      notes: patrolInfo.notes + " " + patrolInfo.equipment
     };
   }
   

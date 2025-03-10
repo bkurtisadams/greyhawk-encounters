@@ -1,35 +1,28 @@
 <form class="greyhawk-encounters">
   <div class="form-group">
-    <label for="encounterType">Encounter Type:</label>
-    <select name="encounterType">
-      {{#each encounterTypes}}
-        <option value="{{this.id}}">{{this.label}}</option>
-      {{/each}}
+    <label for="encounterSystem">Encounter System:</label>
+    <select name="encounterSystem">
+      <option value="dmg">DMG Standard Tables</option>
+      <option value="wog">World of Greyhawk</option>
     </select>
   </div>
   
-  <div class="encounter-options-container">
-    <!-- Region Options -->
-    <div class="region-options" style="display: none;">
-      <div class="form-group">
-        <label for="regionType">Region Category:</label>
-        <select name="regionType">
-          {{#each regionTypes}}
-            <option value="{{this.id}}">{{this.label}}</option>
-          {{/each}}
-        </select>
-      </div>
-      
-      <div class="form-group">
-        <label for="region">Specific Region:</label>
-        <select name="region">
-          <!-- Populated dynamically -->
-        </select>
-      </div>
+  <!-- DMG System Options -->
+  <div class="dmg-system-container" style="display: none;">
+    <div class="form-group">
+      <label for="dmgEncounterType">Encounter Type:</label>
+      <select name="dmgEncounterType">
+        <option value="outdoor">Outdoor</option>
+        <option value="dungeon">Dungeon</option>
+        <option value="underwater">Underwater</option>
+        <option value="airborne">Airborne</option>
+        <option value="astral">Astral Plane</option>
+        <option value="ethereal">Ethereal Plane</option>
+      </select>
     </div>
     
-    <!-- Outdoor Options -->
-    <div class="outdoor-options" style="display: none;">
+    <!-- DMG Outdoor Options -->
+    <div class="dmg-outdoor-options" style="display: none;">
       <div class="form-group">
         <label for="terrain">Terrain Type:</label>
         <select name="terrain">
@@ -48,7 +41,7 @@
         </select>
       </div>
       
-      <div class="form-group time-of-day-group" style="display: none;">
+      <div class="form-group time-of-day-group">
         <label for="timeOfDay">Time of Day:</label>
         <select name="timeOfDay">
           {{#each timesOfDay}}
@@ -56,39 +49,18 @@
           {{/each}}
         </select>
       </div>
-      
-      <div class="form-group">
-        <label>
-          <input type="checkbox" name="useSimpleCalendar" {{#if useSimpleCalendar}}checked{{/if}}>
-          Use Simple Calendar for Time of Day
-        </label>
-      </div>
-      
-      {{#if useSimpleCalendar}}
-      <div class="simple-calendar-info">
-        {{#if timeInfo}}
-        <p><strong>Current Date:</strong> {{timeInfo.day}}/{{timeInfo.month}}/{{timeInfo.year}}</p>
-        <p><strong>Current Time:</strong> {{timeInfo.hour}}:{{timeInfo.minute}}</p>
-        <p><strong>Time of Day:</strong> {{timeInfo.timeOfDay}}</p>
-        <p><strong>Season:</strong> {{timeInfo.season}}</p>
-        <p><strong>Weather:</strong> {{timeInfo.weather}}</p>
-        {{else}}
-        <p>Simple Calendar data not available</p>
-        {{/if}}
-      </div>
-      {{/if}}
     </div>
     
-    <!-- Dungeon Options -->
-    <div class="dungeon-options" style="display: none;">
+    <!-- DMG Dungeon Options -->
+    <div class="dmg-dungeon-options" style="display: none;">
       <div class="form-group">
         <label for="dungeonLevel">Dungeon Level:</label>
         <input type="number" name="dungeonLevel" value="1" min="1" max="20">
       </div>
     </div>
     
-    <!-- Underwater Options -->
-    <div class="underwater-options" style="display: none;">
+    <!-- DMG Underwater Options -->
+    <div class="dmg-underwater-options" style="display: none;">
       <div class="form-group">
         <label for="waterType">Water Type:</label>
         <select name="waterType">
@@ -106,13 +78,77 @@
       </div>
     </div>
     
-    <!-- Planar Options -->
-    <div class="planar-options" style="display: none;">
+    <!-- DMG Planar Options -->
+    <div class="dmg-planar-options" style="display: none;">
       <div class="form-group">
-        <label>Planar encounters use standard tables based on the selected encounter type (Astral or Ethereal)</label>
+        <label>Planar encounters use standard tables based on the selected encounter type</label>
       </div>
     </div>
   </div>
+  
+  <!-- World of Greyhawk System Options -->
+  <div class="wog-system-container" style="display: none;">
+    <div class="form-group">
+      <label for="wogEncounterType">Encounter Type:</label>
+      <select name="wogEncounterType">
+        <option value="regional">Regional</option>
+        <option value="patrol">Patrol</option>
+      </select>
+    </div>
+    
+    <!-- WoG Regional Options -->
+    <div class="wog-regional-options" style="display: none;">
+      <div class="form-group">
+        <label for="regionType">Region Category:</label>
+        <select name="regionType">
+          {{#each regionTypes}}
+            <option value="{{this.id}}">{{this.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="region">Specific Region:</label>
+        <select name="region">
+          <!-- Populated dynamically -->
+        </select>
+      </div>
+    </div>
+    
+    <!-- WoG Patrol Options -->
+    <div class="wog-patrol-options" style="display: none;">
+      <div class="form-group">
+        <label for="patrolType">Patrol Type:</label>
+        <select name="patrolType">
+          {{#each patrolTypes}}
+            <option value="{{this.id}}">{{this.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Calendar Options - Apply to both systems -->
+  <div class="form-group calendar-options">
+    <label>
+      <input type="checkbox" name="useSimpleCalendar" {{#if useSimpleCalendar}}checked{{/if}}>
+      Use Simple Calendar for Time of Day/Season
+    </label>
+  </div>
+  
+  {{#if useSimpleCalendar}}
+  <div class="simple-calendar-info">
+    {{#if timeInfo}}
+    <p><strong>Current Date:</strong> {{timeInfo.day}}/{{timeInfo.month}}/{{timeInfo.year}}</p>
+    <p><strong>Current Time:</strong> {{timeInfo.hour}}:{{timeInfo.minute}}</p>
+    <p><strong>Time of Day:</strong> {{timeInfo.timeOfDay}}</p>
+    <p><strong>Season:</strong> {{timeInfo.season}}</p>
+    <p><strong>Weather:</strong> {{timeInfo.weather}}</p>
+    {{else}}
+    <p>Simple Calendar data not available</p>
+    {{/if}}
+  </div>
+  {{/if}}
   
   <div class="button-group">
     <button type="button" class="roll-encounter-button">Roll Encounter</button>
