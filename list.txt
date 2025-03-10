@@ -9,13 +9,15 @@ data
 scripts
   encounter-roller.js
   greyhawk-encounters.js
+  index.js
 styles
   greyhawk-encounters.css
 templates
   encounter-roller.hbs
-
+data
 greyhawk-readme.txt
 list.txt
 listdir.bat
 module.json
 README.md
+

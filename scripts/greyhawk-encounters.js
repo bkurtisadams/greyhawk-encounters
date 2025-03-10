@@ -1,4 +1,9 @@
 // Main module code for Greyhawk Encounters
+// imports with correct relative paths
+import { GREYHAWK_REGIONAL_TABLES } from '../data/greyhawk-regions.js';
+import { GREYHAWK_GEOGRAPHICAL_TABLES } from '../data/greyhawk-geography.js';
+import DMG_TABLES from '../data/dmg-monster-tables.js'; // This imports all the DMG tables
+import SUBTABLES from '../data/subtables.js'; // Import the subtables if needed
 
 // Main module class
 export class GreyhawkEncounters {
