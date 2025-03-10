@@ -1,0 +1,21 @@
+Directory tree of C:\Users\grayc\OneDrive\Desktop\Foundry12.330\data\Data\modules\greyhawk-encounters (excluding hidden files and folders) 
+ 
+data
+  dmg-dungeon-tables.js
+  dmg-monster-tables.js
+  greyhawk-geography.js
+  greyhawk-regions.js
+  subtables.js
+scripts
+  encounter-roller.js
+  greyhawk-encounters.js
+styles
+  greyhawk-encounters.css
+templates
+  encounter-roller.hbs
+
+greyhawk-readme.txt
+list.txt
+listdir.bat
+module.json
+README.md

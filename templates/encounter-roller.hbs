@@ -1,121 +1,121 @@
-{{!-- templates/encounter-roller.hbs --}}
-<form>
-  <div>
-    <label>Encounter Type:</label>
+<form class="greyhawk-encounters">
+  <div class="form-group">
+    <label for="encounterType">Encounter Type:</label>
     <select name="encounterType">
       {{#each encounterTypes}}
-      <option value="{{this.id}}">{{this.label}}</option>
+        <option value="{{this.id}}">{{this.label}}</option>
       {{/each}}
     </select>
   </div>
   
-  <div>
-    <label>
-      <input type="checkbox" name="useSimpleCalendar" {{#if useSimpleCalendar}}checked{{/if}}>
-      Use Simple Calendar for Time
-    </label>
-  </div>
-  
-  {{#if useSimpleCalendar}}
-  <div class="simple-calendar-info">
-    <div>
-      <div>Current Calendar Information</div>
-      <div>
+  <div class="encounter-options-container">
+    <!-- Region Options -->
+    <div class="region-options" style="display: none;">
+      <div class="form-group">
+        <label for="regionType">Region Category:</label>
+        <select name="regionType">
+          {{#each regionTypes}}
+            <option value="{{this.id}}">{{this.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="region">Specific Region:</label>
+        <select name="region">
+          <!-- Populated dynamically -->
+        </select>
+      </div>
+    </div>
+    
+    <!-- Outdoor Options -->
+    <div class="outdoor-options" style="display: none;">
+      <div class="form-group">
+        <label for="terrain">Terrain Type:</label>
+        <select name="terrain">
+          {{#each terrainTypes}}
+            <option value="{{this.id}}">{{this.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="population">Population Density:</label>
+        <select name="population">
+          {{#each populationTypes}}
+            <option value="{{this.id}}">{{this.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+      
+      <div class="form-group time-of-day-group" style="display: none;">
+        <label for="timeOfDay">Time of Day:</label>
+        <select name="timeOfDay">
+          {{#each timesOfDay}}
+            <option value="{{this.id}}">{{this.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>
+          <input type="checkbox" name="useSimpleCalendar" {{#if useSimpleCalendar}}checked{{/if}}>
+          Use Simple Calendar for Time of Day
+        </label>
+      </div>
+      
+      {{#if useSimpleCalendar}}
+      <div class="simple-calendar-info">
         {{#if timeInfo}}
-        <p>Date: {{timeInfo.weekday}} {{timeInfo.day}}, Month {{timeInfo.month}}, Year {{timeInfo.year}}</p>
-        <p>Time: {{timeInfo.hour}}:{{timeInfo.minute}}</p>
-        <p>Season: {{timeInfo.season}}</p>
-        <p>Time of Day: {{timeInfo.timeOfDay}}</p>
+        <p><strong>Current Date:</strong> {{timeInfo.day}}/{{timeInfo.month}}/{{timeInfo.year}}</p>
+        <p><strong>Current Time:</strong> {{timeInfo.hour}}:{{timeInfo.minute}}</p>
+        <p><strong>Time of Day:</strong> {{timeInfo.timeOfDay}}</p>
+        <p><strong>Season:</strong> {{timeInfo.season}}</p>
+        <p><strong>Weather:</strong> {{timeInfo.weather}}</p>
         {{else}}
         <p>Simple Calendar data not available</p>
         {{/if}}
       </div>
+      {{/if}}
+    </div>
+    
+    <!-- Dungeon Options -->
+    <div class="dungeon-options" style="display: none;">
+      <div class="form-group">
+        <label for="dungeonLevel">Dungeon Level:</label>
+        <input type="number" name="dungeonLevel" value="1" min="1" max="20">
+      </div>
+    </div>
+    
+    <!-- Underwater Options -->
+    <div class="underwater-options" style="display: none;">
+      <div class="form-group">
+        <label for="waterType">Water Type:</label>
+        <select name="waterType">
+          <option value="fresh">Fresh Water</option>
+          <option value="salt">Salt Water</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="depth">Depth:</label>
+        <select name="depth">
+          <option value="shallow">Shallow</option>
+          <option value="deep">Deep</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Planar Options -->
+    <div class="planar-options" style="display: none;">
+      <div class="form-group">
+        <label>Planar encounters use standard tables based on the selected encounter type (Astral or Ethereal)</label>
+      </div>
     </div>
   </div>
-  {{/if}}
   
-  <!-- Regional encounter options -->
-  <div class="region-options" style="display: none;">
-    <label>Region Type:</label>
-    <select name="regionType">
-      {{#each regionTypes}}
-      <option value="{{this.id}}">{{this.label}}</option>
-      {{/each}}
-    </select>
-  </div>
-  
-  <div class="region-options" style="display: none;">
-    <label>Region:</label>
-    <select name="region">
-      <option value="">Select a region type first</option>
-    </select>
-  </div>
-  
-  <!-- Outdoor encounter options -->
-  <div class="outdoor-options" style="display: none;">
-    <label>Terrain:</label>
-    <select name="terrain">
-      {{#each terrainTypes}}
-      <option value="{{this.id}}">{{this.label}}</option>
-      {{/each}}
-    </select>
-  </div>
-  
-  <div class="outdoor-options" style="display: none;">
-    <label>Population Density:</label>
-    <select name="population">
-      {{#each populationTypes}}
-      <option value="{{this.id}}">{{this.label}}</option>
-      {{/each}}
-    </select>
-  </div>
-  
-  <div class="outdoor-options time-of-day-group" style="display: none;">
-    <label>Time of Day:</label>
-    <select name="timeOfDay">
-      {{#each timesOfDay}}
-      <option value="{{this.id}}">{{this.label}}</option>
-      {{/each}}
-    </select>
-  </div>
-  
-  <div class="outdoor-options" style="display: none;">
-    <button type="button" class="check-lost-button">
-      <i class="fas fa-compass"></i> Check if Lost
-    </button>
-  </div>
-  
-  <!-- Dungeon encounter options -->
-  <div class="dungeon-options" style="display: none;">
-    <label>Dungeon Level:</label>
-    <input type="number" name="dungeonLevel" value="1" min="1" max="20">
-  </div>
-  
-  <!-- Underwater encounter options -->
-  <div class="underwater-options" style="display: none;">
-    <label>Water Type:</label>
-    <select name="waterType">
-      <option value="fresh">Fresh Water</option>
-      <option value="salt">Salt Water</option>
-    </select>
-  </div>
-  
-  <div class="underwater-options" style="display: none;">
-    <label>Depth:</label>
-    <select name="depth">
-      <option value="shallow">Shallow</option>
-      <option value="deep">Deep</option>
-    </select>
-  </div>
-  
-  <!-- Planar encounter options -->
-  <div class="planar-options" style="display: none;">
-    <p>Rolling for planar encounters uses standard rules from DMG Appendix C.</p>
-  </div>
-  
-  <div>
-    <button type="button" class="roll-encounter-button">
-      <i class="fas fa-dice-d20"></i> Roll Encounter
-    </button>
+  <div class="button-group">
+    <button type="button" class="roll-encounter-button">Roll Encounter</button>
+    <button type="button" class="check-lost-button">Check if Lost</button>
   </div>
 </form>

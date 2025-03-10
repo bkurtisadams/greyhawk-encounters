@@ -13,7 +13,10 @@
     }
   ],
   "esmodules": [
-    "greyhawk-encounters.js"
+    "scripts/index.js"
+  ],
+  "styles": [
+    "styles/greyhawk-encounters.css"
   ],
   "templates": [
     "templates/encounter-roller.hbs"

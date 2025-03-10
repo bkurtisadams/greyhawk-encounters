@@ -1,0 +1,88 @@
+/* Greyhawk Encounters module styles */
+
+.greyhawk-encounters .encounter-options-container {
+    margin-bottom: 15px;
+  }
+  
+  .greyhawk-encounters .region-options,
+  .greyhawk-encounters .outdoor-options,
+  .greyhawk-encounters .dungeon-options,
+  .greyhawk-encounters .underwater-options,
+  .greyhawk-encounters .planar-options {
+    border: 1px solid #7a7971;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: rgba(0, 0, 0, 0.05);
+  }
+  
+  .greyhawk-encounters select,
+  .greyhawk-encounters input {
+    margin-bottom: 8px;
+    width: 100%;
+  }
+  
+  .greyhawk-encounters .form-group {
+    margin-bottom: 10px;
+  }
+  
+  .greyhawk-encounters .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .greyhawk-encounters .button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
+  
+  .greyhawk-encounters .roll-encounter-button {
+    background-color: #4e8c41;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    flex-grow: 2;
+    margin-right: 5px;
+  }
+  
+  .greyhawk-encounters .check-lost-button {
+    background-color: #8c6f41;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    flex-grow: 1;
+  }
+  
+  .greyhawk-encounters .roll-encounter-button:hover {
+    background-color: #3a6b30;
+  }
+  
+  .greyhawk-encounters .check-lost-button:hover {
+    background-color: #6b5230;
+  }
+  
+  /* Time of day group toggle */
+  .greyhawk-encounters .time-of-day-group {
+    padding-top: 8px;
+    border-top: 1px solid #ddd;
+  }
+  
+  /* Simple Calendar info */
+  .greyhawk-encounters .simple-calendar-info {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+    margin-top: 10px;
+  }
+  
+  .greyhawk-encounters .simple-calendar-info p {
+    margin: 4px 0;
+  }
