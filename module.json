@@ -15,9 +15,6 @@
   "esmodules": [
     "greyhawk-encounters.js"
   ],
-  "styles": [
-    "styles/greyhawk-encounters.css"
-  ],
   "templates": [
     "templates/encounter-roller.hbs"
   ],
