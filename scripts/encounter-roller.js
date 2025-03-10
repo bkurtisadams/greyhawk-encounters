@@ -28,13 +28,15 @@ export class GreyhawkEncounterRoller extends Application {
       useSimpleCalendar,
       timeInfo,
       encounterTypes: [
-        { id: 'regional', label: 'Regional (Greyhawk)' },
-        { id: 'outdoor', label: 'Outdoor' },
-        { id: 'dungeon', label: 'Dungeon' },
-        { id: 'underwater', label: 'Underwater' },
-        { id: 'airborne', label: 'Airborne' },
-        { id: 'astral', label: 'Astral Plane' },
-        { id: 'ethereal', label: 'Ethereal Plane' }
+        // Greyhawk-specific
+        { id: 'regional_greyhawk', label: 'Greyhawk Regional (World of Greyhawk)' },
+        // DMG Standard
+        { id: 'outdoor', label: 'Outdoor (DMG Standard)' },
+        { id: 'dungeon', label: 'Dungeon (DMG Standard)' },
+        { id: 'underwater', label: 'Underwater (DMG Standard)' },
+        { id: 'airborne', label: 'Airborne (DMG Standard)' },
+        { id: 'astral', label: 'Astral Plane (DMG Standard)' },
+        { id: 'ethereal', label: 'Ethereal Plane (DMG Standard)' }
       ],
       regionTypes: [
         { 
@@ -169,15 +171,15 @@ export class GreyhawkEncounterRoller extends Application {
       
       // Then show only the relevant section
       switch (encounterType) {
-        case 'regional':
-          html.find('.region-options').show();
-          break;
-        case 'outdoor':
-          html.find('.outdoor-options').show();
-          if (!game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
-            html.find('.time-of-day-group').show();
-          }
-          break;
+        case 'regional_greyhawk':
+            html.find('.region-options').show();
+            break;
+          case 'outdoor':
+            html.find('.outdoor-options').show();
+            if (!game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
+              html.find('.time-of-day-group').show();
+            }
+            break;
         case 'dungeon':
           html.find('.dungeon-options').show();
           break;
@@ -221,11 +223,17 @@ export class GreyhawkEncounterRoller extends Application {
         let options = { encounterType: encounterType };
         
         switch (encounterType) {
-          case 'regional': {
-            const specificRegion = html.find('select[name="region"]').val() || 'greyhawk';
-            options = { ...options, specificRegion: specificRegion };
-            break;
-          }
+            case 'regional_greyhawk': {
+                const specificRegion = html.find('select[name="region"]').val() || 'greyhawk';
+                options = { ...options, specificRegion: specificRegion };
+                
+                // Call the Greyhawk-specific regional encounter method
+                const result = await GreyhawkEncounters._rollRegionalEncounter(options);
+                
+                // Display result
+                GreyhawkEncounters._displayEncounterResult(result, options);
+                break;
+              }
           case 'outdoor': {
             const terrain = html.find('select[name="terrain"]').val() || 'plain';
             const population = html.find('select[name="population"]').val() || 'moderate';
