@@ -129,6 +129,249 @@ Hooks.once('ready', async function() {
   });
 });
 
+// Add after initial declarations in greyhawk-encounters.js
+
+// World of Greyhawk Regional Encounter Tables
+const GREYHAWK_REGIONAL_TABLES = {
+  // Political Regions
+  "bone_march": [
+    { min: 1, max: 2, encounter: "Bugbears" },
+    { min: 3, max: 3, encounter: "Giant (evil only)" },
+    { min: 4, max: 7, encounter: "Gnolls" },
+    { min: 8, max: 9, encounter: "Gnolls and Flinds" },
+    { min: 10, max: 11, encounter: "Goblins" },
+    { min: 12, max: 12, encounter: "Goblins and Xvarts" },
+    { min: 13, max: 14, encounter: "Hobgoblins" },
+    { min: 15, max: 15, encounter: "Hobgoblins and Norkers" },
+    { min: 16, max: 17, encounter: "Kobolds" },
+    { min: 18, max: 21, encounter: "Men, Bandits" },
+    { min: 22, max: 29, encounter: "Men, Brigands" },
+    { min: 30, max: 34, encounter: "Men, Raiders" },
+    { min: 35, max: 35, encounter: "Men, Tribesmen (hillmen)" },
+    { min: 36, max: 39, encounter: "Norkers" },
+    { min: 40, max: 41, encounter: "Ogres" },
+    { min: 42, max: 42, encounter: "Ogres and Ogrillons" },
+    { min: 43, max: 43, encounter: "Ogrillons" },
+    { min: 44, max: 45, encounter: "Orcs" },
+    { min: 46, max: 0, encounter: "Use Standard Encounter Tables", useStandard: true }
+  ],
+  "pomarj": [
+    { min: 1, max: 2, encounter: "Bugbears" },
+    { min: 3, max: 3, encounter: "Giant (evil only)" },
+    { min: 4, max: 7, encounter: "Gnolls" },
+    { min: 8, max: 9, encounter: "Gnolls and Flinds" },
+    { min: 10, max: 11, encounter: "Goblins" },
+    { min: 12, max: 12, encounter: "Goblins and Xvarts" },
+    { min: 13, max: 14, encounter: "Hobgoblins" },
+    { min: 15, max: 15, encounter: "Hobgoblins and Norkers" },
+    { min: 16, max: 17, encounter: "Kobolds" },
+    { min: 18, max: 21, encounter: "Men, Bandits" },
+    { min: 22, max: 29, encounter: "Men, Brigands" },
+    { min: 30, max: 34, encounter: "Men, Raiders" },
+    { min: 35, max: 35, encounter: "Men, Tribesmen (hillmen)" },
+    { min: 36, max: 39, encounter: "Norkers" },
+    { min: 40, max: 41, encounter: "Ogres" },
+    { min: 42, max: 42, encounter: "Ogres and Ogrillons" },
+    { min: 43, max: 43, encounter: "Ogrillons" },
+    { min: 44, max: 45, encounter: "Orcs" },
+    // Similar structure to bone_march
+    { min: 46, max: 0, encounter: "Use Standard Encounter Tables", useStandard: true }
+  ],
+  
+  // Add a few more key regions as examples
+  "celene": [
+    { min: 1, max: 2, encounter: "Dwarves" },
+    { min: 3, max: 3, encounter: "Dwarves, Mountain" },
+    { min: 4, max: 20, encounter: "Elves, Gray" },
+    { min: 21, max: 25, encounter: "Elves, High" },
+    { min: 26, max: 40, encounter: "Elves, Sylvan" },
+    { min: 41, max: 46, encounter: "Gnomes" },
+    { min: 47, max: 47, encounter: "Halflings, Hairfeet" },
+    { min: 48, max: 48, encounter: "Halflings, Stouts" },
+    { min: 49, max: 50, encounter: "Halflings, Tallfellows" },
+    { min: 51, max: 53, encounter: "Humanoids" },
+    { min: 54, max: 55, encounter: "Men, Bandits" },
+    { min: 56, max: 57, encounter: "Men, Brigands" },
+    { min: 58, max: 63, encounter: "Men, Merchants" },
+    { min: 64, max: 77, encounter: "Men, Patrol, Light" },
+    { min: 78, max: 80, encounter: "Men, Pilgrims" },
+    { min: 81, max: 0, encounter: "Use Standard Encounter Tables", useStandard: true }
+  ],
+  
+  "greyhawk": [
+    { min: 1, max: 1, encounter: "Demi-humans" },
+    { min: 2, max: 3, encounter: "Men, Characters" },
+    { min: 4, max: 5, encounter: "Humanoids" },
+    { min: 6, max: 7, encounter: "Men, Bandits" },
+    { min: 8, max: 9, encounter: "Men, Brigands" },
+    { min: 10, max: 11, encounter: "Men, Characters" },
+    { min: 12, max: 30, encounter: "Men, Merchants" },
+    { min: 31, max: 40, encounter: "Men, Patrol, Medium" },
+    { min: 41, max: 0, encounter: "Use Standard Encounter Tables", useStandard: true }
+  ]
+};
+
+// Geographical Area Tables
+const GREYHAWK_GEOGRAPHICAL_TABLES = {
+  // Forests
+  "adri_forest": [
+    { min: 1, max: 5, encounter: "Elves, Sylvan" },
+    { min: 6, max: 8, encounter: "Gnomes" },
+    { min: 9, max: 15, encounter: "Halflings" },
+    { min: 16, max: 18, encounter: "Humanoids" },
+    { min: 19, max: 20, encounter: "Men, Bandits" },
+    { min: 21, max: 45, encounter: "Men, Woodsmen" },
+    { min: 46, max: 0, encounter: "Use Standard Encounter Tables", useStandard: true }
+  ],
+  
+  // Mountains
+  "barrier_peaks": [
+    { min: 1, max: 4, encounter: "Dwarves, Mountain" },
+    { min: 5, max: 10, encounter: "Giants" },
+    { min: 11, max: 15, encounter: "Giants, Frost" },
+    { min: 16, max: 18, encounter: "Giants, Hill" },
+    { min: 19, max: 20, encounter: "Giants, Mountain" },
+    { min: 21, max: 24, encounter: "Giants, Stone" },
+    { min: 25, max: 35, encounter: "Humanoids" },
+    { min: 36, max: 38, encounter: "Men, Cavemen" },
+    { min: 39, max: 42, encounter: "Men, Tribesmen" },
+    { min: 43, max: 47, encounter: "Ogres" },
+    { min: 48, max: 50, encounter: "Trolls" },
+    { min: 51, max: 0, encounter: "Use Standard Encounter Tables", useStandard: true }
+  ],
+  
+  // Hills
+  "abbor_alz": [
+    { min: 1, max: 3, encounter: "Giants, Hill" },
+    { min: 4, max: 10, encounter: "Humanoids" },
+    { min: 11, max: 15, encounter: "Men, Patrol, Medium" },
+    { min: 16, max: 40, encounter: "Men, Tribesmen (plus 20-80)" },
+    { min: 41, max: 43, encounter: "Ogres" },
+    { min: 44, max: 45, encounter: "Trolls" },
+    { min: 46, max: 0, encounter: "Use Standard Encounter Tables", useStandard: true }
+  ],
+  
+  // Marshes
+  "cold_marshes": [
+    { min: 1, max: 3, encounter: "Frost Men" },
+    { min: 4, max: 10, encounter: "Gnolls" },
+    { min: 11, max: 30, encounter: "Men, Tribesmen" },
+    { min: 31, max: 40, encounter: "Quaggoths" },
+    { min: 41, max: 45, encounter: "Toad, Ice" },
+    { min: 46, max: 50, encounter: "Troll, Ice" },
+    { min: 51, max: 0, encounter: "Use Standard Encounter Tables", useStandard: true }
+  ]
+};
+
+// Add after the regional tables
+
+// DMG Appendix C Random Monster Encounter Tables
+const DMG_MONSTER_LEVEL_TABLES = {
+  // Monster Level I Table
+  1: [
+    { min: 1, max: 2, monster: "Ant, giant", number: "1-4" },
+    { min: 3, max: 4, monster: "Badger", number: "1-4", notes: "Not encountered below the 2nd level" },
+    { min: 5, max: 14, monster: "Beetle, fire", number: "1-4" },
+    { min: 15, max: 15, monster: "Demon, manes", number: "1-4" },
+    { min: 16, max: 17, monster: "Dwarf", number: "4-14" },
+    { min: 18, max: 18, monster: "Ear seeker", number: "1" },
+    { min: 19, max: 19, monster: "Elf", number: "3-11" },
+    { min: 20, max: 21, monster: "Gnome", number: "5-15" },
+    { min: 22, max: 26, monster: "Goblin", number: "6-15" },
+    { min: 27, max: 28, monster: "Halfling", number: "9-16", notes: "Not encountered below the 4th level" },
+    { min: 29, max: 33, monster: "Hobgoblin", number: "2-8" },
+    { min: 34, max: 48, monster: "Human", subtable: "human" },
+    { min: 49, max: 54, monster: "Kobold", number: "6-18" },
+    { min: 55, max: 66, monster: "Orc", number: "7-12" },
+    { min: 67, max: 70, monster: "Piercer", number: "1-3" },
+    { min: 71, max: 83, monster: "Rat, giant", number: "5-20" },
+    { min: 84, max: 85, monster: "Rot grub", number: "1-3" },
+    { min: 86, max: 96, monster: "Shrieker", number: "1-2" },
+    { min: 97, max: 98, monster: "Skeleton", number: "1-4" },
+    { min: 99, max: 100, monster: "Zombie", number: "1-3" }
+  ],
+  
+  // Monster Level II Table
+  2: [
+    { min: 1, max: 1, monster: "Badger, giant", number: "1-4", notes: "Not encountered below the 3rd level" },
+    { min: 2, max: 16, monster: "Centipede, giant", number: "3-13" },
+    { min: 17, max: 27, monster: "Character", subtable: "character" },
+    { min: 28, max: 29, monster: "Devil, lemure", number: "2-5" },
+    { min: 30, max: 31, monster: "Gas spore", number: "1-2" },
+    { min: 32, max: 38, monster: "Gnoll", number: "4-10" },
+    { min: 39, max: 46, monster: "Piercer", number: "1-4" },
+    { min: 47, max: 58, monster: "Rat, giant", number: "6-24" },
+    { min: 59, max: 60, monster: "Rot grub", number: "1-4" },
+    { min: 61, max: 72, monster: "Shrieker", number: "1-3" },
+    { min: 73, max: 77, monster: "Stirge", number: "5-15" },
+    { min: 78, max: 87, monster: "Toad, giant", number: "1-4" },
+    { min: 88, max: 100, monster: "Troglodyte", number: "2-8" }
+  ],
+  
+  // Add Monster Level III through X tables in a similar fashion
+};
+
+// Human Subtable for Monster Level I
+const DMG_HUMAN_SUBTABLE = [
+  { min: 1, max: 25, encounter: "Bandit", number: "5-15", notes: "Upper level leaders not with groups under 30" },
+  { min: 26, max: 30, encounter: "Berserker", number: "3-9", notes: "Upper level leaders not with groups under 30" },
+  { min: 31, max: 45, encounter: "Brigand", number: "5-15", notes: "Upper level leaders not with groups under 30" },
+  { min: 46, max: 100, encounter: "Character", subtable: "character" }
+];
+
+// Character Subtable for determining encountered adventuring parties
+const DMG_CHARACTER_SUBTABLE = [
+  { min: 1, max: 17, character: "CLERIC", maxNumber: 3 },
+  { min: 18, max: 20, character: "Druid", maxNumber: 2 },
+  { min: 21, max: 60, character: "FIGHTER", maxNumber: 5 },
+  { min: 61, max: 62, character: "Paladin", maxNumber: 2 },
+  { min: 63, max: 65, character: "Ranger", maxNumber: 2 },
+  { min: 66, max: 86, character: "MAGIC-USER", maxNumber: 3 },
+  { min: 87, max: 88, character: "Illusionist", maxNumber: 1 },
+  { min: 89, max: 98, character: "THIEF", maxNumber: 4 },
+  { min: 99, max: 99, character: "Assassin", maxNumber: 2 },
+  { min: 100, max: 100, character: "MONK OR BARD", maxNumber: 1 }
+];
+
+// Add the Dungeon Random Monster Level Determination Matrix
+
+const DMG_DUNGEON_MONSTER_LEVEL_MATRIX = {
+  // Dungeon level 1
+  1: [
+    { min: 1, max: 16, monsterLevel: 1 },
+    { min: 17, max: 19, monsterLevel: 2 },
+    { min: 20, max: 20, monsterLevel: 3 }
+  ],
+  
+  // Dungeon levels 2-3
+  2: [
+    { min: 1, max: 12, monsterLevel: 1 },
+    { min: 13, max: 16, monsterLevel: 2 },
+    { min: 17, max: 18, monsterLevel: 3 },
+    { min: 19, max: 19, monsterLevel: 4 },
+    { min: 20, max: 20, monsterLevel: 5 }
+  ],
+  3: [
+    { min: 1, max: 12, monsterLevel: 1 },
+    { min: 13, max: 16, monsterLevel: 2 },
+    { min: 17, max: 18, monsterLevel: 3 },
+    { min: 19, max: 19, monsterLevel: 4 },
+    { min: 20, max: 20, monsterLevel: 5 }
+  ],
+  
+  // Dungeon level 4
+  4: [
+    { min: 1, max: 5, monsterLevel: 1 },
+    { min: 6, max: 10, monsterLevel: 2 },
+    { min: 11, max: 16, monsterLevel: 3 },
+    { min: 17, max: 18, monsterLevel: 4 },
+    { min: 19, max: 19, monsterLevel: 5 },
+    { min: 20, max: 20, monsterLevel: 6 }
+  ],
+  
+  // Add the rest of the matrix for dungeon levels 5-16+
+};
+
 // Main module class
 class GreyhawkEncounters {
   static ID = 'greyhawk-encounters';
@@ -136,58 +379,80 @@ class GreyhawkEncounters {
   /**
    * Get the current time info from Simple Calendar.
    */
-  static getCurrentTimeInfo() {
-    if (!game.modules.get('foundryvtt-simple-calendar')?.active) return null;
-    const sc = SimpleCalendar.api;
-    if (!sc) return null;
-    
-    let currentDate;
-    if (typeof sc.getCurrentDateTime === 'function') {
-      currentDate = sc.getCurrentDateTime();
-    } else {
-      currentDate = sc.currentDate;
-    }
-    if (!currentDate) return null;
-    
-    const hour = currentDate.hour || 0;
-    let timeOfDay;
-    if (hour >= 5 && hour < 9) timeOfDay = 'morning';
-    else if (hour >= 9 && hour < 15) timeOfDay = 'noon';
-    else if (hour >= 15 && hour < 19) timeOfDay = 'evening';
-    else if (hour >= 19 && hour < 22) timeOfDay = 'night';
-    else if (hour >= 22 || hour < 2) timeOfDay = 'midnight';
-    else timeOfDay = 'predawn';
-    
-    let season;
-    const month = currentDate.month || 0;
-    const totalMonths = (typeof sc.getAllMonths === "function") ? sc.getAllMonths().length : 12;
-    
-    if (totalMonths === 12) {
-      if (month >= 2 && month <= 4) season = 'spring';
-      else if (month >= 5 && month <= 7) season = 'summer';
-      else if (month >= 8 && month <= 10) season = 'autumn';
-      else season = 'winter';
-    } else {
-      const monthIndex = (month / totalMonths);
-      if (monthIndex >= 0.17 && monthIndex < 0.42) season = 'spring';
-      else if (monthIndex >= 0.42 && monthIndex < 0.67) season = 'summer';
-      else if (monthIndex >= 0.67 && monthIndex < 0.92) season = 'autumn';
-      else season = 'winter';
-    }
-    
-    return {
-      date: currentDate,
-      timeOfDay,
-      season,
-      month,
-      day: currentDate.day || 0,
-      year: currentDate.year || 0,
-      hour,
-      minute: currentDate.minute || 0,
-      weekday: currentDate.weekday || '',
-      isDay: (hour >= 6 && hour < 19)
-    };
+  // Replace the getCurrentTimeInfo method
+
+static getCurrentTimeInfo() {
+  if (!game.modules.get('foundryvtt-simple-calendar')?.active) return null;
+  const sc = SimpleCalendar.api;
+  if (!sc) return null;
+  
+  let currentDate;
+  if (typeof sc.getCurrentDateTime === 'function') {
+    currentDate = sc.getCurrentDateTime();
+  } else {
+    currentDate = sc.currentDate;
   }
+  if (!currentDate) return null;
+  
+  const hour = currentDate.hour || 0;
+  let timeOfDay;
+  if (hour >= 5 && hour < 9) timeOfDay = 'morning';
+  else if (hour >= 9 && hour < 15) timeOfDay = 'noon';
+  else if (hour >= 15 && hour < 19) timeOfDay = 'evening';
+  else if (hour >= 19 && hour < 22) timeOfDay = 'night';
+  else if (hour >= 22 || hour < 2) timeOfDay = 'midnight';
+  else timeOfDay = 'predawn';
+  
+  let season;
+  const month = currentDate.month || 0;
+  const totalMonths = (typeof sc.getAllMonths === "function") ? sc.getAllMonths().length : 12;
+  
+  if (totalMonths === 12) {
+    // Standard calendar with 12 months
+    if (month >= 2 && month <= 4) season = 'spring';
+    else if (month >= 5 && month <= 7) season = 'summer';
+    else if (month >= 8 && month <= 10) season = 'autumn';
+    else season = 'winter';
+  } else {
+    // Handle non-standard calendars proportionally
+    const monthIndex = (month / totalMonths);
+    if (monthIndex >= 0.17 && monthIndex < 0.42) season = 'spring';
+    else if (monthIndex >= 0.42 && monthIndex < 0.67) season = 'summer';
+    else if (monthIndex >= 0.67 && monthIndex < 0.92) season = 'autumn';
+    else season = 'winter';
+  }
+  
+  // Determine weather conditions based on season
+  let weather = 'normal';
+  // This could be expanded with a more sophisticated weather system
+  const weatherRoll = Math.floor(Math.random() * 100) + 1;
+  if (season === 'winter') {
+    if (weatherRoll <= 30) weather = 'stormy';
+    else if (weatherRoll <= 60) weather = 'cold';
+    else weather = 'normal';
+  } else if (season === 'summer') {
+    if (weatherRoll <= 20) weather = 'hot';
+    else if (weatherRoll <= 40) weather = 'stormy';
+    else weather = 'normal';
+  } else { // spring or autumn
+    if (weatherRoll <= 25) weather = 'stormy';
+    else weather = 'normal';
+  }
+  
+  return {
+    date: currentDate,
+    timeOfDay,
+    season,
+    weather,
+    month,
+    day: currentDate.day || 0,
+    year: currentDate.year || 0,
+    hour,
+    minute: currentDate.minute || 0,
+    weekday: currentDate.weekday || '',
+    isDay: (hour >= 6 && hour < 19)
+  };
+}
   
   /**
    * Return climate based on season and region.
@@ -212,16 +477,59 @@ class GreyhawkEncounters {
   
   // Encounter Table Functions remain the same, except for _displayEncounterResult
   
-  static async rollPatrolEncounter(options) {
-    return {
-      result: "Patrol Encounter",
-      patrolType: "Military",
-      leader: { level: Math.floor(Math.random() * 3) + 3, class: "Fighter" },
-      lieutenant: { level: Math.floor(Math.random() * 2) + 2, class: "Fighter" },
-      sergeant: { level: 1, class: "Fighter" },
-      troops: Math.floor(Math.random() * 4) + 4
+  // Replace the existing rollPatrolEncounter method
+
+static async rollPatrolEncounter(options) {
+  // Determine patrol type based on region or other factors
+  const patrolType = options.patrolType || "Standard";
+  
+  // Determine leader level (6-8)
+  const leaderLevel = Math.floor(Math.random() * 3) + 6;
+  
+  // Determine lieutenant level (4-5)
+  const lieutenantLevel = Math.floor(Math.random() * 2) + 4;
+  
+  // Determine sergeant level (2-3)
+  const sergeantLevel = Math.floor(Math.random() * 2) + 2;
+  
+  // Determine number of 1st level fighters (3-4)
+  const firstLevelFighters = Math.floor(Math.random() * 2) + 3;
+  
+  // Determine number of soldiers (13-24)
+  const soldiers = Math.floor(Math.random() * 12) + 13;
+  
+  // Determine if a cleric or magic-user accompanies the patrol
+  const spellcasterRoll = Math.floor(Math.random() * 100) + 1;
+  let spellcaster = null;
+  
+  if (spellcasterRoll <= 40) {
+    // Cleric of 6th or 7th level
+    const clericLevel = Math.floor(Math.random() * 2) + 6;
+    spellcaster = {
+      class: "Cleric",
+      level: clericLevel
+    };
+  } else if (spellcasterRoll <= 100) {
+    // Magic-user of 5th to 8th level
+    const mageLevel = Math.floor(Math.random() * 4) + 5;
+    spellcaster = {
+      class: "Magic-User",
+      level: mageLevel
     };
   }
+  
+  return {
+    result: "Patrol Encounter",
+    patrolType: patrolType,
+    leader: { level: leaderLevel, class: "Fighter" },
+    lieutenant: { level: lieutenantLevel, class: "Fighter" },
+    sergeant: { level: sergeantLevel, class: "Fighter" },
+    firstLevelFighters: firstLevelFighters,
+    troops: soldiers,
+    spellcaster: spellcaster,
+    notes: "Mounted unless terrain prevents it. Leaders on warhorses. Plate mail, shield, lance, flail, and long sword for fighters. Soldiers have chain/scale mail, shield, bow/crossbow, and hand weapon."
+  };
+}
   
   static getResultFromTable(table, roll) {
     for (const entry of table) {
@@ -428,6 +736,8 @@ static async rollEncounter(options) {
 /**
  * Roll an encounter taking time of day and calendar into account.
  */
+// Replace the rollTimeAwareEncounter method
+
 static async rollTimeAwareEncounter(options) {
   // Get time info from Simple Calendar if available
   const timeInfo = this.getCurrentTimeInfo();
@@ -436,11 +746,52 @@ static async rollTimeAwareEncounter(options) {
     
     // Add seasonal modifiers
     if (options.encounterType === 'outdoor') {
+      // Get region for climate determination
+      const region = options.specificRegion || 'greyhawk';
+      
+      // Determine climate based on region and season
+      const climate = this.getClimateForSeasonAndRegion(region, timeInfo.season);
+      options.climate = climate;
+      
       // Apply seasonal modifiers
       let encounterModifier = 1;
-      if (timeInfo.season === 'winter') encounterModifier = 0.75;
-      if (timeInfo.season === 'summer') encounterModifier = 1.25;
+      
+      // Modify encounter chance based on season and climate
+      if (climate === 'arctic' && timeInfo.season === 'winter') {
+        encounterModifier = 0.5; // Harsh conditions reduce activity
+      } else if (climate === 'arctic' && timeInfo.season === 'summer') {
+        encounterModifier = 1.5; // More active during brief summer
+      } else if (climate === 'subarctic' && timeInfo.season === 'winter') {
+        encounterModifier = 0.7;
+      } else if (climate === 'tropical' && timeInfo.season === 'summer') {
+        encounterModifier = 1.3; // Very active in hot season
+      } else if (timeInfo.season === 'winter') {
+        encounterModifier = 0.8; // Generally less active in winter
+      } else if (timeInfo.season === 'summer') {
+        encounterModifier = 1.2; // Generally more active in summer
+      }
+      
+      // Weather effects
+      if (timeInfo.weather === 'stormy') {
+        encounterModifier *= 0.7; // Reduced activity in storms
+      } else if (timeInfo.weather === 'hot' && (climate === 'temperate' || climate === 'subtropical')) {
+        encounterModifier *= 0.9; // Slightly reduced activity in unusual heat
+      } else if (timeInfo.weather === 'hot' && climate === 'tropical') {
+        encounterModifier *= 1.1; // Increased activity for heat-adapted creatures
+      }
+      
       options.encounterModifier = encounterModifier;
+      
+      // Determine appropriate encounter table based on climate
+      if (climate === 'arctic') {
+        options.encounterTable = 'arctic';
+      } else if (climate === 'subarctic') {
+        options.encounterTable = 'subarctic';
+      } else if (climate === 'tropical') {
+        options.encounterTable = 'tropical';
+      } else {
+        options.encounterTable = 'temperate';
+      }
     }
   }
   
@@ -454,265 +805,463 @@ static async rollTimeAwareEncounter(options) {
 /**
  * Roll an outdoor encounter.
  */
-static async rollOutdoorEncounter(terrain, population, timeOfDay, options = {}) {
-  console.log(`Rolling outdoor encounter: ${terrain}, ${population}, ${timeOfDay}`);
-  options = options || {};
+// Add new method for rolling on DMG outdoor encounter tables
+static _rollDMGOutdoorEncounter(terrain, population, options = {}) {
+  // Convert terrain to match DMG tables
+  let dmgTerrain = terrain;
   
-  // Skip encounters during certain times based on creature activity
-  if (timeOfDay) {
-    const nocturnalTimes = ['night', 'midnight', 'predawn'];
-    const diurnalTimes = ['morning', 'noon', 'evening'];
-    
-    if (options.skipTimeCheck !== true) {
-      if (terrain === 'desert' && nocturnalTimes.includes(timeOfDay)) {
-        return { result: "Desert creatures are more active at night", encounter: "Increased chance" };
-      }
-    }
+  // Normalize the terrain to match DMG tables
+  switch(terrain) {
+    case 'desert': dmgTerrain = 'desert'; break;
+    case 'forest': dmgTerrain = 'forest'; break;
+    case 'hills': dmgTerrain = 'hills'; break;
+    case 'mountains': dmgTerrain = 'mountains'; break;
+    case 'marsh': dmgTerrain = 'marsh'; break;
+    case 'plain': dmgTerrain = 'plain'; break;
+    case 'scrub': dmgTerrain = 'scrub'; break;
+    default: dmgTerrain = 'plain'; break;
   }
   
-  // Population density affects encounter chance
-  let encounterChance = 0;
-  switch (population) {
-    case 'dense': encounterChance = 10; break;
-    case 'moderate': encounterChance = 15; break;
-    case 'uninhabited': encounterChance = 20; break;
-    default: encounterChance = 15;
-  }
-  
-  // Terrain affects encounter tables
+  // Roll for creature type based on terrain
   const roll = Math.floor(Math.random() * 100) + 1;
   
-  // Apply seasonal modifier if provided
-  if (options.encounterModifier) {
-    encounterChance *= options.encounterModifier;
-  }
+  // For now, we'll use simplified tables based on the DMG
+  // In a full implementation, you'd use the complete tables from Appendix C
+  const encounterTable = this._getDMGTerrainEncounterTable(dmgTerrain, population);
   
-  if (roll > encounterChance) {
-    return { result: "No encounter", roll: roll };
-  }
+  let encounter = null;
+  let subtableNeeded = null;
   
-  // Determine if this is a patrol encounter
-  const patrolRoll = Math.floor(Math.random() * 100) + 1;
-  if (population !== 'uninhabited' && patrolRoll <= 20) {
-    return this.rollPatrolEncounter(options);
-  }
-  
-  // Mock creature tables for different terrain types
-  const terrainTables = {
-    'plain': [
-      { min: 1, max: 20, creature: "Bandits", number: "2d6" },
-      { min: 21, max: 35, creature: "Wolves", number: "2d4" },
-      { min: 36, max: 50, creature: "Wild Dogs", number: "1d6+1" },
-      { min: 51, max: 65, creature: "Orcs", number: "1d6+3" },
-      { min: 66, max: 80, creature: "Gnolls", number: "1d4+1" },
-      { min: 81, max: 90, creature: "Ogres", number: "1d3" },
-      { min: 91, max: 100, creature: "Hill Giants", number: "1" }
-    ],
-    'forest': [
-      { min: 1, max: 15, creature: "Bandits", number: "2d6" },
-      { min: 16, max: 30, creature: "Wolves", number: "2d6" },
-      { min: 31, max: 45, creature: "Elves", number: "1d8+2" },
-      { min: 46, max: 60, creature: "Goblins", number: "2d6" },
-      { min: 61, max: 75, creature: "Bears", number: "1d4" },
-      { min: 76, max: 85, creature: "Giant Spiders", number: "1d3" },
-      { min: 86, max: 95, creature: "Owlbears", number: "1d2" },
-      { min: 96, max: 100, creature: "Treant", number: "1" }
-    ],
-    'desert': [
-      { min: 1, max: 20, creature: "Nomads", number: "2d6" },
-      { min: 21, max: 40, creature: "Giant Scorpions", number: "1d3" },
-      { min: 41, max: 60, creature: "Giant Lizards", number: "1d4" },
-      { min: 61, max: 75, creature: "Lamias", number: "1" },
-      { min: 76, max: 90, creature: "Brass Dragon", number: "1" },
-      { min: 91, max: 100, creature: "Blue Dragon", number: "1" }
-    ],
-    'hills': [
-      { min: 1, max: 15, creature: "Bandits", number: "2d6" },
-      { min: 16, max: 30, creature: "Goblins", number: "2d6" },
-      { min: 31, max: 45, creature: "Hobgoblins", number: "2d4" },
-      { min: 46, max: 60, creature: "Orcs", number: "2d6" },
-      { min: 61, max: 75, creature: "Gnolls", number: "1d6+2" },
-      { min: 76, max: 85, creature: "Bugbears", number: "1d4+1" },
-      { min: 86, max: 95, creature: "Ogres", number: "1d3" },
-      { min: 96, max: 100, creature: "Hill Giants", number: "1d2" }
-    ],
-    'mountains': [
-      { min: 1, max: 10, creature: "Eagles, Giant", number: "1d3" },
-      { min: 11, max: 25, creature: "Orcs", number: "2d6" },
-      { min: 26, max: 40, creature: "Goblins", number: "3d4" },
-      { min: 41, max: 55, creature: "Ogres", number: "1d4" },
-      { min: 56, max: 70, creature: "Trolls", number: "1d3" },
-      { min: 71, max: 80, creature: "Stone Giants", number: "1d2" },
-      { min: 81, max: 90, creature: "Rocs", number: "1" },
-      { min: 91, max: 100, creature: "Cloud Giants", number: "1" }
-    ],
-    'marsh': [
-      { min: 1, max: 20, creature: "Lizardfolk", number: "2d6" },
-      { min: 21, max: 35, creature: "Giant Frogs", number: "1d6" },
-      { min: 36, max: 50, creature: "Giant Lizards", number: "1d4" },
-      { min: 51, max: 65, creature: "Crocodiles", number: "1d3" },
-      { min: 66, max: 80, creature: "Bullywugs", number: "2d4" },
-      { min: 81, max: 90, creature: "Trolls", number: "1d2" },
-      { min: 91, max: 100, creature: "Black Dragon", number: "1" }
-    ],
-    'scrub': [
-      { min: 1, max: 20, creature: "Bandits", number: "2d4" },
-      { min: 21, max: 40, creature: "Wolves", number: "1d6" },
-      { min: 41, max: 60, creature: "Gnolls", number: "1d6" },
-      { min: 61, max: 80, creature: "Giant Ants", number: "2d4" },
-      { min: 81, max: 100, creature: "Centaurs", number: "1d6" }
-    ]
-  };
-  
-  const table = terrainTables[terrain] || terrainTables['plain'];
-  const typeRoll = Math.floor(Math.random() * 100) + 1;
-  let encounter = "Unknown Creature";
-  let numberPattern = "1";
-  
-  for (const entry of table) {
-    if (typeRoll >= entry.min && typeRoll <= entry.max) {
+  // Find the encounter in the table
+  for (const entry of encounterTable) {
+    if (roll >= entry.min && roll <= entry.max) {
       encounter = entry.creature;
-      numberPattern = entry.number;
+      subtableNeeded = entry.subtable || null;
       break;
     }
   }
   
-  // Roll for number of creatures
-  let number = 1;
-  if (numberPattern.includes("d")) {
-    const parts = numberPattern.split("d");
-    const dice = parseInt(parts[0]) || 1;
-    const sides = parseInt(parts[1]) || 6;
-    number = 0;
-    for (let i = 0; i < dice; i++) {
-      number += Math.floor(Math.random() * sides) + 1;
-    }
-    
-    // Add any modifier
-    if (parts[1].includes("+")) {
-      const modParts = parts[1].split("+");
-      number += parseInt(modParts[1]) || 0;
-    }
-  } else {
-    number = parseInt(numberPattern) || 1;
+  if (!encounter) {
+    return { 
+      result: "Encounter", 
+      typeRoll: roll,
+      encounter: "Unknown Creature" 
+    };
   }
+  
+  // Handle subtables if needed
+  if (subtableNeeded) {
+    const subtableRoll = Math.floor(Math.random() * 100) + 1;
+    const subtableResult = this._rollOnSubtable(subtableNeeded, subtableRoll);
+    
+    return {
+      result: "Encounter",
+      typeRoll: roll,
+      encounter: encounter,
+      specialResult: subtableResult.creature,
+      number: this._rollNumberFromPattern(subtableResult.number || "1d6"),
+      subtableRoll: subtableRoll
+    };
+  }
+  
+  // Get number pattern and roll for number
+  const numberPattern = encounter.number || "1d6";
+  const number = this._rollNumberFromPattern(numberPattern);
   
   return {
     result: "Encounter",
-    typeRoll: typeRoll,
-    encounter: encounter,
+    typeRoll: roll,
+    encounter: encounter.name || encounter,
     number: number
   };
+}
+
+// Helper to get terrain-specific encounter tables from DMG Appendix C
+static _getDMGTerrainEncounterTable(terrain, population) {
+  // For now, we'll return simplified tables
+  // In a full implementation, you would use the complete DMG tables
+  
+  // Population affects which table to use
+  const isInhabited = population !== 'uninhabited';
+  
+  // This is a simplified version of the temperate and sub-tropical DMG tables
+  const tables = {
+    plain: [
+      { min: 1, max: 2, creature: { name: "Ant, giant", number: "1-4" } },
+      { min: 3, max: 9, creature: { name: "Bull/Cattle, wild", number: "3d6" } },
+      { min: 10, max: 10, creature: { name: "Demi-human", subtable: "demi_human", number: "2d6" } },
+      { min: 11, max: 12, creature: { name: "Dog, wild", number: "2d4" } },
+      { min: 13, max: 14, creature: { name: "Dragon", subtable: "dragon", number: "1" } },
+      { min: 15, max: 15, creature: { name: "Eagle, giant", number: "1d3" } },
+      { min: 17, max: 18, creature: { name: "Giant", subtable: "giant", number: "1d2" } },
+      { min: 19, max: 19, creature: { name: "Griffon", number: "1d4" } },
+      { min: 20, max: 25, creature: { name: "Herd animal", number: "3d10" } },
+      { min: 31, max: 33, creature: { name: "Humanoid", subtable: "humanoid", number: "2d6" } },
+      { min: 51, max: 70, creature: { name: "Men", subtable: "men", number: "3d6" } },
+      { min: 78, max: 78, creature: { name: "Snake", subtable: "snake", number: "1" } },
+      { min: 88, max: 97, creature: { name: "Wolf", number: "2d6" } },
+      { min: 98, max: 100, creature: { name: "Wolf, worg", number: "1d4+1" } }
+    ],
+    // Add other terrain types similarly
+  };
+  
+  return tables[terrain] || tables.plain;
+}
+
+// Helper to roll on creature subtables
+static _rollOnSubtable(subtableName, roll) {
+  // Define subtables from DMG Appendix C
+  const subtables = {
+    demi_human: [
+      { min: 1, max: 5, creature: "Dwarf", number: "2d6" },
+      { min: 6, max: 70, creature: "Elf", number: "2d6" },
+      { min: 71, max: 80, creature: "Gnome", number: "2d6" },
+      { min: 81, max: 100, creature: "Halfling", number: "3d6" }
+    ],
+    dragon: [
+      { min: 1, max: 2, creature: "Black Dragon", number: "1" },
+      { min: 3, max: 4, creature: "Blue Dragon", number: "1" },
+      { min: 5, max: 6, creature: "Brass Dragon", number: "1" },
+      { min: 7, max: 8, creature: "Bronze Dragon", number: "1" },
+      { min: 9, max: 10, creature: "Chimera", number: "1" },
+      { min: 11, max: 12, creature: "Copper Dragon", number: "1" },
+      { min: 13, max: 28, creature: "Gold Dragon", number: "1" },
+      { min: 29, max: 30, creature: "Green Dragon", number: "1" },
+      { min: 31, max: 32, creature: "Red Dragon", number: "1" },
+      { min: 33, max: 34, creature: "White Dragon", number: "1" },
+      { min: 35, max: 100, creature: "Wyvern", number: "1" }
+    ],
+    giant: [
+      { min: 1, max: 2, creature: "Cloud Giant", number: "1" },
+      { min: 3, max: 4, creature: "Ettin", number: "1d2" },
+      { min: 5, max: 6, creature: "Fire Giant", number: "1d2" },
+      { min: 7, max: 8, creature: "Frost Giant", number: "1d2" },
+      { min: 9, max: 95, creature: "Hill Giant", number: "1d4" },
+      { min: 96, max: 98, creature: "Stone Giant", number: "1" },
+      { min: 99, max: 99, creature: "Storm Giant", number: "1" },
+      { min: 100, max: 100, creature: "Titan", number: "1" }
+    ],
+    humanoid: [
+      { min: 1, max: 5, creature: "Gnoll", number: "2d6" },
+      { min: 6, max: 10, creature: "Goblin", number: "3d6" },
+      { min: 11, max: 15, creature: "Hobgoblin", number: "2d6" },
+      { min: 16, max: 100, creature: "Orc", number: "3d6" }
+    ],
+    men: [
+      { min: 1, max: 5, creature: "Bandit", number: "2d6" },
+      { min: 6, max: 7, creature: "Berserker", number: "1d6" },
+      { min: 8, max: 10, creature: "Brigand", number: "2d6" },
+      { min: 23, max: 60, creature: "Merchant", number: "1d6" },
+      { min: 61, max: 90, creature: "Nomad", number: "3d10" },
+      { min: 91, max: 95, creature: "Pilgrim", number: "2d6" },
+      { min: 96, max: 100, creature: "Tribesman", number: "3d10" }
+    ],
+    snake: [
+      { min: 1, max: 10, creature: "Amphisbaena", number: "1" },
+      { min: 11, max: 80, creature: "Poisonous Snake", number: "1d3" },
+      { min: 81, max: 100, creature: "Spitting Snake", number: "1" }
+    ]
+    // Add other subtables as needed
+  };
+  
+  const subtable = subtables[subtableName];
+  if (!subtable) {
+    return { creature: "Unknown (subtable not found)" };
+  }
+  
+  for (const entry of subtable) {
+    if (roll >= entry.min && roll <= entry.max) {
+      return entry;
+    }
+  }
+  
+  return { creature: "Unknown (entry not found in subtable)" };
 }
 
 /**
  * Roll a dungeon encounter.
  */
+// Replace the existing _rollDungeonEncounter method
+
 static _rollDungeonEncounter(options) {
   const dungeonLevel = options.dungeonLevel || 1;
-  const monsterLevel = Math.min(Math.max(1, dungeonLevel + Math.floor(Math.random() * 3) - 1), 9);
-  const monsterRoll = Math.floor(Math.random() * 20) + 1;
   
-  // Mock dungeon monster tables
-  const monsterTables = {
-    1: [
-      { min: 1, max: 4, monster: "Kobolds", number: "2d6" },
-      { min: 5, max: 8, monster: "Goblins", number: "1d6+1" },
-      { min: 9, max: 12, monster: "Skeletons", number: "1d6" },
-      { min: 13, max: 16, monster: "Giant Rats", number: "2d6" },
-      { min: 17, max: 20, monster: "Stirges", number: "1d8" }
-    ],
-    2: [
-      { min: 1, max: 4, monster: "Hobgoblins", number: "1d4+1" },
-      { min: 5, max: 8, monster: "Zombies", number: "1d6" },
-      { min: 9, max: 12, monster: "Orcs", number: "1d6+2" },
-      { min: 13, max: 16, monster: "Giant Spiders", number: "1d3" },
-      { min: 17, max: 20, monster: "Gnolls", number: "1d4" }
-    ],
-    // Higher level tables would continue...
-    9: [
-      { min: 1, max: 4, monster: "Stone Giants", number: "1d2" },
-      { min: 5, max: 8, monster: "Hydra (7 heads)", number: "1" },
-      { min: 9, max: 12, monster: "Cloud Giant", number: "1" },
-      { min: 13, max: 16, monster: "Young Adult Dragon", number: "1" },
-      { min: 17, max: 20, monster: "Purple Worm", number: "1" }
-    ]
-  };
+  // Use a normalized dungeon level for the matrix lookup
+  let matrixLevel = dungeonLevel;
+  if (dungeonLevel > 16) {
+    matrixLevel = 16;
+  } else if (dungeonLevel > 13) {
+    matrixLevel = 14;
+  } else if (dungeonLevel > 11) {
+    matrixLevel = 12;
+  } else if (dungeonLevel > 9) {
+    matrixLevel = 10;
+  } else if (dungeonLevel > 7) {
+    matrixLevel = 8;
+  } else if (dungeonLevel > 5) {
+    matrixLevel = 6;
+  } else if (dungeonLevel > 3) {
+    matrixLevel = 4;
+  } else if (dungeonLevel > 1) {
+    matrixLevel = 2;
+  }
   
-  // Fallback to level 1 if the specific level isn't defined
-  const table = monsterTables[monsterLevel] || monsterTables[1];
-  let monster = "Unknown";
-  let numberRoll = "1";
+  // Get the monster level matrix for this dungeon level
+  const levelMatrix = DMG_DUNGEON_MONSTER_LEVEL_MATRIX[matrixLevel];
+  if (!levelMatrix) {
+    return { result: "Error: Unknown dungeon level" };
+  }
   
-  for (const entry of table) {
-    if (monsterRoll >= entry.min && monsterRoll <= entry.max) {
-      monster = entry.monster;
-      numberRoll = entry.number;
+  // Roll to determine monster level
+  const levelRoll = Math.floor(Math.random() * 20) + 1;
+  let monsterLevel = 1; // Default
+  
+  for (const entry of levelMatrix) {
+    if (levelRoll >= entry.min && levelRoll <= entry.max) {
+      monsterLevel = entry.monsterLevel;
       break;
     }
   }
   
-  // Roll for number of monsters
-  let number = 1;
-  if (numberRoll.includes("d")) {
-    const parts = numberRoll.split("d");
-    const dice = parseInt(parts[0]) || 1;
-    const sides = parseInt(parts[1]) || 6;
-    number = 0;
-    for (let i = 0; i < dice; i++) {
-      number += Math.floor(Math.random() * sides) + 1;
-    }
-    
-    // Add any modifier
-    if (parts[1].includes("+")) {
-      const modParts = parts[1].split("+");
-      number += parseInt(modParts[1]) || 0;
-    }
-  } else {
-    number = parseInt(numberRoll) || 1;
+  // Get the monster table for this level
+  const monsterTable = DMG_MONSTER_LEVEL_TABLES[monsterLevel];
+  if (!monsterTable) {
+    return { 
+      result: "Encounter",
+      monsterLevel: monsterLevel,
+      levelRoll: levelRoll,
+      monster: `Monster Level ${monsterLevel} (Table not implemented yet)` 
+    };
   }
   
-  // Adjust number based on dungeon level vs monster level
+  // Roll for the specific monster
+  const monsterRoll = Math.floor(Math.random() * 100) + 1;
+  let monster = "Unknown";
+  let numberPattern = "1";
+  let subtable = null;
+  let notes = null;
+  
+  for (const entry of monsterTable) {
+    if (monsterRoll >= entry.min && monsterRoll <= entry.max) {
+      monster = entry.monster;
+      numberPattern = entry.number || "1";
+      subtable = entry.subtable || null;
+      notes = entry.notes || null;
+      break;
+    }
+  }
+  
+  // Handle subtables
+  if (subtable) {
+    if (subtable === "human") {
+      const subtableResult = this._rollOnHumanSubtable();
+      monster = subtableResult.encounter;
+      numberPattern = subtableResult.number || numberPattern;
+      notes = subtableResult.notes || notes;
+      subtable = subtableResult.subtable || null;
+      
+      // Handle nested character subtable
+      if (subtableResult.subtable === "character") {
+        const characterResult = this._generateCharacterEncounter(dungeonLevel);
+        monster = characterResult.encounter;
+        numberPattern = characterResult.number || numberPattern;
+        notes = characterResult.notes || notes;
+      }
+    }
+    // Add other subtable handling as needed
+  }
+  
+  // Roll for number of monsters
+  const number = this._rollNumberFromPattern(numberPattern);
+  
+  // Adjust numbers based on relative dungeon level
   let adjustedNumber = number;
   if (dungeonLevel > monsterLevel) {
-    adjustedNumber = Math.ceil(number * 1.5);
+    // Lesser monsters on lower levels have numbers augmented
+    const levelDifference = dungeonLevel - monsterLevel;
+    adjustedNumber = number * (1 + levelDifference);
   } else if (dungeonLevel < monsterLevel) {
-    adjustedNumber = Math.max(1, Math.floor(number * 0.75));
+    // Greater monsters on higher levels have numbers reduced
+    const levelDifference = monsterLevel - dungeonLevel;
+    adjustedNumber = Math.max(1, number - levelDifference);
   }
   
   return {
     result: "Encounter",
     monsterLevel: monsterLevel,
+    levelRoll: levelRoll,
     monsterRoll: monsterRoll,
     monster: monster,
-    numberRoll: number,
-    adjustedNumber: adjustedNumber
+    number: number,
+    adjustedNumber: adjustedNumber,
+    notes: notes
   };
+}
+
+// Helper method to roll on the Human Subtable
+static _rollOnHumanSubtable() {
+  const roll = Math.floor(Math.random() * 100) + 1;
+  
+  for (const entry of DMG_HUMAN_SUBTABLE) {
+    if (roll >= entry.min && roll <= entry.max) {
+      return entry;
+    }
+  }
+  
+  return { encounter: "Bandit", number: "5-15" }; // Default fallback
+}
+
+// Helper method to generate character encounters
+static _generateCharacterEncounter(dungeonLevel) {
+  // Number of characters in party (2-5)
+  const characterCount = Math.floor(Math.random() * 4) + 2;
+  
+  // Select character classes
+  const partyComposition = [];
+  for (let i = 0; i < characterCount; i++) {
+    const roll = Math.floor(Math.random() * 100) + 1;
+    let characterClass = "Fighter"; // Default
+    
+    for (const entry of DMG_CHARACTER_SUBTABLE) {
+      if (roll >= entry.min && roll <= entry.max) {
+        characterClass = entry.character;
+        break;
+      }
+    }
+    
+    partyComposition.push(characterClass);
+  }
+  
+  // Determine character levels based on dungeon level
+  let characterLevel;
+  if (dungeonLevel <= 4) {
+    characterLevel = dungeonLevel;
+  } else {
+    // 7th-12th level for deeper dungeons
+    characterLevel = Math.floor(Math.random() * 6) + 7;
+    
+    // Adjust based on dungeon level
+    if (characterLevel > dungeonLevel) {
+      characterLevel--;
+    } else if (characterLevel < dungeonLevel) {
+      characterLevel++;
+    }
+    
+    // Cap at 12th level unless very deep
+    if (characterLevel > 12 && dungeonLevel < 16) {
+      characterLevel = 12;
+    }
+  }
+  
+  // Calculate number of men-at-arms or henchmen
+  const otherCount = 9 - characterCount;
+  
+  return {
+    encounter: `Adventuring Party (${characterCount} level ${characterLevel} character${characterCount > 1 ? 's' : ''}, ${otherCount} henchmen/men-at-arms)`,
+    number: `${characterCount + otherCount}`,
+    notes: `Party: ${partyComposition.join(', ')}`
+  };
+}
+
+// Helper method to roll for numbers from a dice pattern like "2d6+1"
+static _rollNumberFromPattern(pattern) {
+  if (!pattern) return 1;
+  
+  if (!pattern.includes('d')) {
+    return parseInt(pattern) || 1;
+  }
+  
+  let modifier = 0;
+  let dicePattern = pattern;
+  
+  // Extract modifier if present
+  if (pattern.includes('+')) {
+    const parts = pattern.split('+');
+    dicePattern = parts[0];
+    modifier = parseInt(parts[1]) || 0;
+  }
+  
+  // Split into dice count and sides
+  const [diceCount, diceSides] = dicePattern.split('d').map(n => parseInt(n));
+  
+  // Roll the dice
+  let total = 0;
+  for (let i = 0; i < diceCount; i++) {
+    total += Math.floor(Math.random() * diceSides) + 1;
+  }
+  
+  // Add modifier
+  return total + modifier;
 }
 
 /**
  * Roll a regional encounter specific to Greyhawk.
  */
+// Replace the existing _rollRegionalEncounter method with this one
+
 static _rollRegionalEncounter(options) {
-  const roll = Math.floor(Math.random() * 100) + 1;
   const region = options.specificRegion || 'greyhawk';
-  let encounter = "No specific encounter";
+  const roll = Math.floor(Math.random() * 100) + 1;
   
-  // This would be a more complex table based on the specific region
-  // Simple mock example here
-  if (roll <= 30) {
-    encounter = "Local inhabitants";
-  } else if (roll <= 60) {
-    encounter = "Wilderness creature";
-  } else if (roll <= 85) {
-    encounter = "Bandits or raiders";
-  } else {
-    encounter = "Special encounter";
+  console.log(`Rolling regional encounter for ${region} with roll ${roll}`);
+  
+  // Try political regions first
+  let table = GREYHAWK_REGIONAL_TABLES[region];
+  
+  // If not found in political regions, try geographical areas
+  if (!table) {
+    table = GREYHAWK_GEOGRAPHICAL_TABLES[region];
   }
+  
+  // If still not found, use a default table
+  if (!table) {
+    console.warn(`No encounter table found for region: ${region}, using Greyhawk`);
+    table = GREYHAWK_REGIONAL_TABLES['greyhawk'];
+  }
+  
+  // Find the appropriate entry based on the roll
+  for (const entry of table) {
+    // Handle the special case where max is 0 (indicating 46-00 range)
+    if (entry.max === 0) {
+      if (roll >= entry.min) {
+        // If this result indicates using standard tables
+        if (entry.useStandard) {
+          return this._rollStandardEncounter(options);
+        } else {
+          return {
+            roll: roll,
+            encounter: entry.encounter
+          };
+        }
+      }
+    } 
+    // Normal range check
+    else if (roll >= entry.min && roll <= entry.max) {
+      return {
+        roll: roll,
+        encounter: entry.encounter
+      };
+    }
+  }
+  
+  // Fallback in case something goes wrong
+  return {
+    roll: roll,
+    encounter: "No specific encounter found"
+  };
+}
+
+// Add a new method for handling standard encounters from DMG Appendix C
+static _rollStandardEncounter(options) {
+  // For now, this is a placeholder that will be implemented later
+  // It should eventually use the DMG Appendix C tables based on terrain
+  const terrain = options.terrain || 'plain';
+  const roll = Math.floor(Math.random() * 100) + 1;
   
   return {
     roll: roll,
-    encounter: encounter
+    encounter: `Standard DMG encounter for ${terrain} terrain (roll: ${roll})`,
+    notes: "Using standard DMG tables - not fully implemented yet"
   };
 }
 
@@ -1042,27 +1591,52 @@ class GreyhawkEncounterRoller extends Application {
     }
   }
   
-  async _updateRegionList(regionType, html) {
-    const regionsSelect = html.find('select[name="region"]');
-    regionsSelect.empty();
-    let regions = [];
-    if (regionType === 'political') {
-      regions = [
-        { id: 'almor', label: 'Almor' },
-        // ... rest of the regions remain the same
-      ];
-    } else if (regionType === 'geographical_forest') {
-      regions = [
-        { id: 'adri_forest', label: 'Adri Forest' },
-        // ... rest of the regions remain the same
-      ];
-    }
-    // Other region types remain the same
-    
-    for (const region of regions) {
-      regionsSelect.append(`<option value="${region.id}">${region.label}</option>`);
-    }
+  // Modify the _updateRegionList method to use our data
+
+async _updateRegionList(regionType, html) {
+  const regionsSelect = html.find('select[name="region"]');
+  regionsSelect.empty();
+  let regions = [];
+  
+  // Get all political regions
+  if (regionType === 'political') {
+    regions = Object.keys(GREYHAWK_REGIONAL_TABLES).map(id => {
+      // Convert the key to a display label (e.g., "bone_march" -> "Bone March")
+      const label = id.split('_')
+                      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                      .join(' ');
+      return { id, label };
+    });
+  } 
+  // Get forest regions
+  else if (regionType === 'geographical_forest') {
+    regions = Object.keys(GREYHAWK_GEOGRAPHICAL_TABLES)
+      .filter(id => id.includes('forest'))
+      .map(id => {
+        const label = id.split('_')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+        return { id, label };
+      });
   }
+  // Get mountain regions
+  else if (regionType === 'geographical_mountain') {
+    regions = Object.keys(GREYHAWK_GEOGRAPHICAL_TABLES)
+      .filter(id => id.includes('mountains') || id.includes('peaks') || id.includes('range'))
+      .map(id => {
+        const label = id.split('_')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+        return { id, label };
+      });
+  }
+  // Other geographical types would follow the same pattern
+  
+  // Add the regions to the select element
+  for (const region of regions) {
+    regionsSelect.append(`<option value="${region.id}">${region.label}</option>`);
+  }
+}
   
   async _rollEncounter(html) {
     try {
