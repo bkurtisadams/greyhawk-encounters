@@ -1,9 +1,13 @@
 Directory tree of C:\Users\grayc\OneDrive\Desktop\Foundry12.330\data\Data\modules\greyhawk-encounters (excluding hidden files and folders) 
  
 data
+  dmg-airborne-tables.js
+  dmg-city-tables.js
   dmg-dungeon-tables.js
   dmg-monster-tables.js
+  dmg-waterborne-tables.js
   greyhawk-geography.js
+  greyhawk-patrols.js
   greyhawk-regions.js
   subtables.js
 scripts
@@ -14,10 +18,11 @@ styles
   greyhawk-encounters.css
 templates
   encounter-roller.hbs
+utils
+  utility.js
 data
 greyhawk-readme.txt
 list.txt
 listdir.bat
 module.json
 README.md
-

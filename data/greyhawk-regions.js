@@ -1,3 +1,5 @@
+import { rollNumberFromPattern } from '../utils/utility.js';
+
 // Exports political region encounter tables for World of Greyhawk
 export const GREYHAWK_REGIONAL_TABLES = {
     // Political Regions

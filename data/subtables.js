@@ -1,6 +1,7 @@
 // data/subtables.js
-// Exports subtables for encounter tables
+import { rollNumberFromPattern } from '../utils/utility.js';
 
+// Exports subtables for encounter tables
 export const DEMI_HUMAN_SUBTABLE = {
     "plain": [
       { min: 1, max: 5, encounter: "Dwarf" },

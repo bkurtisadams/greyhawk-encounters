@@ -5,6 +5,14 @@ import { GREYHAWK_GEOGRAPHICAL_TABLES } from '../data/greyhawk-geography.js';
 import DMG_TABLES from '../data/dmg-monster-tables.js'; // This imports all the DMG tables
 import SUBTABLES from '../data/subtables.js'; // Import the subtables if needed
 import { rollPatrolEncounter, GREYHAWK_PATROL_TYPES } from '../data/greyhawk-patrols.js';
+//import { rollOnOutdoorTable } from '../data/dmg-outdoor-tables.js';
+//import TEMPERATE_TABLES from '../data/dmg-monster-tables.js';
+import { rollOnTemperateTable } from '../data/dmg-monster-tables.js';
+import { rollWaterborneEncounter } from '../data/dmg-waterborne-tables.js';
+import { rollAirborneEncounter } from '../data/dmg-airborne-tables.js';
+import { rollCityEncounter } from '../data/dmg-city-tables.js';
+import { rollNumberFromPattern } from '../utils/utility.js';
+import { rollPlanarEncounter } from '../data/dmg-planar-tables.js';
 
 // Main module class
 export class GreyhawkEncounters {
@@ -290,15 +298,25 @@ export class GreyhawkEncounters {
       case 'dungeon':
         return this._rollDungeonEncounter(options);
       case 'underwater':
-        return this._rollUnderwaterEncounter(options);
+      case 'waterborne':
+        return this._rollWaterborneEncounter(options);
       case 'airborne':
         return this._rollAirborneEncounter(options);
+      case 'city':
+      case 'town':
+        return this._rollCityEncounter(options);
       case 'astral':
       case 'ethereal':
         return this._rollPlanarEncounter(options);
       default:
         return { result: "No encounter type specified" };
     }
+  }
+
+  static _rollPlanarEncounter(options) {
+    // This is the function being called by your switch statement
+    const planeType = options.encounterType.toLowerCase(); // 'astral' or 'ethereal'
+    return rollPlanarEncounter(planeType, options);
   }
 
   /**
@@ -522,6 +540,22 @@ export class GreyhawkEncounters {
 
   // Add new method for rolling on DMG outdoor encounter tables
   static _rollDMGOutdoorEncounter(terrain, population, options = {}) {
+    // Determine climate based on options or default to temperate
+    const climate = options.climate || 'temperate';
+    
+    // Use the appropriate outdoor table based on climate
+    if (['arctic', 'subarctic'].includes(climate)) {
+      try {
+        const result = rollOnOutdoorTable(climate, terrain, options);
+        if (result) {
+          return result;
+        }
+      } catch (error) {
+        console.error(`Error rolling on ${climate} table:`, error);
+        // Fall back to simplified tables if there's an error
+      }
+    }
+    
     // Convert terrain to match DMG tables
     let dmgTerrain = terrain;
     
@@ -537,12 +571,36 @@ export class GreyhawkEncounters {
       default: dmgTerrain = 'plain'; break;
     }
     
-    // Roll for creature type based on terrain
+    // Determine if this is inhabited or uninhabited for table selection
+    const isInhabited = population !== 'uninhabited';
+    
+    // Roll for creature type based on terrain and population
     const roll = Math.floor(Math.random() * 100) + 1;
     
-    // For now, we'll use simplified tables based on the DMG
-    // In a full implementation, you'd use the complete tables from Appendix C
-    const encounterTable = this._getDMGTerrainEncounterTable(dmgTerrain, population);
+    // Select appropriate table based on climate
+    let encounterTable;
+    if (climate === 'temperate' || climate === 'subtropical') {
+      if (isInhabited) {
+        // Use inhabited area tables
+        encounterTable = this._getDMGInhabitedAreaTable(dmgTerrain);
+      } else {
+        // Use wilderness area tables
+        encounterTable = this._getDMGWildernessTable(dmgTerrain);
+      }
+    } else {
+      // For other climates, use the basic table for now
+      encounterTable = this._getDMGTerrainEncounterTable(dmgTerrain, population);
+    }
+    
+    if (!encounterTable || encounterTable.length === 0) {
+      console.warn(`No encounter table found for terrain: ${dmgTerrain}, population: ${population}, climate: ${climate}`);
+      return { 
+        result: "No suitable encounter table found",
+        climate: climate,
+        terrain: dmgTerrain,
+        population: population
+      };
+    }
     
     let encounter = null;
     let subtableNeeded = null;
@@ -575,123 +633,169 @@ export class GreyhawkEncounters {
         encounter: encounter,
         specialResult: subtableResult.creature,
         number: this._rollNumberFromPattern(subtableResult.number || "1d6"),
-        subtableRoll: subtableRoll
+        subtableRoll: subtableRoll,
+        climate: climate,
+        terrain: dmgTerrain
       };
     }
     
     // Get number pattern and roll for number
     const numberPattern = encounter.number || "1d6";
-    const number = this._rollNumberFromPattern(numberPattern);
+    const number = rollNumberFromPattern(numberPattern);
+    
+    // Check if creature is airborne (only for original table)
+    const isAirborne = encounter.isAirborne && Math.random() < 0.75;
     
     return {
       result: "Encounter",
       typeRoll: roll,
       encounter: encounter.name || encounter,
-      number: number
+      number: number,
+      climate: climate,
+      terrain: dmgTerrain,
+      isAirborne: isAirborne,
+      notes: isAirborne ? "Encountered while airborne" : ""
     };
+  }
+
+    /**
+   * Roll a waterborne encounter.
+   */
+  static _rollWaterborneEncounter(options) {
+    const waterType = options.waterType || 'coastal';
+    return rollWaterborneEncounter(waterType, options);
+  }
+
+  /**
+   * Roll an airborne encounter.
+   */
+  static _rollAirborneEncounter(options) {
+    // Use current climate if available, otherwise default to temperate
+    const climate = options.climate || 'temperate';
+    return rollAirborneEncounter(climate, options);
+  }
+
+  /**
+   * Roll a city/town encounter.
+   */
+  static _rollCityEncounter(options) {
+    const citySize = options.citySize || 'town';
+    return rollCityEncounter(citySize, options);
+  }
+  
+  static _getDMGInhabitedAreaTable(terrain) {
+    // Placeholder for inhabited area tables
+    // Will be implemented in the future
+    return this._getDMGTerrainEncounterTable(terrain, 'moderate');
+  }
+  
+  static _getDMGWildernessTable(terrain) {
+    // Placeholder for wilderness area tables
+    // Will be implemented in the future
+    return this._getDMGTerrainEncounterTable(terrain, 'uninhabited');
   }
 
   // Helper to get terrain-specific encounter tables from DMG Appendix C
   static _getDMGTerrainEncounterTable(terrain, population) {
-    // For now, we'll return simplified tables
-    // In a full implementation, you would use the complete DMG tables
-    
-    // Population affects which table to use
-    const isInhabited = population !== 'uninhabited';
-    
-    // This is a simplified version of the temperate and sub-tropical DMG tables
-    const tables = {
-      plain: [
-        { min: 1, max: 2, creature: { name: "Ant, giant", number: "1-4" } },
-        { min: 3, max: 9, creature: { name: "Bull/Cattle, wild", number: "3d6" } },
-        { min: 10, max: 10, creature: { name: "Demi-human", subtable: "demi_human", number: "2d6" } },
-        { min: 11, max: 12, creature: { name: "Dog, wild", number: "2d4" } },
-        { min: 13, max: 14, creature: { name: "Dragon", subtable: "dragon", number: "1" } },
-        { min: 15, max: 15, creature: { name: "Eagle, giant", number: "1d3" } },
-        { min: 17, max: 18, creature: { name: "Giant", subtable: "giant", number: "1d2" } },
-        { min: 19, max: 19, creature: { name: "Griffon", number: "1d4" } },
-        { min: 20, max: 25, creature: { name: "Herd animal", number: "3d10" } },
-        { min: 31, max: 33, creature: { name: "Humanoid", subtable: "humanoid", number: "2d6" } },
-        { min: 51, max: 70, creature: { name: "Men", subtable: "men", number: "3d6" } },
-        { min: 78, max: 78, creature: { name: "Snake", subtable: "snake", number: "1" } },
-        { min: 88, max: 97, creature: { name: "Wolf", number: "2d6" } },
-        { min: 98, max: 100, creature: { name: "Wolf, worg", number: "1d4+1" } }
-      ],
-      // Add other terrain types similarly
-    };
-    
-    return tables[terrain] || tables.plain;
-  }
+  // For now, we'll return simplified tables
+  // In a full implementation, you would use the complete DMG tables
+  
+  // Population affects which table to use
+  const isInhabited = population !== 'uninhabited';
+  
+  // This is a simplified version of the temperate and sub-tropical DMG tables
+  const tables = {
+    plain: [
+      { min: 1, max: 2, creature: { name: "Ant, giant", number: "1-4" } },
+      { min: 3, max: 9, creature: { name: "Bull/Cattle, wild", number: "3d6" } },
+      { min: 10, max: 10, creature: { name: "Demi-human", subtable: "demi_human", number: "2d6" } },
+      { min: 11, max: 12, creature: { name: "Dog, wild", number: "2d4" } },
+      { min: 13, max: 14, creature: { name: "Dragon", subtable: "dragon", number: "1" } },
+      { min: 15, max: 15, creature: { name: "Eagle, giant", number: "1d3" } },
+      { min: 17, max: 18, creature: { name: "Giant", subtable: "giant", number: "1d2" } },
+      { min: 19, max: 19, creature: { name: "Griffon", number: "1d4" } },
+      { min: 20, max: 25, creature: { name: "Herd animal", number: "3d10" } },
+      { min: 31, max: 33, creature: { name: "Humanoid", subtable: "humanoid", number: "2d6" } },
+      { min: 51, max: 70, creature: { name: "Men", subtable: "men", number: "3d6" } },
+      { min: 78, max: 78, creature: { name: "Snake", subtable: "snake", number: "1" } },
+      { min: 88, max: 97, creature: { name: "Wolf", number: "2d6" } },
+      { min: 98, max: 100, creature: { name: "Wolf, worg", number: "1d4+1" } }
+    ],
+    // Add other terrain types similarly
+  };
+  
+  return tables[terrain] || tables.plain;
+}
 
-  // Helper to roll on creature subtables
-  static _rollOnSubtable(subtableName, roll) {
-    // Define subtables from DMG Appendix C
-    const subtables = {
-      demi_human: [
-        { min: 1, max: 5, creature: "Dwarf", number: "2d6" },
-        { min: 6, max: 70, creature: "Elf", number: "2d6" },
-        { min: 71, max: 80, creature: "Gnome", number: "2d6" },
-        { min: 81, max: 100, creature: "Halfling", number: "3d6" }
-      ],
-      dragon: [
-        { min: 1, max: 2, creature: "Black Dragon", number: "1" },
-        { min: 3, max: 4, creature: "Blue Dragon", number: "1" },
-        { min: 5, max: 6, creature: "Brass Dragon", number: "1" },
-        { min: 7, max: 8, creature: "Bronze Dragon", number: "1" },
-        { min: 9, max: 10, creature: "Chimera", number: "1" },
-        { min: 11, max: 12, creature: "Copper Dragon", number: "1" },
-        { min: 13, max: 28, creature: "Gold Dragon", number: "1" },
-        { min: 29, max: 30, creature: "Green Dragon", number: "1" },
-        { min: 31, max: 32, creature: "Red Dragon", number: "1" },
-        { min: 33, max: 34, creature: "White Dragon", number: "1" },
-        { min: 35, max: 100, creature: "Wyvern", number: "1" }
-      ],
-      giant: [
-        { min: 1, max: 2, creature: "Cloud Giant", number: "1" },
-        { min: 3, max: 4, creature: "Ettin", number: "1d2" },
-        { min: 5, max: 6, creature: "Fire Giant", number: "1d2" },
-        { min: 7, max: 8, creature: "Frost Giant", number: "1d2" },
-        { min: 9, max: 95, creature: "Hill Giant", number: "1d4" },
-        { min: 96, max: 98, creature: "Stone Giant", number: "1" },
-        { min: 99, max: 99, creature: "Storm Giant", number: "1" },
-        { min: 100, max: 100, creature: "Titan", number: "1" }
-      ],
-      humanoid: [
-        { min: 1, max: 5, creature: "Gnoll", number: "2d6" },
-        { min: 6, max: 10, creature: "Goblin", number: "3d6" },
-        { min: 11, max: 15, creature: "Hobgoblin", number: "2d6" },
-        { min: 16, max: 100, creature: "Orc", number: "3d6" }
-      ],
-      men: [
-        { min: 1, max: 5, creature: "Bandit", number: "2d6" },
-        { min: 6, max: 7, creature: "Berserker", number: "1d6" },
-        { min: 8, max: 10, creature: "Brigand", number: "2d6" },
-        { min: 23, max: 60, creature: "Merchant", number: "1d6" },
-        { min: 61, max: 90, creature: "Nomad", number: "3d10" },
-        { min: 91, max: 95, creature: "Pilgrim", number: "2d6" },
-        { min: 96, max: 100, creature: "Tribesman", number: "3d10" }
-      ],
-      snake: [
-        { min: 1, max: 10, creature: "Amphisbaena", number: "1" },
-        { min: 11, max: 80, creature: "Poisonous Snake", number: "1d3" },
-        { min: 81, max: 100, creature: "Spitting Snake", number: "1" }
-      ]
-      // Add other subtables as needed
-    };
-    
-    const subtable = subtables[subtableName];
-    if (!subtable) {
-      return { creature: "Unknown (subtable not found)" };
-    }
-    
-    for (const entry of subtable) {
-      if (roll >= entry.min && roll <= entry.max) {
-        return entry;
-      }
-    }
-    
-    return { creature: "Unknown (entry not found in subtable)" };
+// Helper to roll on creature subtables
+static _rollOnSubtable(subtableName, roll) {
+  // Define subtables from DMG Appendix C
+  const subtables = {
+    demi_human: [
+      { min: 1, max: 5, creature: "Dwarf", number: "2d6" },
+      { min: 6, max: 70, creature: "Elf", number: "2d6" },
+      { min: 71, max: 80, creature: "Gnome", number: "2d6" },
+      { min: 81, max: 100, creature: "Halfling", number: "3d6" }
+    ],
+    dragon: [
+      { min: 1, max: 2, creature: "Black Dragon", number: "1" },
+      { min: 3, max: 4, creature: "Blue Dragon", number: "1" },
+      { min: 5, max: 6, creature: "Brass Dragon", number: "1" },
+      { min: 7, max: 8, creature: "Bronze Dragon", number: "1" },
+      { min: 9, max: 10, creature: "Chimera", number: "1" },
+      { min: 11, max: 12, creature: "Copper Dragon", number: "1" },
+      { min: 13, max: 28, creature: "Gold Dragon", number: "1" },
+      { min: 29, max: 30, creature: "Green Dragon", number: "1" },
+      { min: 31, max: 32, creature: "Red Dragon", number: "1" },
+      { min: 33, max: 34, creature: "White Dragon", number: "1" },
+      { min: 35, max: 100, creature: "Wyvern", number: "1" }
+    ],
+    giant: [
+      { min: 1, max: 2, creature: "Cloud Giant", number: "1" },
+      { min: 3, max: 4, creature: "Ettin", number: "1d2" },
+      { min: 5, max: 6, creature: "Fire Giant", number: "1d2" },
+      { min: 7, max: 8, creature: "Frost Giant", number: "1d2" },
+      { min: 9, max: 95, creature: "Hill Giant", number: "1d4" },
+      { min: 96, max: 98, creature: "Stone Giant", number: "1" },
+      { min: 99, max: 99, creature: "Storm Giant", number: "1" },
+      { min: 100, max: 100, creature: "Titan", number: "1" }
+    ],
+    humanoid: [
+      { min: 1, max: 5, creature: "Gnoll", number: "2d6" },
+      { min: 6, max: 10, creature: "Goblin", number: "3d6" },
+      { min: 11, max: 15, creature: "Hobgoblin", number: "2d6" },
+      { min: 16, max: 100, creature: "Orc", number: "3d6" }
+    ],
+    men: [
+      { min: 1, max: 5, creature: "Bandit", number: "2d6" },
+      { min: 6, max: 7, creature: "Berserker", number: "1d6" },
+      { min: 8, max: 10, creature: "Brigand", number: "2d6" },
+      { min: 23, max: 60, creature: "Merchant", number: "1d6" },
+      { min: 61, max: 90, creature: "Nomad", number: "3d10" },
+      { min: 91, max: 95, creature: "Pilgrim", number: "2d6" },
+      { min: 96, max: 100, creature: "Tribesman", number: "3d10" }
+    ],
+    snake: [
+      { min: 1, max: 10, creature: "Amphisbaena", number: "1" },
+      { min: 11, max: 80, creature: "Poisonous Snake", number: "1d3" },
+      { min: 81, max: 100, creature: "Spitting Snake", number: "1" }
+    ]
+    // Add other subtables as needed
+  };
+  
+  const subtable = subtables[subtableName];
+  if (!subtable) {
+    return { creature: "Unknown (subtable not found)" };
   }
+  
+  for (const entry of subtable) {
+    if (roll >= entry.min && roll <= entry.max) {
+      return entry;
+    }
+  }
+  
+  return { creature: "Unknown (entry not found in subtable)" };
+}
 
   /**
    * Roll a dungeon encounter.
@@ -785,7 +889,7 @@ export class GreyhawkEncounters {
     }
     
     // Roll for number of monsters
-    const number = this._rollNumberFromPattern(numberPattern);
+    const number = rollNumberFromPattern(numberPattern);
     
     // Adjust numbers based on relative dungeon level
     let adjustedNumber = number;
@@ -874,42 +978,6 @@ export class GreyhawkEncounters {
       number: `${characterCount + otherCount}`,
       notes: `Party: ${partyComposition.join(', ')}`
     };
-  }
-
-  // Helper method to roll for numbers from a dice pattern like "2d6+1"
-  static _rollNumberFromPattern(pattern) {
-    if (!pattern) return 1;
-    
-    if (!pattern.includes('d')) {
-      // Handle ranges like "1-4"
-      if (pattern.includes('-')) {
-        const [min, max] = pattern.split('-').map(n => parseInt(n));
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-      }
-      return parseInt(pattern) || 1;
-    }
-    
-    let modifier = 0;
-    let dicePattern = pattern;
-    
-    // Extract modifier if present
-    if (pattern.includes('+')) {
-      const parts = pattern.split('+');
-      dicePattern = parts[0];
-      modifier = parseInt(parts[1]) || 0;
-    }
-    
-    // Split into dice count and sides
-    const [diceCount, diceSides] = dicePattern.split('d').map(n => parseInt(n));
-    
-    // Roll the dice
-    let total = 0;
-    for (let i = 0; i < diceCount; i++) {
-      total += Math.floor(Math.random() * diceSides) + 1;
-    }
-    
-    // Add modifier
-    return total + modifier;
   }
 
   /**

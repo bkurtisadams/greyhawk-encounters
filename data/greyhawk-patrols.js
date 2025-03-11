@@ -1,4 +1,5 @@
 // data/greyhawk-patrols.js
+import { rollNumberFromPattern } from '../utils/utility.js';
 // This file contains the patrol encounter tables for World of Greyhawk
 
 export const GREYHAWK_PATROL_TYPES = {

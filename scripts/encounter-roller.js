@@ -185,28 +185,41 @@ export class GreyhawkEncounterRoller extends Application {
 
   _updateDmgOptions(encounterType, html) {
     // Hide all DMG options first
-    html.find('.dmg-outdoor-options').hide();
     html.find('.dmg-dungeon-options').hide();
     html.find('.dmg-underwater-options').hide();
     html.find('.dmg-planar-options').hide();
+    html.find('.dmg-outdoor-options').hide();
+    html.find('.dmg-waterborne-options').hide();
+    html.find('.dmg-airborne-options').hide();
+    html.find('.dmg-city-options').hide();
     
     // Show the appropriate options based on encounter type
     switch (encounterType) {
-      case 'outdoor':
-        html.find('.dmg-outdoor-options').show();
-        break;
-      case 'dungeon':
-        html.find('.dmg-dungeon-options').show();
-        break;
-      case 'underwater':
-        html.find('.dmg-underwater-options').show();
-        break;
-      case 'astral':
-      case 'ethereal':
-        html.find('.dmg-planar-options').show();
-        break;
+        case 'outdoor':
+          html.find('.dmg-outdoor-options').show();
+          break;
+        case 'dungeon':
+          html.find('.dmg-dungeon-options').show();
+          break;
+        case 'underwater':
+          html.find('.dmg-underwater-options').show();
+          break;
+        case 'waterborne':
+          html.find('.dmg-waterborne-options').show();
+          break;
+        case 'city':
+        case 'town':
+          html.find('.dmg-city-options').show();
+          break;
+        case 'airborne':
+          html.find('.dmg-airborne-options').show();
+          break;
+        case 'astral':
+        case 'ethereal':
+          html.find('.dmg-planar-options').show();
+          break;
+      }
     }
-  }
   
   _updateWogOptions(encounterType, html) {
     // Hide all WoG options first
@@ -318,6 +331,23 @@ export class GreyhawkEncounterRoller extends Application {
                 const waterType = html.find('select[name="waterType"]').val() || 'fresh';
                 const depth = html.find('select[name="depth"]').val() || 'shallow';
                 options = { ...options, waterType, depth };
+                break;
+              }
+              case 'waterborne': {
+                const waterType = html.find('select[name="waterType"]').val() || 'coastal';
+                options = { ...options, waterType };
+                break;
+              }
+              case 'city':
+              case 'town': {
+                const citySize = html.find('select[name="citySize"]').val() || 'town';
+                const timeOfDay = html.find('select[name="cityTimeOfDay"]').val() || 'day';
+                options = { ...options, citySize, timeOfDay };
+                break;
+              }
+              case 'airborne': {
+                const climate = html.find('select[name="airborneClimate"]').val() || 'temperate';
+                options = { ...options, climate };
                 break;
               }
             }

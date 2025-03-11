@@ -1,3 +1,4 @@
+import { rollNumberFromPattern } from '../utils/utility.js';
 // Exports geographical area encounter tables for World of Greyhawk
 export const GREYHAWK_GEOGRAPHICAL_TABLES = {
     // Forests
