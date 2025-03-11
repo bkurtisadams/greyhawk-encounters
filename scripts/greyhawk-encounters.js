@@ -188,6 +188,11 @@ export class GreyhawkEncounters {
         break;
       }
       case 'outdoor': {
+        // Add the encounter chance roll information
+        if (result.initialRoll !== undefined) {
+          content += `<p>Encounter Check: ${result.initialRoll} on d${result.dieSize} (needed 1)</p>`;
+      }
+        
         if (result.result === "No encounter" || result.result === "No encounter check needed at this time of day") {
           content += `<p>Terrain: ${options.terrain || 'Unknown'}</p>
                       <p>Population: ${options.population || 'Unknown'}</p>
@@ -211,16 +216,62 @@ export class GreyhawkEncounters {
           if (result.spellcaster) {
             content += `<p>Spellcaster: Level ${result.spellcaster.level || '1'} ${result.spellcaster.class || 'Magic-User'}</p>`;
           }
+        } else if (result.result === "Fortress Encounter") {
+          content += `<p>Terrain: ${options.terrain || 'Unknown'}</p>
+                      <p>Population: ${options.population || 'Unknown'}</p>
+                      <p>Result: Fortress Encounter</p>
+                      <p>Size: ${result.size}</p>
+                      <p>Type: ${result.type}</p>
+                      <p>Inhabitants: ${result.inhabitants}</p>`;
+          
+          // Now add the distance with proper syntax
+          if (result.distanceInMiles) {
+            content += `<p>Distance: ${result.distanceInMiles} miles</p>`;
+          }
+          
+          if (result.details) {
+            if (typeof result.details === 'object') {
+              if (result.details.type) {
+                content += `<p>Type: ${result.details.type}</p>`;
+              }
+              if (result.details.number) {
+                content += `<p>Number: ${result.details.number}</p>`;
+              }
+              if (result.details.leader) {
+                content += `<p>Leader: ${result.details.leader}</p>`;
+              }
+              if (result.details.description) {
+                content += `<p>Description: ${result.details.description}</p>`;
+              } else {
+                content += `<p>Details: ${JSON.stringify(result.details)}</p>`;
+              }
+            } else {
+              content += `<p>Details: ${result.details}</p>`;
+            }
+          }
+          
+          if (result.notes) {
+            content += `<p>Notes: ${result.notes}</p>`;
+          }
         } else if (result.result === "Encounter") {
           content += `<p>Terrain: ${options.terrain || 'Unknown'}</p>
                       <p>Population: ${options.population || 'Unknown'}</p>
                       <p>Time of Day: ${options.timeOfDay || 'Unknown'}</p>
-                      <p>Roll: ${result.typeRoll || 'N/A'}</p>
-                      <p>Encounter: ${result.encounter || 'Unknown Creature'}</p>`;
+                      <p>Table Roll: ${result.typeRoll || 'N/A'}</p>`;
+         
+          if (result.subtableType && result.subtableRoll) {
+            content += `<p>Subtable: ${result.subtableType}</p>
+                        <p>Subtable Roll: ${result.subtableRoll}</p>`;
+          }
+         
+          content += `<p>Encounter: ${result.encounter || 'Unknown Creature'}</p>`;
+         
           if (result.specialResult) {
             content += `<p>Specific Type: ${result.specialResult}</p>`;
           }
+         
           content += `<p>Number: ${result.number || '1'}</p>`;
+         
           if (result.notes) {
             content += `<p>Notes: ${result.notes}</p>`;
           }
@@ -230,7 +281,6 @@ export class GreyhawkEncounters {
                       <p>Result: ${result.result || 'Unknown'}</p>`;
         }
         break;
-        
       }
       case 'dungeon': {
         content += `<p>Dungeon Level: ${options.dungeonLevel || '1'}</p>
@@ -579,18 +629,37 @@ export class GreyhawkEncounters {
       return { result: "No encounter check needed at this time of day" };
     }
     
-    // Determine base encounter chance
-    let encounterChance = this._getBaseEncounterChance(terrain, population);
-    
-    // Apply modifiers
-    if (options.encounterModifier) {
-      encounterChance *= options.encounterModifier;
+    // Determine die size based on population density
+    let dieSize, checkValue;
+    switch (population) {
+      case 'dense':
+        dieSize = 20; // 1 in 20
+        checkValue = 1;
+        break;
+      case 'moderate':
+        dieSize = 12; // 1 in 12
+        checkValue = 1;
+        break;
+      case 'uninhabited':
+        dieSize = 10; // 1 in 10 
+        checkValue = 1;
+        break;
+      default: 
+        dieSize = 12; // default to moderate
+        checkValue = 1;
     }
     
-    // Check if encounter occurs
-    const roll = Math.random() * 100;
-    if (roll > encounterChance) {
-      return { result: "No encounter" };
+    // Roll for encounter
+    const initialRoll = Math.floor(Math.random() * dieSize) + 1;
+    
+    // Check if encounter occurs (roll a 1 on the appropriate die)
+    if (initialRoll !== checkValue) {
+      return { 
+        result: "No encounter",
+        initialRoll: initialRoll, 
+        dieSize: dieSize,
+        encounterCheck: `Needed ${checkValue} on d${dieSize}`
+      };
     }
     
     // Determine if this is a patrol encounter (for inhabited areas)
@@ -599,13 +668,25 @@ export class GreyhawkEncounters {
     const specialRoll = Math.floor(Math.random() * 20) + 1;
     
     if (isInhabited && specialRoll <= 5) { // 5 in 20 chance (25%)
-      return this.rollPatrolEncounter({ patrolType: population });
+      const patrolResult = await this.rollPatrolEncounter({ patrolType: population });
+      patrolResult.initialRoll = initialRoll;
+      patrolResult.dieSize = dieSize;
+      patrolResult.encounterCheck = `Rolled ${initialRoll} on d${dieSize}`;
+      return patrolResult;
     } else if (!isInhabited && specialRoll === 1) { // 1 in 20 chance (5%)
-      return this._rollFortressEncounter(terrain, options);
+      const fortressResult = await this._rollFortressEncounter(terrain, options);
+      fortressResult.initialRoll = initialRoll;
+      fortressResult.dieSize = dieSize;
+      fortressResult.encounterCheck = `Rolled ${initialRoll} on d${dieSize}`;
+      return fortressResult;
     }
-
+    
     // Roll for standard outdoor encounter
-    return this._rollDMGOutdoorEncounter(terrain, population, options);
+    const encounterResult = await this._rollDMGOutdoorEncounter(terrain, population, options);
+    encounterResult.initialRoll = initialRoll;
+    encounterResult.dieSize = dieSize;
+    encounterResult.encounterCheck = `Rolled ${initialRoll} on d${dieSize}`;
+    return encounterResult;
   }
 
   static _rollFortressEncounter(terrain, options = {}) {
