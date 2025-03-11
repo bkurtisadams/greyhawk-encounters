@@ -593,16 +593,218 @@ export class GreyhawkEncounters {
       return { result: "No encounter" };
     }
     
-    // Determine if this is a patrol encounter
-    const isPatrolled = population !== 'uninhabited';
-    const patrolRoll = Math.random() * 100;
+    // Determine if this is a patrol encounter (for inhabited areas)
+    // or a fortress encounter (for uninhabited areas)
+    const isInhabited = population !== 'uninhabited';
+    const specialRoll = Math.floor(Math.random() * 20) + 1;
     
-    if (isPatrolled && patrolRoll <= 25) { // 25% chance of patrol in patrolled areas
+    if (isInhabited && specialRoll <= 5) { // 5 in 20 chance (25%)
       return this.rollPatrolEncounter({ patrolType: population });
+    } else if (!isInhabited && specialRoll === 1) { // 1 in 20 chance (5%)
+      return this._rollFortressEncounter(terrain, options);
     }
-    
+
     // Roll for standard outdoor encounter
     return this._rollDMGOutdoorEncounter(terrain, population, options);
+  }
+
+  static _rollFortressEncounter(terrain, options = {}) {
+    console.log("Rolling fortress encounter");
+    
+    // Determine castle size and type
+    const sizeRoll = Math.floor(Math.random() * 100) + 1;
+    let size, type;
+    
+    if (sizeRoll <= 10) {
+      size = "Small"; 
+      type = "Small shell keep";
+    } else if (sizeRoll <= 25) {
+      size = "Small"; 
+      type = "Tower";
+    } else if (sizeRoll <= 35) {
+      size = "Small"; 
+      type = "Moat house or friary";
+    } else if (sizeRoll <= 45) {
+      size = "Medium"; 
+      type = "Large shell keep";
+    } else if (sizeRoll <= 65) {
+      size = "Medium"; 
+      type = "Small walled castle with keep";
+    } else if (sizeRoll <= 80) {
+      size = "Medium"; 
+      type = "Medium walled castle with keep";
+    } else if (sizeRoll <= 88) {
+      size = "Large"; 
+      type = "Concentric castle";
+    } else if (sizeRoll <= 95) {
+      size = "Large"; 
+      type = "Large walled castle with keep";
+    } else {
+      size = "Large"; 
+      type = "Fortress complex";
+    }
+    
+    // Determine inhabitants
+    const inhabitantsRoll = Math.floor(Math.random() * 100) + 1;
+    let inhabitants, details;
+    
+    // Select range based on castle size
+    let rangeStart, rangeEnd;
+    switch (size) {
+      case "Small":
+        if (inhabitantsRoll <= 45) {
+          inhabitants = "Totally deserted";
+        } else if (inhabitantsRoll <= 60) {
+          inhabitants = "Deserted with monster";
+          // Roll monster appropriate to the area
+          const monsterResult = this._rollDMGOutdoorEncounter(terrain, 'uninhabited', 
+            {...options, checkForFortress: false}); // Prevent recursion
+          details = monsterResult.encounter;
+        } else if (inhabitantsRoll <= 70) {
+          inhabitants = "Humans";
+          details = this._rollFortressHumans();
+        } else {
+          inhabitants = "Character-types";
+          details = this._rollFortressCharacters();
+        }
+        break;
+        
+      case "Medium":
+        if (inhabitantsRoll <= 30) {
+          inhabitants = "Totally deserted";
+        } else if (inhabitantsRoll <= 50) {
+          inhabitants = "Deserted with monster";
+          // Roll monster appropriate to the area
+          const monsterResult = this._rollDMGOutdoorEncounter(terrain, 'uninhabited', 
+            {...options, checkForFortress: false}); // Prevent recursion
+          details = monsterResult.encounter;
+        } else if (inhabitantsRoll <= 65) {
+          inhabitants = "Humans";
+          details = this._rollFortressHumans();
+        } else {
+          inhabitants = "Character-types";
+          details = this._rollFortressCharacters();
+        }
+        break;
+        
+      case "Large":
+        if (inhabitantsRoll <= 15) {
+          inhabitants = "Totally deserted";
+        } else if (inhabitantsRoll <= 40) {
+          inhabitants = "Deserted with monster";
+          // Roll monster appropriate to the area
+          const monsterResult = this._rollDMGOutdoorEncounter(terrain, 'uninhabited', 
+            {...options, checkForFortress: false}); // Prevent recursion
+          details = monsterResult.encounter;
+        } else if (inhabitantsRoll <= 60) {
+          inhabitants = "Humans";
+          details = this._rollFortressHumans();
+        } else {
+          inhabitants = "Character-types";
+          details = this._rollFortressCharacters();
+        }
+        break;
+    }
+    
+    return {
+      result: "Fortress Encounter",
+      size: size,
+      type: type,
+      inhabitants: inhabitants,
+      details: details,
+      distanceInMiles: (Math.floor(Math.random() * 10) / 2) + 0.5, // 0.5 to 5 miles away
+      notes: "The party is within visual range of this construction."
+    };
+  }
+  
+  // Helper for fortress humans subtable
+  static _rollFortressHumans() {
+    const roll = Math.floor(Math.random() * 100) + 1;
+    
+    if (roll <= 25) {
+      return {
+        type: "Bandits", 
+        number: Math.floor(Math.random() * 40) + 20, // 20-60 bandits is reasonable
+        leader: "Bandit Captain"
+      };
+    } else if (roll <= 85) {
+      return {
+        type: "Brigands",
+        number: Math.floor(Math.random() * 50) + 30, // 30-80 brigands
+        leader: "Brigand Leader"
+      };
+    } else if (roll <= 97) {
+      return {
+        type: "Berserkers",
+        number: Math.floor(Math.random() * 30) + 10, // 10-40 berserkers
+        leader: "Berserker Chief"
+      };
+    } else {
+      return {
+        type: "Dervishes",
+        number: Math.floor(Math.random() * 20) + 10, // 10-30 dervishes
+        leader: "Dervish Fanatic"
+      };
+    }
+  }
+  
+  // Helper for fortress character-types subtable
+  static _rollFortressCharacters() {
+    const roll = Math.floor(Math.random() * 100) + 1;
+    let characterClass, level;
+    
+    if (roll <= 18) {
+      characterClass = "CLERIC";
+      level = Math.floor(Math.random() * 4) + 9; // 9-12
+    } else if (roll <= 20) {
+      characterClass = "Druid";
+      level = Math.floor(Math.random() * 2) + 12; // 12-13
+    } else if (roll <= 65) {
+      characterClass = "FIGHTER";
+      level = Math.floor(Math.random() * 4) + 9; // 9-12
+    } else if (roll <= 66) {
+      characterClass = "Paladin";
+      level = Math.floor(Math.random() * 2) + 9; // 9-10
+    } else if (roll <= 68) {
+      characterClass = "Ranger";
+      level = Math.floor(Math.random() * 4) + 10; // 10-13
+    } else if (roll <= 80) {
+      characterClass = "MAGIC-USER";
+      level = Math.floor(Math.random() * 4) + 11; // 11-14
+    } else if (roll <= 85) {
+      characterClass = "Illusionist";
+      level = Math.floor(Math.random() * 4) + 10; // 10-13
+    } else if (roll <= 93) {
+      characterClass = "THIEF";
+      level = Math.floor(Math.random() * 5) + 10; // 10-14
+    } else if (roll <= 96) {
+      characterClass = "Assassin";
+      level = 14; // Always 14th level
+    } else if (roll <= 99) {
+      characterClass = "MONK";
+      level = Math.floor(Math.random() * 4) + 9; // 9-12
+    } else {
+      characterClass = "BARD";
+      level = 23; // Always 23rd level
+    }
+    
+    // Generate random number of henchmen (2-5)
+    const henchmenCount = Math.floor(Math.random() * 4) + 2;
+    
+    // Create garrison forces based on DMG guidelines
+    const garrison = [
+      {type: "Heavy Horse", count: Math.floor(Math.random() * 4) + 9, equipment: "splint mail & shield, lance, long sword, mace"},
+      {type: "Light Horse", count: Math.floor(Math.random() * 8) + 9, equipment: "studded leather, light crossbow, long sword"},
+      {type: "Men-at-arms (Spear)", count: Math.floor(Math.random() * 12) + 13, equipment: "scale mail, shield, spear, hand axe"},
+      {type: "Men-at-arms (Crossbow)", count: Math.floor(Math.random() * 6) + 7, equipment: "scale mail, heavy crossbow, morning star"}
+    ];
+    
+    return {
+      master: `${characterClass} (Level ${level})`,
+      henchmen: henchmenCount,
+      garrison: garrison,
+      description: `The fortress is controlled by a ${level}th level ${characterClass} with ${henchmenCount} henchmen and a garrison of soldiers.`
+    };
   }
   
   // Helper to determine if encounters should be rolled at certain times
@@ -655,23 +857,10 @@ export class GreyhawkEncounters {
     // Determine climate based on options or default to temperate
     const climate = options.climate || 'temperate';
     
-    // Use the appropriate outdoor table based on climate
-    if (['arctic', 'subarctic'].includes(climate)) {
-      try {
-        const result = rollOnOutdoorTable(climate, terrain, options);
-        if (result) {
-          return result;
-        }
-      } catch (error) {
-        console.error(`Error rolling on ${climate} table:`, error);
-        // Fall back to simplified tables if there's an error
-      }
-    }
-    
     // Convert terrain to match DMG tables
     let dmgTerrain = terrain;
     
-    // Normalize the terrain to match DMG tables
+    // Normalize the terrain to match DMG tables (your existing code is fine)
     switch(terrain) {
       case 'desert': dmgTerrain = 'desert'; break;
       case 'forest': dmgTerrain = 'forest'; break;
@@ -686,27 +875,39 @@ export class GreyhawkEncounters {
     // Determine if this is inhabited or uninhabited for table selection
     const isInhabited = population !== 'uninhabited';
     
+    // Check for fortress encounter in uninhabited areas (1 in 20 chance)
+    if (!isInhabited && options.checkForFortress !== false) {
+      const fortressRoll = Math.floor(Math.random() * 20) + 1;
+      if (fortressRoll === 1) {
+        return this._rollFortressEncounter(dmgTerrain, options);
+      }
+    }
+    
     // Roll for creature type based on terrain and population
     const roll = Math.floor(Math.random() * 100) + 1;
+    console.log(`Rolling ${roll} on d100 for creature type`);
     
     // Select appropriate table based on climate
     let encounterTable;
-    if (climate === 'temperate' || climate === 'subtropical') {
+    if (climate === 'arctic') {
+      encounterTable = DMG_TABLES.ARCTIC_CONDITIONS_TABLE[dmgTerrain];
+    } else if (climate === 'subarctic') {
+      encounterTable = DMG_TABLES.SUBARCTIC_CONDITIONS_TABLE[dmgTerrain];  
+    } else if (climate === 'temperate' || climate === 'subtropical') {
       if (isInhabited) {
-        // Use inhabited area tables
-        encounterTable = this._getDMGInhabitedAreaTable(dmgTerrain);
+        encounterTable = DMG_TABLES.TEMPERATE_INHABITED_TABLES[dmgTerrain];
       } else {
-        // Use wilderness area tables
-        encounterTable = this._getDMGWildernessTable(dmgTerrain);
+        encounterTable = DMG_TABLES.TEMPERATE_UNINHABITED_TABLES[dmgTerrain];
       }
-    } else {
-      // For other climates, use the basic table for now
-      encounterTable = this._getDMGTerrainEncounterTable(dmgTerrain, population);
+    } else if (climate === 'tropical') {
+      // Use tropical tables
+      encounterTable = DMG_TABLES.TROPICAL_UNINHABITED_TABLES[dmgTerrain];
+      // TODO: Add tropical inhabited tables when available
     }
     
     if (!encounterTable || encounterTable.length === 0) {
       console.warn(`No encounter table found for terrain: ${dmgTerrain}, population: ${population}, climate: ${climate}`);
-      return { 
+      return {
         result: "No suitable encounter table found",
         climate: climate,
         terrain: dmgTerrain,
@@ -716,52 +917,115 @@ export class GreyhawkEncounters {
     
     let encounter = null;
     let subtableNeeded = null;
+    let numberPattern = "1d6"; // Default
     
     // Find the encounter in the table
     for (const entry of encounterTable) {
       if (roll >= entry.min && roll <= entry.max) {
-        encounter = entry.creature;
-        subtableNeeded = entry.subtable || null;
+        // Handle different table formats
+        if (typeof entry.creature === 'string') {
+          encounter = entry.creature;
+        } else if (entry.creature && entry.creature.name) {
+          encounter = entry.creature.name;
+        } else if (entry.monster) {
+          encounter = entry.monster;
+        }
+        
+        // Get number pattern
+        numberPattern = entry.number || (entry.creature ? entry.creature.number : null) || "1d6";
+        
+        // Check for subtable
+        subtableNeeded = entry.subtable || (entry.creature ? entry.creature.subtable : null);
+        
         break;
       }
     }
     
     if (!encounter) {
-      return { 
-        result: "Encounter", 
+      return {
+        result: "Encounter",
         typeRoll: roll,
-        encounter: "Unknown Creature" 
+        encounter: "Unknown Creature"
       };
     }
     
     // Handle subtables if needed
     if (subtableNeeded) {
+      console.log(`Rolling on subtable: ${subtableNeeded}`);
       const subtableRoll = Math.floor(Math.random() * 100) + 1;
-      const subtableResult = this._rollOnSubtable(subtableNeeded, subtableRoll);
       
-      return {
+      // Special handling for "men" subtable - check for character encounter
+      if (subtableNeeded === "men") {
+        // 10% chance of character encounter from Men subtable
+        if (subtableRoll >= 11 && subtableRoll <= 20) {
+          console.log("Men subtable resulted in Character encounter");
+          return this._generateCharacterEncounter(1, true); // true indicates wilderness encounter
+        }
+      }
+      
+      // Select the appropriate subtable
+      let subtableSet;
+      if (climate === 'tropical') {
+        subtableSet = {...DMG_TABLES.TEMPERATE_SUBTABLES, ...DMG_TABLES.TROPICAL_SUBTABLES};
+      } else {
+        subtableSet = DMG_TABLES.TEMPERATE_SUBTABLES;
+      }
+      
+      // Handle terrain-specific subtables
+      const subtableResult = this._rollOnSubtable(subtableNeeded, subtableRoll, subtableSet, dmgTerrain);
+      
+      // Apply the subtable result
+      encounter = subtableResult.creature;
+      numberPattern = subtableResult.number || numberPattern;
+      
+      const result = {
         result: "Encounter",
         typeRoll: roll,
         encounter: encounter,
-        specialResult: subtableResult.creature,
-        number: this._rollNumberFromPattern(subtableResult.number || "1d6"),
+        subtableType: subtableNeeded,
         subtableRoll: subtableRoll,
         climate: climate,
         terrain: dmgTerrain
       };
+      
+      // Roll for number of creatures
+      try {
+        result.number = rollNumberFromPattern(numberPattern);
+      } catch (error) {
+        console.error("Error rolling for creature number:", error);
+        result.number = 1;
+      }
+      
+      // Add notes if present
+      if (subtableResult.notes) {
+        result.notes = subtableResult.notes;
+      }
+      
+      return result;
     }
     
-    // Get number pattern and roll for number
-    const numberPattern = encounter.number || "1d6";
-    const number = rollNumberFromPattern(numberPattern);
+    // Handle direct Character encounters (not from subtable)
+    if (encounter === "Character") {
+      console.log("Direct Character encounter from table");
+      return this._generateCharacterEncounter(1, true); // true indicates wilderness encounter
+    }
     
-    // Check if creature is airborne (only for original table)
-    const isAirborne = encounter.isAirborne && Math.random() < 0.75;
+    // Roll for number of creatures
+    let number;
+    try {
+      number = rollNumberFromPattern(numberPattern);
+    } catch (error) {
+      console.error("Error rolling number pattern:", error);
+      number = 1;
+    }
+    
+    // Check if creature is airborne
+    const isAirborne = options.isAirborne || (encounter.isAirborne && Math.random() < 0.75);
     
     return {
       result: "Encounter",
       typeRoll: roll,
-      encounter: encounter.name || encounter,
+      encounter: encounter,
       number: number,
       climate: climate,
       terrain: dmgTerrain,
@@ -1204,7 +1468,50 @@ else if (monster === "Character") {
 
   // Helper method to generate character encounters
   static _generateCharacterEncounter(dungeonLevel) {
-    console.log(`Generating character encounter for dungeon level ${dungeonLevel}`);
+    console.log(`Generating character encounter, dungeon level: ${dungeonLevel}, wilderness: ${isWilderness}`);
+  
+    // For wilderness encounters, use the special note guidelines from the DMG
+    if (isWilderness) {
+      // Number of characters in party (standard adventuring party)
+      const characterCount = Math.floor(Math.random() * 4) + 2; // 2-5
+      
+      // Character levels (7-10 for wilderness)
+      const characterLevel = Math.floor(Math.random() * 4) + 7; // 7-10
+      
+      // Determine if mounted (90% chance)
+      const isMounted = Math.random() < 0.9;
+      
+      // Calculate number of henchmen (approximately half character level)
+      const henchmenCount = 9 - characterCount;
+      const henchmenLevel = Math.ceil(characterLevel / 2);
+      
+      // Generate a simple class distribution for the party
+      const classOptions = ["Fighter", "Magic-User", "Cleric", "Thief"];
+      const partyClasses = [];
+      
+      for (let i = 0; i < characterCount; i++) {
+        const classIndex = Math.floor(Math.random() * classOptions.length);
+        partyClasses.push(classOptions[classIndex]);
+      }
+      
+      // Generate simple mount information if mounted
+      let mountInfo = "";
+      if (isMounted) {
+        const mountTypes = ["light warhorses", "medium warhorses", "heavy warhorses"];
+        const mountType = mountTypes[Math.floor(Math.random() * mountTypes.length)];
+        mountInfo = `Mounted on ${mountType}`;
+      }
+      
+      return {
+        result: "Encounter",
+        encounter: "Character",
+        number: characterCount + henchmenCount,
+        partyInfo: `${characterCount} adventurers (${partyClasses.join(", ")}) - Level ${characterLevel}`,
+        henchmenInfo: `${henchmenCount} henchmen (Level ${henchmenLevel})`,
+        notes: `Wilderness adventuring party. ${mountInfo}. According to DMG, 90% of wilderness character parties are mounted.`,
+        isMounted: isMounted
+      };
+    }
     
     // Number of characters in party (2-5)
     const characterCount = Math.floor(Math.random() * 4) + 2;
