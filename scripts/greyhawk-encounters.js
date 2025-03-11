@@ -507,35 +507,48 @@ export class GreyhawkEncounters {
   }
   
   // Helper to determine if encounters should be rolled at certain times
-  static _shouldRollEncounterForTime(timeOfDay) {
-    const lowActivityTimes = ['predawn', 'midnight'];
-    return !lowActivityTimes.includes(timeOfDay);
+  static _shouldRollEncounterForTime(timeOfDay, terrain, partySize = 0) {
+    // DMG encounter check timing
+    const checkMatrix = {
+      'plain': { 'morning': true, 'noon': false, 'evening': true, 'night': false, 'midnight': true, 'predawn': false },
+      'scrub': { 'morning': true, 'noon': false, 'evening': true, 'night': true, 'midnight': false, 'predawn': true },
+      'forest': { 'morning': true, 'noon': true, 'evening': true, 'night': true, 'midnight': true, 'predawn': true },
+      'desert': { 'morning': true, 'noon': false, 'evening': false, 'night': true, 'midnight': false, 'predawn': true },
+      'hills': { 'morning': false, 'noon': true, 'evening': false, 'night': true, 'midnight': false, 'predawn': true },
+      'mountains': { 'morning': true, 'noon': false, 'evening': false, 'night': true, 'midnight': false, 'predawn': false },
+      'marsh': { 'morning': true, 'noon': true, 'evening': true, 'night': true, 'midnight': true, 'predawn': true }
+    };
+    
+    // Get check status for terrain and time
+    const terrainChecks = checkMatrix[terrain] || checkMatrix['plain'];
+    const shouldCheck = terrainChecks[timeOfDay] || false;
+    
+    // Check unless party is too small during non-check times
+    if (!shouldCheck && partySize > 100) {
+      return true;
+    }
+    
+    return shouldCheck;
   }
   
   // Helper to get base encounter chance based on terrain and population
   static _getBaseEncounterChance(terrain, population) {
-    // Base chances by terrain type
-    const terrainChances = {
-      'plain': 15,
-      'scrub': 20,
-      'forest': 25,
-      'desert': 15,
-      'hills': 20,
-      'mountains': 15,
-      'marsh': 30
+    // Base encounter chances by population density directly from DMG
+    // These are expressed as percentages (1 in X becomes 100/X %)
+    const populationChances = {
+      'dense': 5,     // 1 in 20 = 5% chance
+      'moderate': 8.33, // 1 in 12 = 8.33% chance
+      'uninhabited': 10 // 1 in 10 = 10% chance
     };
     
-    // Population modifiers
-    const populationModifiers = {
-      'uninhabited': 1.5,  // Increased chance in wilderness
-      'moderate': 1.0,     // Standard chance
-      'dense': 0.7         // Reduced chance in densely populated areas
-    };
+    // Get the base chance from population density
+    let baseChance = populationChances[population] || 8.33; // Default to moderate if unknown
     
-    const baseChance = terrainChances[terrain] || 20;
-    const modifier = populationModifiers[population] || 1.0;
+    // Now we need to determine if we should check for encounter at this time/terrain
+    // This would ideally be handled by _shouldRollEncounterForTime, but you can
+    // return the correct base chance from here
     
-    return baseChance * modifier;
+    return baseChance;
   }
 
   // Add new method for rolling on DMG outdoor encounter tables
@@ -984,33 +997,122 @@ static _rollOnSubtable(subtableName, roll) {
    * Check if the party gets lost when traveling.
    */
   static async checkIfLost(terrain) {
-    // Different terrains have different chances of getting lost
+    // DMG exact chances of getting lost
     const lostChances = {
-      'plain': 10,
-      'scrub': 20,
-      'forest': 35,
-      'desert': 30,
-      'hills': 25,
-      'mountains': 40,
-      'marsh': 50
+      'plain': 10,    // 1 in 10
+      'scrub': 30,    // 3 in 10
+      'forest': 70,   // 7 in 10
+      'desert': 40,   // 4 in 10
+      'hills': 20,    // 2 in 10
+      'mountains': 50, // 5 in 10
+      'marsh': 60     // 6 in 10
+    };
+    
+    const directionRanges = {
+      'plain': '60° left or right',
+      'scrub': '60° left or right',
+      'forest': 'any',
+      'desert': '60° left or right',
+      'hills': '60° left or right',
+      'mountains': '120° left or right',
+      'marsh': 'any'
     };
     
     const lostChance = lostChances[terrain] || 20;
     const roll = Math.floor(Math.random() * 100) + 1;
     
     if (roll <= lostChance) {
-      // Determine which direction they're veering
-      const directions = ["North", "Northeast", "East", "Southeast", "South", "Southwest", "West", "Northwest"];
-      const dirRoll = Math.floor(Math.random() * directions.length);
+      // Determine direction based on terrain
+      let direction = "";
+      const dirRange = directionRanges[terrain] || '60° left or right';
+      
+      if (dirRange === 'any') {
+        // Roll for any direction (complex direction determination)
+        const dirRoll = Math.floor(Math.random() * 6) + 1;
+        const directions = ["Right ahead", "Right behind", "Directly behind", "Directly behind", "Left behind", "Left ahead"];
+        direction = directions[dirRoll - 1];
+      } else if (dirRange.includes('120°')) {
+        // Roll for 60° or 120° deviation
+        const leftRight = Math.floor(Math.random() * 6) + 1 <= 3 ? "Left" : "Right";
+        const amount = Math.floor(Math.random() * 6) + 1 <= 3 ? "60°" : "120°";
+        direction = `${leftRight} ${amount}`;
+      } else {
+        // Standard 60° deviation
+        const leftRight = Math.floor(Math.random() * 6) + 1 <= 3 ? "Left" : "Right";
+        direction = `${leftRight} 60°`;
+      }
+      
       return {
         result: "Lost",
-        direction: directions[dirRoll]
+        direction: direction
       };
     } else {
       return {
         result: "Not lost"
       };
     }
+  }
+
+  static _getEncounterDistance(terrain, surpriseValue = 0) {
+    // Base encounter distance is 6d4 (6" to 24")
+    let distance = 0;
+    for (let i = 0; i < 6; i++) {
+      distance += Math.floor(Math.random() * 4) + 1;
+    }
+    
+    // Apply surprise modifier
+    distance -= surpriseValue;
+    
+    // Apply terrain modifiers
+    if (terrain === 'scrub') {
+      // -1 per die on all 3's and 4's
+      for (let i = 0; i < 6; i++) {
+        const dieRoll = Math.floor(Math.random() * 4) + 1;
+        if (dieRoll >= 3) {
+          distance -= 1;
+        }
+      }
+    } else if (terrain === 'forest') {
+      // -1 per die on all numbers
+      distance -= 6;
+    } else if (terrain === 'marsh') {
+      // -1 per die on all 2's, 3's, and 4's
+      for (let i = 0; i < 6; i++) {
+        const dieRoll = Math.floor(Math.random() * 4) + 1;
+        if (dieRoll >= 2) {
+          distance -= 1;
+        }
+      }
+    }
+    
+    // Ensure minimum distance of 0
+    return Math.max(0, distance);
+  }
+
+  static calculateForcedMarchImpact(percentForced) {
+    if (percentForced <= 0) {
+      return { restRequired: 0, exhaustionLevel: 0 };
+    }
+    
+    let restHours = 0;
+    if (percentForced <= 30) {
+      restHours = percentForced / 10 * 1; // 1 hour per 10%
+    } else if (percentForced <= 60) {
+      restHours = percentForced / 10 * 2; // 2 hours per 10%
+    } else {
+      restHours = percentForced / 10 * 3; // 3 hours per 10%
+    }
+    
+    const restDays = Math.floor(restHours / 24);
+    const remainingHours = restHours % 24;
+    const movementPenalty = remainingHours / 24 * 100; // % of movement lost next day
+    
+    return {
+      restRequired: restHours,
+      restDays: restDays,
+      movementPenalty: movementPenalty,
+      exhaustionLevel: 0 // Calculate if no rest taken
+    };
   }
 
   /**

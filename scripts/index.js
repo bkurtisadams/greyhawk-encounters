@@ -50,7 +50,8 @@ Hooks.once('init', async function() {
   document.head.appendChild(styleElement);
   
   // Load templates
-  loadTemplates(['templates/encounter-roller.hbs']);
+  //loadTemplates(['templates/encounter-roller.hbs']);
+  loadTemplates(['modules/greyhawk-encounters/templates/encounter-roller.hbs']);
 });
 
 Hooks.once('ready', async function() {
