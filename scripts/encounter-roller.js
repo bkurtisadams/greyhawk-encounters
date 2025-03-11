@@ -305,62 +305,53 @@ export class GreyhawkEncounterRoller extends Application {
     }
     
     async _rollEncounter(html) {
-        try {
-          const system = html.find('select[name="encounterSystem"]').val();
+      try {
+        const system = html.find('select[name="encounterSystem"]').val();
+        
+        if (system === 'dmg') {
+          // Handle DMG encounter system
+          const encounterType = html.find('select[name="dmgEncounterType"]').val();
+          let options = { encounterType };
           
-          if (system === 'dmg') {
-            // Handle DMG encounter system
-            const encounterType = html.find('select[name="dmgEncounterType"]').val();
-            let options = { encounterType };
+          // For dungeon encounters, perform the periodic check first
+          if (encounterType === 'dungeon') {
+            const dungeonLevel = parseInt(html.find('input[name="dungeonLevel"]').val()) || 1;
+            options = { ...options, dungeonLevel };
             
-            switch (encounterType) {
-              case 'outdoor': {
-                const terrain = html.find('select[name="terrain"]').val() || 'plain';
-                const population = html.find('select[name="population"]').val() || 'moderate';
-                const climate = html.find('select[name="climate"]').val() || 'temperate';
-                let timeOfDay = 'noon';
-                
-                if (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
-                  const timeInfo = GreyhawkEncounters.getCurrentTimeInfo();
-                  if (timeInfo && timeInfo.timeOfDay) timeOfDay = timeInfo.timeOfDay;
-                } else {
-                  timeOfDay = html.find('select[name="timeOfDay"]').val() || 'noon';
-                }
-                
-                options = { ...options, terrain, population, timeOfDay };
-                break;
-              }
-              case 'dungeon': {
-                const dungeonLevel = parseInt(html.find('input[name="dungeonLevel"]').val()) || 1;
-                options = { ...options, dungeonLevel };
-                break;
-              }
-              case 'underwater': {
-                const waterType = html.find('select[name="waterType"]').val() || 'fresh';
-                const depth = html.find('select[name="depth"]').val() || 'shallow';
-                options = { ...options, waterType, depth };
-                break;
-              }
-              case 'waterborne': {
-                const waterType = html.find('select[name="waterType"]').val() || 'coastal';
-                options = { ...options, waterType };
-                break;
-              }
-              case 'city':
-              case 'town': {
-                const citySize = html.find('select[name="citySize"]').val() || 'town';
-                const timeOfDay = html.find('select[name="cityTimeOfDay"]').val() || 'day';
-                options = { ...options, citySize, timeOfDay };
-                break;
-              }
-              case 'airborne': {
-                const climate = html.find('select[name="airborneClimate"]').val() || 'temperate';
-                options = { ...options, climate };
-                break;
-              }
+            // Get the periodic check die size (default to d6)
+            const periodicDieSize = parseInt(html.find('select[name="periodicDieSize"]').val()) || 6;
+            const periodicSuccessValue = parseInt(html.find('input[name="periodicSuccessValue"]').val()) || 1;
+            
+            // Perform the periodic check
+            const periodicRoll = Math.floor(Math.random() * periodicDieSize) + 1;
+            const encounterOccurs = periodicRoll <= periodicSuccessValue;
+            
+            // Display the results of the periodic check
+            const chatData = {
+              user: game.user.id,
+              speaker: ChatMessage.getSpeaker(),
+              content: `
+                <div>
+                  <h3>Dungeon Wandering Monster Check</h3>
+                  <p>Dungeon Level: ${dungeonLevel}</p>
+                  <p>Roll: ${periodicRoll} on 1d${periodicDieSize}</p>
+                  <p>Result: ${encounterOccurs ? "Encounter occurs!" : "No encounter"}</p>
+                  <p><em>Check: ${periodicSuccessValue} or less on 1d${periodicDieSize} (${(periodicSuccessValue/periodicDieSize*100).toFixed(1)}% chance)</em></p>
+                  <p><em>Standard check: every 3 turns (30 minutes)</em></p>
+                </div>
+              `
+            };
+            ChatMessage.create(chatData);
+            
+            // If no encounter occurs, return without rolling for a specific monster
+            if (!encounterOccurs) {
+              return;
             }
+
+            // NEW CODE: Actually roll for the specific monster when an encounter occurs
+            console.log("Dungeon encounter occurs, rolling for specific monster");
             
-            // Roll and display DMG encounter
+            // Roll and display the specific monster encounter
             let result;
             if (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
               result = await GreyhawkEncounters.rollTimeAwareEncounter(options);
@@ -369,44 +360,115 @@ export class GreyhawkEncounterRoller extends Application {
             }
             
             if (result) {
+              console.log("Monster encounter result:", result);
               GreyhawkEncounters._displayEncounterResult(result, options);
+            } else {
+              console.error("Failed to generate monster encounter");
+              ui.notifications.error("Error generating monster encounter.");
             }
             
-          } else {
-            // Handle WoG encounter system
-            const encounterType = html.find('select[name="wogEncounterType"]').val();
-            
-            if (encounterType === 'regional') {
-              const regionType = html.find('select[name="regionType"]').val();
-              const region = html.find('select[name="region"]').val();
+            return; // Exit early after handling dungeon encounter
+          }
+          
+          switch (encounterType) {
+            case 'outdoor': {
+              const terrain = html.find('select[name="terrain"]').val() || 'plain';
+              const population = html.find('select[name="population"]').val() || 'moderate';
+              const climate = html.find('select[name="climate"]').val() || 'temperate';
+              let timeOfDay = 'noon';
               
-              const result = await GreyhawkEncounters._rollRegionalEncounter({
-                specificRegion: region
-              });
+              if (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
+                const timeInfo = GreyhawkEncounters.getCurrentTimeInfo();
+                if (timeInfo && timeInfo.timeOfDay) timeOfDay = timeInfo.timeOfDay;
+              } else {
+                timeOfDay = html.find('select[name="timeOfDay"]').val() || 'noon';
+              }
               
-              GreyhawkEncounters._displayEncounterResult(result, {
-                encounterType: 'regional',
-                specificRegion: region
-              });
-              
-            } else if (encounterType === 'patrol') {
-              const patrolType = html.find('select[name="patrolType"]').val() || 'patrol_heavy';
-              
-              const result = await GreyhawkEncounters.rollPatrolEncounter({
-                patrolType: patrolType
-              });
-              
-              GreyhawkEncounters._displayEncounterResult(result, {
-                encounterType: 'patrol',
-                patrolType: patrolType
-              });
+              options = { ...options, terrain, population, timeOfDay, climate };
+              break;
+            }
+            case 'dungeon': {
+              const dungeonLevel = parseInt(html.find('input[name="dungeonLevel"]').val()) || 1;
+              options = { ...options, dungeonLevel };
+              break;
+            }
+            case 'underwater': {
+              const waterType = html.find('select[name="waterType"]').val() || 'fresh';
+              const depth = html.find('select[name="depth"]').val() || 'shallow';
+              options = { ...options, waterType, depth };
+              break;
+            }
+            case 'waterborne': {
+              const waterType = html.find('select[name="waterType"]').val() || 'coastal';
+              options = { ...options, waterType };
+              break;
+            }
+            case 'city':
+            case 'town': {
+              const citySize = html.find('select[name="citySize"]').val() || 'town';
+              const timeOfDay = html.find('select[name="cityTimeOfDay"]').val() || 'day';
+              options = { ...options, citySize, timeOfDay };
+              break;
+            }
+            case 'airborne': {
+              const climate = html.find('select[name="airborneClimate"]').val() || 'temperate';
+              options = { ...options, climate };
+              break;
+            }
+            case 'astral':
+            case 'ethereal': {
+              // No additional options needed
+              break;
             }
           }
-        } catch (error) {
-          console.error("Error in _rollEncounter:", error);
-          ui.notifications.error("Error generating encounter.");
+          
+          // Roll and display DMG encounter
+          let result;
+          if (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
+            result = await GreyhawkEncounters.rollTimeAwareEncounter(options);
+          } else {
+            result = await GreyhawkEncounters.rollEncounter(options);
+          }
+          
+          if (result) {
+            GreyhawkEncounters._displayEncounterResult(result, options);
+          }
+          
+        } else {
+          // Handle WoG encounter system
+          const encounterType = html.find('select[name="wogEncounterType"]').val();
+          
+          if (encounterType === 'regional') {
+            const regionType = html.find('select[name="regionType"]').val();
+            const region = html.find('select[name="region"]').val();
+            
+            const result = await GreyhawkEncounters._rollRegionalEncounter({
+              specificRegion: region
+            });
+            
+            GreyhawkEncounters._displayEncounterResult(result, {
+              encounterType: 'regional',
+              specificRegion: region
+            });
+            
+          } else if (encounterType === 'patrol') {
+            const patrolType = html.find('select[name="patrolType"]').val() || 'patrol_heavy';
+            
+            const result = await GreyhawkEncounters.rollPatrolEncounter({
+              patrolType: patrolType
+            });
+            
+            GreyhawkEncounters._displayEncounterResult(result, {
+              encounterType: 'patrol',
+              patrolType: patrolType
+            });
+          }
         }
+      } catch (error) {
+        console.error("Error in _rollEncounter:", error);
+        ui.notifications.error("Error generating encounter.");
       }
+    }
     
     async _checkLost(html) {
       const terrain = html.find('select[name="terrain"]').val();

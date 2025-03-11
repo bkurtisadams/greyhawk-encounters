@@ -230,11 +230,54 @@ export class GreyhawkEncounters {
                       <p>Result: ${result.result || 'Unknown'}</p>`;
         }
         break;
+        
+      }
+      case 'dungeon': {
+        content += `<p>Dungeon Level: ${options.dungeonLevel || '1'}</p>
+                    <p>Monster: ${result.monster || 'Unknown'}</p>
+                    <p>Number Appearing: ${result.number || '1'}</p>`;
+        
+        if (result.monsterLevel) {
+          content += `<p>Monster Level: ${result.monsterLevel}</p>`;
+        }
+        
+        if (result.adjustedNumber && result.adjustedNumber !== result.number) {
+          content += `<p>Adjusted Number: ${result.adjustedNumber} (based on dungeon level)</p>`;
+        }
+        
+        if (result.notes) {
+          content += `<p>Notes: ${result.notes}</p>`;
+        }
+        
+        // Special handling for Character encounters
+        if (result.monster === "Character" && result.partyInfo) {
+          content += `<hr><h4>Adventuring Party</h4>`;
+          content += `<p>${result.partyInfo}</p>`;
+          if (result.henchmenInfo) {
+            content += `<p>${result.henchmenInfo}</p>`;
+          }
+        } else if (result.notes) {
+          content += `<p>Notes: ${result.notes}</p>`;
+        }
+        
+        break;
       }
       // Add other encounter type displays here
       default: {
         content += `<p>Encounter Type: ${options.encounterType || 'Unknown'}</p>
                     <p>Result: ${result.result || 'No specific result'}</p>`;
+        
+        if (result.monster) {
+          content += `<p>Monster: ${result.monster}</p>`;
+        }
+        
+        if (result.number) {
+          content += `<p>Number: ${result.number}</p>`;
+        }
+        
+        if (result.notes) {
+          content += `<p>Notes: ${result.notes}</p>`;
+        }
       }
     }
     
@@ -290,26 +333,75 @@ export class GreyhawkEncounters {
   static async rollEncounter(options) {
     console.log("Rolling encounter with options:", options);
     
-    switch (options.encounterType) {
-      case 'regional':
-        return this._rollRegionalEncounter(options);
-      case 'outdoor':
-        return this.rollOutdoorEncounter(options.terrain, options.population, options.timeOfDay);
-      case 'dungeon':
-        return this._rollDungeonEncounter(options);
-      case 'underwater':
-      case 'waterborne':
-        return this._rollWaterborneEncounter(options);
-      case 'airborne':
-        return this._rollAirborneEncounter(options);
-      case 'city':
-      case 'town':
-        return this._rollCityEncounter(options);
-      case 'astral':
-      case 'ethereal':
-        return this._rollPlanarEncounter(options);
-      default:
-        return { result: "No encounter type specified" };
+    try {
+      if (!options || !options.encounterType) {
+        console.warn("Missing encounter type in options");
+        return { result: "No encounter type specified", error: "Missing encounter type" };
+      }
+      
+      let result;
+      switch (options.encounterType) {
+        case 'regional':
+          result = await this._rollRegionalEncounter(options);
+          break;
+        case 'outdoor':
+          if (!options.terrain || !options.population) {
+            console.warn("Missing required parameters for outdoor encounter");
+            return { 
+              result: "Error generating encounter", 
+              error: "Missing required parameters for outdoor encounter",
+              options: options 
+            };
+          }
+          result = await this.rollOutdoorEncounter(options.terrain, options.population, options.timeOfDay);
+          break;
+        case 'dungeon':
+          result = await this._rollDungeonEncounter(options);
+          break;
+        case 'underwater':
+        case 'waterborne':
+          result = await this._rollWaterborneEncounter(options);
+          break;
+        case 'airborne':
+          result = await this._rollAirborneEncounter(options);
+          break;
+        case 'city':
+        case 'town':
+          result = await this._rollCityEncounter(options);
+          break;
+        case 'astral':
+        case 'ethereal':
+          result = await this._rollPlanarEncounter(options);
+          break;
+        default:
+          console.warn(`Unknown encounter type: ${options.encounterType}`);
+          return { 
+            result: "No valid encounter type specified", 
+            error: `Unknown encounter type: ${options.encounterType}` 
+          };
+      }
+      
+      // Validate result
+      if (!result) {
+        console.error(`No result returned from ${options.encounterType} encounter generation`);
+        return { 
+          result: "Error generating encounter", 
+          error: "No result returned from encounter generator",
+          encounterType: options.encounterType 
+        };
+      }
+      
+      // Return the successful result
+      return result;
+      
+    } catch (error) {
+      console.error(`Error generating ${options?.encounterType || 'unknown'} encounter:`, error);
+      return { 
+        result: "Error generating encounter", 
+        error: error.message || "Unknown error",
+        stack: error.stack,
+        options: options 
+      };
     }
   }
 
@@ -814,137 +906,290 @@ static _rollOnSubtable(subtableName, roll) {
    * Roll a dungeon encounter.
    */
   static _rollDungeonEncounter(options) {
-    const dungeonLevel = options.dungeonLevel || 1;
+    console.log("Starting dungeon encounter generation with options:", options);
     
-    // Use a normalized dungeon level for the matrix lookup
-    let matrixLevel = dungeonLevel;
-    if (dungeonLevel > 16) {
-      matrixLevel = 16;
-    } else if (dungeonLevel > 13) {
-      matrixLevel = 14;
-    } else if (dungeonLevel > 11) {
-      matrixLevel = 12;
-    } else if (dungeonLevel > 9) {
-      matrixLevel = 10;
-    } else if (dungeonLevel > 7) {
-      matrixLevel = 8;
-    } else if (dungeonLevel > 5) {
-      matrixLevel = 6;
-    } else if (dungeonLevel > 3) {
-      matrixLevel = 4;
-    } else if (dungeonLevel > 1) {
-      matrixLevel = 2;
-    }
-    
-    // Get the monster level matrix for this dungeon level
-    const levelMatrix = DMG_TABLES.DMG_DUNGEON_MONSTER_LEVEL_MATRIX[matrixLevel];
-    if (!levelMatrix) {
-      return { result: "Error: Unknown dungeon level" };
-    }
-    
-    // Roll to determine monster level
-    const levelRoll = Math.floor(Math.random() * 20) + 1;
-    let monsterLevel = 1; // Default
-    
-    for (const entry of levelMatrix) {
-      if (levelRoll >= entry.min && levelRoll <= entry.max) {
-        monsterLevel = entry.monsterLevel;
-        break;
+    try {
+      const dungeonLevel = options.dungeonLevel || 1;
+      
+      // Initialize variables for character encounters
+      let partyInfo = null;
+      let henchmenInfo = null;
+
+      // Use a normalized dungeon level for the matrix lookup
+      let matrixLevel = dungeonLevel;
+      if (dungeonLevel > 16) {
+        matrixLevel = 16;
+      } else if (dungeonLevel > 13) {
+        matrixLevel = 14;
+      } else if (dungeonLevel > 11) {
+        matrixLevel = 12;
+      } else if (dungeonLevel > 9) {
+        matrixLevel = 10;
+      } else if (dungeonLevel > 7) {
+        matrixLevel = 8;
+      } else if (dungeonLevel > 5) {
+        matrixLevel = 6;
+      } else if (dungeonLevel > 3) {
+        matrixLevel = 4;
+      } else if (dungeonLevel > 1) {
+        matrixLevel = 2;
       }
-    }
+      
+      console.log(`Using matrix level ${matrixLevel} for dungeon level ${dungeonLevel}`);
+      
+      // Get the monster level matrix for this dungeon level
+      const levelMatrix = DMG_TABLES.DMG_DUNGEON_MONSTER_LEVEL_MATRIX[matrixLevel];
+      if (!levelMatrix) {
+        console.error("Error: Unknown dungeon level or missing matrix");
+        return { result: "Error: Unknown dungeon level" };
+      }
+      
+      // Roll to determine monster level
+      const levelRoll = Math.floor(Math.random() * 20) + 1;
+      let monsterLevel = 1; // Default
+      
+      console.log(`Rolled ${levelRoll} on 1d20 to determine monster level`);
+      
+      for (const entry of levelMatrix) {
+        if (levelRoll >= entry.min && levelRoll <= entry.max) {
+          monsterLevel = entry.monsterLevel;
+          break;
+        }
+      }
+      
+      console.log(`Determined monster level: ${monsterLevel}`);
+      
+      // Get the monster table for this level
+      const monsterTable = DMG_TABLES.DMG_MONSTER_LEVEL_TABLES[monsterLevel];
+      if (!monsterTable) {
+        console.error(`No monster table found for monster level ${monsterLevel}`);
+        return { 
+          result: "Encounter",
+          monsterLevel: monsterLevel,
+          levelRoll: levelRoll,
+          monster: `Monster Level ${monsterLevel} (Table not implemented yet)` 
+        };
+      }
+      
+      // Roll for the specific monster
+      const monsterRoll = Math.floor(Math.random() * 100) + 1;
+      let monster = "Unknown";
+      let numberPattern = "1";
+      let subtable = null;
+      let notes = null;
+      
+      console.log(`Rolled ${monsterRoll} on d100 for specific monster`);
+      
+      // When determining the monster type:
+      for (const entry of monsterTable) {
+        if (monsterRoll >= entry.min && monsterRoll <= entry.max) {
+          monster = entry.monster;
+          numberPattern = entry.number || "1";
+          subtable = entry.subtable || null;
+          notes = entry.notes || null;
+          break;
+        }
+      }
+      
+      console.log(`Selected monster: ${monster}, number pattern: ${numberPattern}, subtable: ${subtable}`);
+      
+      // Handle subtables
+      // When determining the monster type:
+for (const entry of monsterTable) {
+  if (monsterRoll >= entry.min && monsterRoll <= entry.max) {
+    monster = entry.monster;
+    numberPattern = entry.number || "1";
+    subtable = entry.subtable || null;
+    notes = entry.notes || null;
+    break;
+  }
+}
+
+console.log(`Selected monster: ${monster}, number pattern: ${numberPattern}, subtable: ${subtable}`);
+
+// Handle subtables
+if (subtable) {
+  console.log(`Rolling on subtable: ${subtable}`);
+  
+  if (subtable === "human") {
+    const subtableResult = this._rollOnHumanSubtable();
+    console.log(`Human subtable result:`, subtableResult);
     
-    // Get the monster table for this level
-    const monsterTable = DMG_TABLES.DMG_MONSTER_LEVEL_TABLES[monsterLevel];
-    if (!monsterTable) {
-      return { 
+    monster = subtableResult.encounter;
+    numberPattern = subtableResult.number || numberPattern;
+    notes = subtableResult.notes || notes;
+    subtable = subtableResult.subtable || null;
+    
+    // If this is a character encounter from human subtable, generate it
+    if (subtable === "character") {
+      console.log(`Rolling on character subtable from human subtable`);
+      const characterResult = this._generateCharacterEncounter(dungeonLevel);
+      console.log(`Character encounter result:`, characterResult);
+      
+      numberPattern = characterResult.number.toString() || numberPattern;
+      notes = characterResult.notes || notes;
+      
+      partyInfo = characterResult.partyInfo;
+      henchmenInfo = characterResult.henchmenInfo;
+    }
+  }
+  // Handle other subtable types here
+}
+
+// Special case: Direct Character encounter (not from human subtable)
+// This handles Monster Level II entry for "Character"
+else if (monster === "Character") {
+  console.log(`Direct Character encounter from monster table`);
+  const characterResult = this._generateCharacterEncounter(dungeonLevel);
+  console.log(`Character encounter result:`, characterResult);
+  
+  numberPattern = characterResult.number.toString() || numberPattern;
+  notes = characterResult.notes || notes;
+  
+  partyInfo = characterResult.partyInfo;
+  henchmenInfo = characterResult.henchmenInfo;
+}
+      
+      // Roll for number of monsters
+      let number;
+      try {
+        // Use the imported utility function - make sure this exists
+        if (typeof rollNumberFromPattern === 'function') {
+          number = rollNumberFromPattern(numberPattern);
+        } else if (typeof this.rollNumberFromPattern === 'function') {
+          // Try class method if global function doesn't exist
+          number = this.rollNumberFromPattern(numberPattern);
+        } else {
+          // Fallback to a simple implementation
+          console.warn("rollNumberFromPattern not found, using fallback");
+          number = this._fallbackRollNumberFromPattern(numberPattern);
+        }
+      } catch (error) {
+        console.error("Error rolling number pattern:", error);
+        number = 1; // Default to 1 if there's an error
+      }
+      
+      console.log(`Rolled ${number} for number of monsters`);
+      
+      // Adjust numbers based on relative dungeon level
+      let adjustedNumber = number;
+      if (dungeonLevel > monsterLevel) {
+        // This is causing the issue - limit the adjustment to at most double
+        // the original number for level difference > 1
+        const levelDifference = dungeonLevel - monsterLevel;
+        if (levelDifference <= 1) {
+          adjustedNumber = number * (1 + levelDifference);
+        } else {
+          // For bigger level differences, cap at 2x
+          adjustedNumber = number * 2;
+        }
+        console.log(`Adjusted number up to ${adjustedNumber} due to level difference`);
+      } else if (dungeonLevel < monsterLevel) {
+        // Greater monsters on higher levels have numbers reduced
+        const levelDifference = monsterLevel - dungeonLevel;
+        adjustedNumber = Math.max(1, number - levelDifference);
+        console.log(`Adjusted number down to ${adjustedNumber} due to level difference`);
+      }
+      
+      const result = {
         result: "Encounter",
         monsterLevel: monsterLevel,
         levelRoll: levelRoll,
-        monster: `Monster Level ${monsterLevel} (Table not implemented yet)` 
+        monsterRoll: monsterRoll,
+        monster: monster,
+        number: number,
+        adjustedNumber: adjustedNumber,
+        notes: notes,
+        partyInfo: partyInfo,       // party of adventurers!
+        henchmenInfo: henchmenInfo  // Additional henchmen
+      };
+      
+      console.log("Final dungeon encounter result:", result);
+      return result;
+    } catch (error) {
+      console.error("Error in _rollDungeonEncounter:", error);
+      return { 
+        result: "Error",
+        error: error.message,
+        stack: error.stack
       };
     }
+  }
+  
+  // Fallback method for rolling number patterns if the utility function is missing
+  static _fallbackRollNumberFromPattern(pattern) {
+    console.log(`Using fallback roll method for pattern: ${pattern}`);
     
-    // Roll for the specific monster
-    const monsterRoll = Math.floor(Math.random() * 100) + 1;
-    let monster = "Unknown";
-    let numberPattern = "1";
-    let subtable = null;
-    let notes = null;
+    if (!pattern || pattern === "") return 1;
     
-    for (const entry of monsterTable) {
-      if (monsterRoll >= entry.min && monsterRoll <= entry.max) {
-        monster = entry.monster;
-        numberPattern = entry.number || "1";
-        subtable = entry.subtable || null;
-        notes = entry.notes || null;
-        break;
+    // Handle simple number
+    if (!isNaN(pattern)) return parseInt(pattern);
+    
+    // Handle simple dice (e.g. "2d6")
+    const diceRegex = /^(\d+)d(\d+)$/;
+    const diceMatch = pattern.match(diceRegex);
+    if (diceMatch) {
+      const diceCount = parseInt(diceMatch[1]);
+      const diceSize = parseInt(diceMatch[2]);
+      let total = 0;
+      for (let i = 0; i < diceCount; i++) {
+        total += Math.floor(Math.random() * diceSize) + 1;
       }
+      return total;
     }
     
-    // Handle subtables
-    if (subtable) {
-      if (subtable === "human") {
-        const subtableResult = this._rollOnHumanSubtable();
-        monster = subtableResult.encounter;
-        numberPattern = subtableResult.number || numberPattern;
-        notes = subtableResult.notes || notes;
-        subtable = subtableResult.subtable || null;
-        
-        // Handle nested character subtable
-        if (subtableResult.subtable === "character") {
-          const characterResult = this._generateCharacterEncounter(dungeonLevel);
-          monster = characterResult.encounter;
-          numberPattern = characterResult.number || numberPattern;
-          notes = characterResult.notes || notes;
-        }
+    // Handle range (e.g. "1-6")
+    const rangeRegex = /^(\d+)-(\d+)$/;
+    const rangeMatch = pattern.match(rangeRegex);
+    if (rangeMatch) {
+      const min = parseInt(rangeMatch[1]);
+      const max = parseInt(rangeMatch[2]);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    
+    // Handle addition (e.g. "1d4+1")
+    const addRegex = /^(\d+)d(\d+)\+(\d+)$/;
+    const addMatch = pattern.match(addRegex);
+    if (addMatch) {
+      const diceCount = parseInt(addMatch[1]);
+      const diceSize = parseInt(addMatch[2]);
+      const bonus = parseInt(addMatch[3]);
+      let total = bonus;
+      for (let i = 0; i < diceCount; i++) {
+        total += Math.floor(Math.random() * diceSize) + 1;
       }
-      // Add other subtable handling as needed
+      return total;
     }
     
-    // Roll for number of monsters
-    const number = rollNumberFromPattern(numberPattern);
-    
-    // Adjust numbers based on relative dungeon level
-    let adjustedNumber = number;
-    if (dungeonLevel > monsterLevel) {
-      // Lesser monsters on lower levels have numbers augmented
-      const levelDifference = dungeonLevel - monsterLevel;
-      adjustedNumber = number * (1 + levelDifference);
-    } else if (dungeonLevel < monsterLevel) {
-      // Greater monsters on higher levels have numbers reduced
-      const levelDifference = monsterLevel - dungeonLevel;
-      adjustedNumber = Math.max(1, number - levelDifference);
-    }
-    
-    return {
-      result: "Encounter",
-      monsterLevel: monsterLevel,
-      levelRoll: levelRoll,
-      monsterRoll: monsterRoll,
-      monster: monster,
-      number: number,
-      adjustedNumber: adjustedNumber,
-      notes: notes
-    };
+    // Default fallback
+    return 1;
   }
 
   // Helper method to roll on the Human Subtable
   static _rollOnHumanSubtable() {
     const roll = Math.floor(Math.random() * 100) + 1;
     
-    for (const entry of DMG_TABLES.DMG_HUMAN_SUBTABLE) {
-      if (roll >= entry.min && roll <= entry.max) {
-        return entry;
-      }
-    }
+    console.log(`Rolling on Human Subtable with roll ${roll}`);
     
-    return { encounter: "Bandit", number: "5-15" }; // Default fallback
+    if (roll <= 25) {
+      return { encounter: "Bandit", number: "5-15", notes: "Upper level leaders not with groups under 30" };
+    } else if (roll <= 30) {
+      return { encounter: "Berserker", number: "3-9", notes: "Upper level leaders not with groups under 30" };
+    } else if (roll <= 45) {
+      return { encounter: "Brigand", number: "5-15", notes: "Upper level leaders not with groups under 30" };
+    } else {
+      // Character encounter - this sets a flag to generate a character party
+      return { encounter: "Character", subtable: "character", notes: "Adventuring party" };
+    }
   }
 
   // Helper method to generate character encounters
   static _generateCharacterEncounter(dungeonLevel) {
+    console.log(`Generating character encounter for dungeon level ${dungeonLevel}`);
+    
     // Number of characters in party (2-5)
     const characterCount = Math.floor(Math.random() * 4) + 2;
+    console.log(`Party contains ${characterCount} characters`);
     
     // Select character classes and create party members
     const partyMembers = [];
@@ -998,7 +1243,7 @@ static _rollOnSubtable(subtableName, roll) {
         }
       }
       
-      // Determine character levels based on dungeon level
+      // Determine character levels based on dungeon level - follow DMG rules
       let characterLevel;
       if (dungeonLevel <= 4) {
         characterLevel = dungeonLevel;
@@ -1023,8 +1268,10 @@ static _rollOnSubtable(subtableName, roll) {
       if (characterClass.includes("/")) {
         const classCount = characterClass.split("/").length;
         if (classCount === 2) {
+          // Add 2 and divide by 2, per DMG
           characterLevel = Math.floor((characterLevel + 2) / 2);
         } else if (classCount === 3) {
+          // Add 3 and divide by 3, per DMG
           characterLevel = Math.floor((characterLevel + 3) / 3);
         }
       }
@@ -1040,7 +1287,7 @@ static _rollOnSubtable(subtableName, roll) {
       });
     }
     
-    // Calculate number of henchmen (not men-at-arms on level 4+)
+    // Calculate number of henchmen (total party should be 9)
     const henchmenCount = 9 - characterCount;
     const henchmen = [];
     
@@ -1064,7 +1311,7 @@ static _rollOnSubtable(subtableName, roll) {
           }
         }
         
-        // Calculate henchman level (1/3 of master's level)
+        // Calculate henchman level (1/3 of master's level) per DMG
         let henchmanLevel = Math.floor(master.level / 3);
         
         // Add 1 level per 3 levels of master for masters above 8th level
@@ -1108,9 +1355,11 @@ static _rollOnSubtable(subtableName, roll) {
     }
     
     return {
-      encounter: `Adventuring Party (${characterCount} level ${partyMembers[0].level} character${characterCount > 1 ? 's' : ''}, ${henchmenCount} ${areMenAtArms ? "men-at-arms" : "henchmen"})`,
-      number: `${characterCount + henchmenCount}`,
-      notes: `Party: ${partyInfo}\n${areMenAtArms ? "Men-at-arms" : "Henchmen"}: ${henchmenInfo}`
+      encounter: `Adventuring Party`,
+      number: characterCount + henchmenCount,
+      notes: "Adventuring party with characters and retainers",
+      partyInfo: `${characterCount} characters: ${partyInfo}`,
+      henchmenInfo: `${henchmenCount} ${areMenAtArms ? "men-at-arms" : "henchmen"}: ${henchmenInfo}`
     };
   }
   
@@ -1190,118 +1439,6 @@ static _rollOnSubtable(subtableName, roll) {
     { id: 11, item: "1 SWORD: wounding" },
     { id: 12, item: "1 arrow of slaying (select character type)" }
   ];
-  
-  // Helper method to determine magic items based on character level
-  static _determineMagicItems(characterLevel) {
-    const items = [];
-    
-    // Check for items from Table I
-    let tableIChance = 0;
-    let tableICount = 0;
-    
-    switch (characterLevel) {
-      case 1: tableIChance = 10; tableICount = 1; break;
-      case 2: tableIChance = 20; tableICount = 2; break;
-      case 3: tableIChance = 30; tableICount = 2; break;
-      case 4: tableIChance = 40; tableICount = 2; break;
-      case 5: tableIChance = 50; tableICount = 2; break;
-      case 6: tableIChance = 60; tableICount = 3; break;
-      case 7: tableIChance = 70; tableICount = 3; break;
-      case 8: tableIChance = 80; tableICount = 3; break;
-      case 9: tableIChance = 90; tableICount = 3; break;
-      default: tableIChance = 100; tableICount = 3; break;
-    }
-    
-    if (Math.floor(Math.random() * 100) + 1 <= tableIChance) {
-      for (let i = 0; i < tableICount; i++) {
-        const roll = Math.floor(Math.random() * 20) + 1;
-        const itemEntry = this.MAGIC_ITEM_TABLE_I.find(entry => entry.id === roll);
-        if (itemEntry) {
-          items.push(itemEntry.item);
-        }
-      }
-    }
-    
-    // Check for items from Table II
-    let tableIIChance = 0;
-    let tableIICount = 0;
-    
-    if (characterLevel >= 3) {
-      switch (characterLevel) {
-        case 3: tableIIChance = 10; tableIICount = 1; break;
-        case 4: tableIIChance = 20; tableIICount = 1; break;
-        case 5: tableIIChance = 30; tableIICount = 1; break;
-        case 6: tableIIChance = 40; tableIICount = 2; break;
-        case 7: tableIIChance = 50; tableIICount = 2; break;
-        case 8: tableIIChance = 60; tableIICount = 2; break;
-        case 9: tableIIChance = 70; tableIICount = 2; break;
-        case 10: tableIIChance = 80; tableIICount = 2; break;
-        case 11: tableIIChance = 90; tableIICount = 2; break;
-        default: tableIIChance = 100; tableIICount = 2; break;
-      }
-      
-      if (Math.floor(Math.random() * 100) + 1 <= tableIIChance) {
-        for (let i = 0; i < tableIICount; i++) {
-          // Table II rolls on d8 + d6 (2-14)
-          const roll1 = Math.floor(Math.random() * 8) + 1;
-          const roll2 = Math.floor(Math.random() * 6) + 1;
-          const roll = roll1 + roll2 - 1; // Convert to 1-based index
-          const itemEntry = this.MAGIC_ITEM_TABLE_II.find(entry => entry.id === roll);
-          if (itemEntry) {
-            items.push(itemEntry.item);
-          }
-        }
-      }
-    }
-    
-    // Check for items from Table III
-    let tableIIIChance = 0;
-    
-    if (characterLevel >= 7) {
-      switch (characterLevel) {
-        case 7: tableIIIChance = 10; break;
-        case 8: tableIIIChance = 20; break;
-        case 9: tableIIIChance = 30; break;
-        case 10: tableIIIChance = 40; break;
-        case 11: tableIIIChance = 50; break;
-        case 12: tableIIIChance = 60; break;
-        default: tableIIIChance = 100; break;
-      }
-      
-      if (Math.floor(Math.random() * 100) + 1 <= tableIIIChance) {
-        // Table III rolls on d8 + d6 (2-14)
-        const roll1 = Math.floor(Math.random() * 8) + 1;
-        const roll2 = Math.floor(Math.random() * 6) + 1;
-        const roll = roll1 + roll2 - 1; // Convert to 1-based index
-        const itemEntry = this.MAGIC_ITEM_TABLE_III.find(entry => entry.id === roll);
-        if (itemEntry) {
-          items.push(itemEntry.item);
-        }
-      }
-    }
-    
-    // Check for items from Table IV
-    let tableIVChance = 0;
-    
-    if (characterLevel >= 11) {
-      switch (characterLevel) {
-        case 11: tableIVChance = 10; break;
-        case 12: tableIVChance = 20; break;
-        default: tableIVChance = 60; break;
-      }
-      
-      if (Math.floor(Math.random() * 100) + 1 <= tableIVChance) {
-        // Table IV rolls on d12
-        const roll = Math.floor(Math.random() * 12) + 1;
-        const itemEntry = this.MAGIC_ITEM_TABLE_IV.find(entry => entry.id === roll);
-        if (itemEntry) {
-          items.push(itemEntry.item);
-        }
-      }
-    }
-    
-    return items;
-  }
   
   // Helper method to determine magic items based on character level
   static _determineMagicItems(characterLevel) {

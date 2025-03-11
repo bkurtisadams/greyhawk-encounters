@@ -69,6 +69,25 @@
         <label for="dungeonLevel">Dungeon Level:</label>
         <input type="number" name="dungeonLevel" value="1" min="1" max="20">
       </div>
+      
+      <div class="form-group">
+        <label>Wandering Monster Check</label>
+        <div class="form-fields">
+          <select name="periodicDieSize">
+            <option value="4">d4</option>
+            <option value="6" selected>d6</option>
+            <option value="8">d8</option>
+            <option value="10">d10</option>
+            <option value="12">d12</option>
+            <option value="20">d20</option>
+            <option value="100">d100</option>
+          </select>
+          <span>Success on roll of</span>
+          <input type="number" name="periodicSuccessValue" value="1" min="1" max="100">
+          <span>or less</span>
+        </div>
+        <p class="notes">Standard: 1 in 6 chance every 3 turns (30 minutes)</p>
+      </div>
     </div>
 
     <!-- DMG Waterborne Options -->
