@@ -27,6 +27,13 @@ export class GreyhawkEncounterRoller extends Application {
     return {
       useSimpleCalendar,
       timeInfo,
+      climateTypes: [
+        { id: 'arctic', label: 'Arctic' },
+        { id: 'subarctic', label: 'Subarctic' },
+        { id: 'temperate', label: 'Temperate' },
+        { id: 'subtropical', label: 'Subtropical' },
+        { id: 'tropical', label: 'Tropical' }
+      ],
       terrainTypes: [
         { id: 'plain', label: 'Plain' },
         { id: 'scrub', label: 'Scrub' },
@@ -310,6 +317,7 @@ export class GreyhawkEncounterRoller extends Application {
               case 'outdoor': {
                 const terrain = html.find('select[name="terrain"]').val() || 'plain';
                 const population = html.find('select[name="population"]').val() || 'moderate';
+                const climate = html.find('select[name="climate"]').val() || 'temperate';
                 let timeOfDay = 'noon';
                 
                 if (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
