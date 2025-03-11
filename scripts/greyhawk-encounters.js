@@ -946,8 +946,8 @@ static _rollOnSubtable(subtableName, roll) {
     // Number of characters in party (2-5)
     const characterCount = Math.floor(Math.random() * 4) + 2;
     
-    // Select character classes
-    const partyComposition = [];
+    // Select character classes and create party members
+    const partyMembers = [];
     for (let i = 0; i < characterCount; i++) {
       const roll = Math.floor(Math.random() * 100) + 1;
       let characterClass = "Fighter"; // Default
@@ -959,38 +959,476 @@ static _rollOnSubtable(subtableName, roll) {
         }
       }
       
-      partyComposition.push(characterClass);
+      // Determine race (20% chance of non-human)
+      let race = "Human";
+      const raceRoll = Math.floor(Math.random() * 100) + 1;
+      if (raceRoll <= 20) {
+        // Determine specific non-human race
+        const nonHumanRoll = Math.floor(Math.random() * 100) + 1;
+        if (nonHumanRoll <= 25) race = "Dwarf";
+        else if (nonHumanRoll <= 50) race = "Elf";
+        else if (nonHumanRoll <= 60) race = "Gnome";
+        else if (nonHumanRoll <= 85) race = "Half-elf";
+        else if (nonHumanRoll <= 95) race = "Halfling";
+        else race = "Half-Orc";
+        
+        // Check for multi-class based on race
+        let multiClassChance = 0;
+        switch (race) {
+          case "Dwarf": multiClassChance = 15; break;
+          case "Elf": multiClassChance = 85; break;
+          case "Gnome": multiClassChance = 25; break;
+          case "Half-elf": multiClassChance = 85; break;
+          case "Halfling": multiClassChance = 10; break;
+          case "Half-Orc": multiClassChance = 50; break;
+        }
+        
+        // Determine if multi-class
+        if (Math.floor(Math.random() * 100) + 1 <= multiClassChance) {
+          // 25% chance for triple-class if applicable
+          const tripleClassRoll = Math.floor(Math.random() * 100) + 1;
+          if (tripleClassRoll <= 25 && (race === "Elf" || race === "Half-elf")) {
+            // Generate 2 more classes different from the first
+            // Simplified implementation for brevity
+            characterClass += "/Fighter/Thief";
+          } else {
+            // Add a second class
+            characterClass += "/Thief";
+          }
+        }
+      }
+      
+      // Determine character levels based on dungeon level
+      let characterLevel;
+      if (dungeonLevel <= 4) {
+        characterLevel = dungeonLevel;
+      } else {
+        // 7th-12th level for deeper dungeons
+        characterLevel = Math.floor(Math.random() * 6) + 7;
+        
+        // Adjust based on dungeon level
+        if (characterLevel > dungeonLevel) {
+          characterLevel--;
+        } else if (characterLevel < dungeonLevel) {
+          characterLevel++;
+        }
+        
+        // Cap at 12th level unless very deep
+        if (characterLevel > 12 && dungeonLevel < 16) {
+          characterLevel = 12;
+        }
+      }
+      
+      // Adjust level for multi-class characters
+      if (characterClass.includes("/")) {
+        const classCount = characterClass.split("/").length;
+        if (classCount === 2) {
+          characterLevel = Math.floor((characterLevel + 2) / 2);
+        } else if (classCount === 3) {
+          characterLevel = Math.floor((characterLevel + 3) / 3);
+        }
+      }
+      
+      // Determine magic items based on character level
+      const magicItems = this._determineMagicItems(characterLevel);
+      
+      partyMembers.push({
+        race,
+        class: characterClass,
+        level: characterLevel,
+        magicItems
+      });
     }
     
-    // Determine character levels based on dungeon level
-    let characterLevel;
-    if (dungeonLevel <= 4) {
-      characterLevel = dungeonLevel;
+    // Calculate number of henchmen (not men-at-arms on level 4+)
+    const henchmenCount = 9 - characterCount;
+    const henchmen = [];
+    
+    // Determine if henchmen are men-at-arms (levels 1-3) or actual henchmen (level 4+)
+    const areMenAtArms = dungeonLevel <= 3;
+    
+    if (!areMenAtArms) {
+      // Create actual henchmen with classes
+      let remainingHenchmen = henchmenCount;
+      let characterIndex = 0;
+      
+      while (remainingHenchmen > 0) {
+        const master = partyMembers[characterIndex % characterCount];
+        const roll = Math.floor(Math.random() * 100) + 1;
+        let henchmanClass = "Fighter"; // Default
+        
+        for (const entry of DMG_TABLES.DMG_CHARACTER_SUBTABLE) {
+          if (roll >= entry.min && roll <= entry.max) {
+            henchmanClass = entry.character;
+            break;
+          }
+        }
+        
+        // Calculate henchman level (1/3 of master's level)
+        let henchmanLevel = Math.floor(master.level / 3);
+        
+        // Add 1 level per 3 levels of master for masters above 8th level
+        if (master.level > 8) {
+          henchmanLevel += Math.floor(master.level / 3);
+        }
+        
+        // Ensure henchman level is at least 1
+        henchmanLevel = Math.max(1, henchmanLevel);
+        
+        // Determine magic items for henchman
+        const magicItems = this._determineMagicItems(henchmanLevel);
+        
+        henchmen.push({
+          class: henchmanClass,
+          level: henchmanLevel,
+          master: characterIndex % characterCount,
+          magicItems
+        });
+        
+        remainingHenchmen--;
+        characterIndex++;
+      }
+    }
+    
+    // Format party information
+    const partyInfo = partyMembers.map(member => 
+      `${member.race} ${member.class} (Lvl ${member.level}${member.magicItems.length > 0 ? 
+      `, Items: ${member.magicItems.join(", ")}` : ""})`)
+      .join("; ");
+    
+    // Format henchmen information
+    let henchmenInfo = "";
+    if (areMenAtArms) {
+      henchmenInfo = `${henchmenCount} men-at-arms`;
     } else {
-      // 7th-12th level for deeper dungeons
-      characterLevel = Math.floor(Math.random() * 6) + 7;
-      
-      // Adjust based on dungeon level
-      if (characterLevel > dungeonLevel) {
-        characterLevel--;
-      } else if (characterLevel < dungeonLevel) {
-        characterLevel++;
-      }
-      
-      // Cap at 12th level unless very deep
-      if (characterLevel > 12 && dungeonLevel < 16) {
-        characterLevel = 12;
-      }
+      henchmenInfo = henchmen.map(h => 
+        `${h.class} (Lvl ${h.level}${h.magicItems.length > 0 ? 
+        `, Items: ${h.magicItems.join(", ")}` : ""})`)
+        .join("; ");
     }
-    
-    // Calculate number of men-at-arms or henchmen
-    const otherCount = 9 - characterCount;
     
     return {
-      encounter: `Adventuring Party (${characterCount} level ${characterLevel} character${characterCount > 1 ? 's' : ''}, ${otherCount} henchmen/men-at-arms)`,
-      number: `${characterCount + otherCount}`,
-      notes: `Party: ${partyComposition.join(', ')}`
+      encounter: `Adventuring Party (${characterCount} level ${partyMembers[0].level} character${characterCount > 1 ? 's' : ''}, ${henchmenCount} ${areMenAtArms ? "men-at-arms" : "henchmen"})`,
+      number: `${characterCount + henchmenCount}`,
+      notes: `Party: ${partyInfo}\n${areMenAtArms ? "Men-at-arms" : "Henchmen"}: ${henchmenInfo}`
     };
+  }
+  
+  // Define magic item tables
+  static MAGIC_ITEM_TABLE_I = [
+    { id: 1, item: "2 POTIONS: climbing, flying" },
+    { id: 2, item: "2 POTIONS: extra-healing, polymorph (self)" },
+    { id: 3, item: "2 POTIONS: fire resistance, speed" },
+    { id: 4, item: "2 POTIONS: healing, giant strength" },
+    { id: 5, item: "2 POTIONS: heroism, invulnerability" },
+    { id: 6, item: "2 POTIONS: human control, levitation" },
+    { id: 7, item: "2 POTIONS: super-heroism, animal control" },
+    { id: 8, item: "1 SCROLL: 1 Spell, level 1-6" },
+    { id: 9, item: "1 SCROLL: 2 Spells, level 1-4" },
+    { id: 10, item: "1 SCROLL: protection from magic" },
+    { id: 11, item: "1 RING: mammal control" },
+    { id: 12, item: "1 RING: protection +1" },
+    { id: 13, item: "1 ARMOR: leather +1" },
+    { id: 14, item: "1 SHIELD: +1" },
+    { id: 15, item: "1 SWORD: +1 (no special abilities)" },
+    { id: 16, item: "10 ARROWS: +1" },
+    { id: 17, item: "4 BOLTS: +2" },
+    { id: 18, item: "1 DAGGER: +1 (or +2)" },
+    { id: 19, item: "1 JAVELIN +2" },
+    { id: 20, item: "1 MACE +1" }
+  ];
+  
+  static MAGIC_ITEM_TABLE_II = [
+    { id: 1, item: "1 SCROLL: 3 Spells, level 2-9 or 2-7" },
+    { id: 2, item: "2 RINGS: fire resistance, invisibility" },
+    { id: 3, item: "1 RING: protection +3" },
+    { id: 4, item: "1 STAFF: striking" },
+    { id: 5, item: "1 WAND: illusion" },
+    { id: 6, item: "1 WAND: negation" },
+    { id: 7, item: "1 bracers of defense, armor class 4" },
+    { id: 8, item: "1 brooch of shielding" },
+    { id: 9, item: "1 cloak of elvenkind" },
+    { id: 10, item: "1 dust of appearance" },
+    { id: 11, item: "1 FIGURINE OF WONDROUS POWER: serpentine owl" },
+    { id: 12, item: "3 javelins of lightning" },
+    { id: 13, item: "1 set: chainmail +1, shield +2" },
+    { id: 14, item: "1 ARMOR: splint mail +4" },
+    { id: 15, item: "1 SWORD: +3 (no special abilities)" },
+    { id: 16, item: "2 WEAPONS: crossbow of speed, hammer +2" }
+  ];
+  
+  static MAGIC_ITEM_TABLE_III = [
+    { id: 1, item: "1 RING: spell storing" },
+    { id: 2, item: "1 ROD: cancellation" },
+    { id: 3, item: "1 STAFF: serpent — python or adder" },
+    { id: 4, item: "1 bag of tricks" },
+    { id: 5, item: "1 boots of speed" },
+    { id: 6, item: "1 boots of striding and leaping" },
+    { id: 7, item: "1 cloak of displacement" },
+    { id: 8, item: "1 gauntlets of ogre power" },
+    { id: 9, item: "1 pipe of the sewers" },
+    { id: 10, item: "1 robe of blending" },
+    { id: 11, item: "2 ROPES: climbing, entanglement" },
+    { id: 12, item: "1 set: plate mail +3, shield +2" },
+    { id: 13, item: "1 SHIELD: +5" },
+    { id: 14, item: "1 SWORD: +4, defender" },
+    { id: 15, item: "1 mace +3" },
+    { id: 16, item: "1 spear +3" }
+  ];
+  
+  static MAGIC_ITEM_TABLE_IV = [
+    { id: 1, item: "1 RING: djinni summoning" },
+    { id: 2, item: "1 RING: spell turning" },
+    { id: 3, item: "1 ROD: smiting" },
+    { id: 4, item: "1 WAND: fire" },
+    { id: 5, item: "1 cube of force" },
+    { id: 6, item: "1 eyes of charming" },
+    { id: 7, item: "1 horn of valhalla" },
+    { id: 8, item: "1 robe of scintillating colors" },
+    { id: 9, item: "1 talisman of either ultimate evil or pure good" },
+    { id: 10, item: "1 set: plate mail +4, shield +3" },
+    { id: 11, item: "1 SWORD: wounding" },
+    { id: 12, item: "1 arrow of slaying (select character type)" }
+  ];
+  
+  // Helper method to determine magic items based on character level
+  static _determineMagicItems(characterLevel) {
+    const items = [];
+    
+    // Check for items from Table I
+    let tableIChance = 0;
+    let tableICount = 0;
+    
+    switch (characterLevel) {
+      case 1: tableIChance = 10; tableICount = 1; break;
+      case 2: tableIChance = 20; tableICount = 2; break;
+      case 3: tableIChance = 30; tableICount = 2; break;
+      case 4: tableIChance = 40; tableICount = 2; break;
+      case 5: tableIChance = 50; tableICount = 2; break;
+      case 6: tableIChance = 60; tableICount = 3; break;
+      case 7: tableIChance = 70; tableICount = 3; break;
+      case 8: tableIChance = 80; tableICount = 3; break;
+      case 9: tableIChance = 90; tableICount = 3; break;
+      default: tableIChance = 100; tableICount = 3; break;
+    }
+    
+    if (Math.floor(Math.random() * 100) + 1 <= tableIChance) {
+      for (let i = 0; i < tableICount; i++) {
+        const roll = Math.floor(Math.random() * 20) + 1;
+        const itemEntry = this.MAGIC_ITEM_TABLE_I.find(entry => entry.id === roll);
+        if (itemEntry) {
+          items.push(itemEntry.item);
+        }
+      }
+    }
+    
+    // Check for items from Table II
+    let tableIIChance = 0;
+    let tableIICount = 0;
+    
+    if (characterLevel >= 3) {
+      switch (characterLevel) {
+        case 3: tableIIChance = 10; tableIICount = 1; break;
+        case 4: tableIIChance = 20; tableIICount = 1; break;
+        case 5: tableIIChance = 30; tableIICount = 1; break;
+        case 6: tableIIChance = 40; tableIICount = 2; break;
+        case 7: tableIIChance = 50; tableIICount = 2; break;
+        case 8: tableIIChance = 60; tableIICount = 2; break;
+        case 9: tableIIChance = 70; tableIICount = 2; break;
+        case 10: tableIIChance = 80; tableIICount = 2; break;
+        case 11: tableIIChance = 90; tableIICount = 2; break;
+        default: tableIIChance = 100; tableIICount = 2; break;
+      }
+      
+      if (Math.floor(Math.random() * 100) + 1 <= tableIIChance) {
+        for (let i = 0; i < tableIICount; i++) {
+          // Table II rolls on d8 + d6 (2-14)
+          const roll1 = Math.floor(Math.random() * 8) + 1;
+          const roll2 = Math.floor(Math.random() * 6) + 1;
+          const roll = roll1 + roll2 - 1; // Convert to 1-based index
+          const itemEntry = this.MAGIC_ITEM_TABLE_II.find(entry => entry.id === roll);
+          if (itemEntry) {
+            items.push(itemEntry.item);
+          }
+        }
+      }
+    }
+    
+    // Check for items from Table III
+    let tableIIIChance = 0;
+    
+    if (characterLevel >= 7) {
+      switch (characterLevel) {
+        case 7: tableIIIChance = 10; break;
+        case 8: tableIIIChance = 20; break;
+        case 9: tableIIIChance = 30; break;
+        case 10: tableIIIChance = 40; break;
+        case 11: tableIIIChance = 50; break;
+        case 12: tableIIIChance = 60; break;
+        default: tableIIIChance = 100; break;
+      }
+      
+      if (Math.floor(Math.random() * 100) + 1 <= tableIIIChance) {
+        // Table III rolls on d8 + d6 (2-14)
+        const roll1 = Math.floor(Math.random() * 8) + 1;
+        const roll2 = Math.floor(Math.random() * 6) + 1;
+        const roll = roll1 + roll2 - 1; // Convert to 1-based index
+        const itemEntry = this.MAGIC_ITEM_TABLE_III.find(entry => entry.id === roll);
+        if (itemEntry) {
+          items.push(itemEntry.item);
+        }
+      }
+    }
+    
+    // Check for items from Table IV
+    let tableIVChance = 0;
+    
+    if (characterLevel >= 11) {
+      switch (characterLevel) {
+        case 11: tableIVChance = 10; break;
+        case 12: tableIVChance = 20; break;
+        default: tableIVChance = 60; break;
+      }
+      
+      if (Math.floor(Math.random() * 100) + 1 <= tableIVChance) {
+        // Table IV rolls on d12
+        const roll = Math.floor(Math.random() * 12) + 1;
+        const itemEntry = this.MAGIC_ITEM_TABLE_IV.find(entry => entry.id === roll);
+        if (itemEntry) {
+          items.push(itemEntry.item);
+        }
+      }
+    }
+    
+    return items;
+  }
+  
+  // Helper method to determine magic items based on character level
+  static _determineMagicItems(characterLevel) {
+    const items = [];
+    
+    // Check for items from Table I
+    let tableIChance = 0;
+    let tableICount = 0;
+    
+    switch (characterLevel) {
+      case 1: tableIChance = 10; tableICount = 1; break;
+      case 2: tableIChance = 20; tableICount = 2; break;
+      case 3: tableIChance = 30; tableICount = 2; break;
+      case 4: tableIChance = 40; tableICount = 2; break;
+      case 5: tableIChance = 50; tableICount = 2; break;
+      case 6: tableIChance = 60; tableICount = 3; break;
+      case 7: tableIChance = 70; tableICount = 3; break;
+      case 8: tableIChance = 80; tableICount = 3; break;
+      case 9: tableIChance = 90; tableICount = 3; break;
+      default: tableIChance = 100; tableICount = 3; break;
+    }
+    
+    if (Math.floor(Math.random() * 100) + 1 <= tableIChance) {
+      for (let i = 0; i < tableICount; i++) {
+        const roll = Math.floor(Math.random() * 20) + 1;
+        const itemEntry = this.MAGIC_ITEM_TABLE_I.find(entry => entry.id === roll);
+        if (itemEntry) {
+          items.push(itemEntry.item);
+        }
+      }
+    }
+    
+    // Check for items from Table II
+    let tableIIChance = 0;
+    let tableIICount = 0;
+    
+    if (characterLevel >= 3) {
+      switch (characterLevel) {
+        case 3: tableIIChance = 10; tableIICount = 1; break;
+        case 4: tableIIChance = 20; tableIICount = 1; break;
+        case 5: tableIIChance = 30; tableIICount = 1; break;
+        case 6: tableIIChance = 40; tableIICount = 2; break;
+        case 7: tableIIChance = 50; tableIICount = 2; break;
+        case 8: tableIIChance = 60; tableIICount = 2; break;
+        case 9: tableIIChance = 70; tableIICount = 2; break;
+        case 10: tableIIChance = 80; tableIICount = 2; break;
+        case 11: tableIIChance = 90; tableIICount = 2; break;
+        default: tableIIChance = 100; tableIICount = 2; break;
+      }
+      
+      if (Math.floor(Math.random() * 100) + 1 <= tableIIChance) {
+        for (let i = 0; i < tableIICount; i++) {
+          // Correct procedure for Tables II and III:
+          // Roll 1d6 first, if 1-3 then 1d8 gives result 1-8
+          // If 1d6 is 4-6, then 1d8 gives result 9-16
+          const roll1 = Math.floor(Math.random() * 6) + 1; // 1d6
+          const roll2 = Math.floor(Math.random() * 8) + 1; // 1d8
+          
+          let itemId;
+          if (roll1 <= 3) {
+            itemId = roll2; // Items 1-8
+          } else {
+            itemId = roll2 + 8; // Items 9-16
+          }
+          
+          const itemEntry = this.MAGIC_ITEM_TABLE_II.find(entry => entry.id === itemId);
+          if (itemEntry) {
+            items.push(itemEntry.item);
+          }
+        }
+      }
+    }
+    
+    // Check for items from Table III
+    let tableIIIChance = 0;
+    
+    if (characterLevel >= 7) {
+      switch (characterLevel) {
+        case 7: tableIIIChance = 10; break;
+        case 8: tableIIIChance = 20; break;
+        case 9: tableIIIChance = 30; break;
+        case 10: tableIIIChance = 40; break;
+        case 11: tableIIIChance = 50; break;
+        case 12: tableIIIChance = 60; break;
+        default: tableIIIChance = 100; break;
+      }
+      
+      if (Math.floor(Math.random() * 100) + 1 <= tableIIIChance) {
+        // Same procedure as Table II
+        const roll1 = Math.floor(Math.random() * 6) + 1; // 1d6
+        const roll2 = Math.floor(Math.random() * 8) + 1; // 1d8
+        
+        let itemId;
+        if (roll1 <= 3) {
+          itemId = roll2; // Items 1-8
+        } else {
+          itemId = roll2 + 8; // Items 9-16
+        }
+        
+        const itemEntry = this.MAGIC_ITEM_TABLE_III.find(entry => entry.id === itemId);
+        if (itemEntry) {
+          items.push(itemEntry.item);
+        }
+      }
+    }
+    
+    // Check for items from Table IV
+    let tableIVChance = 0;
+    
+    if (characterLevel >= 11) {
+      switch (characterLevel) {
+        case 11: tableIVChance = 10; break;
+        case 12: tableIVChance = 20; break;
+        default: tableIVChance = 60; break;
+      }
+      
+      if (Math.floor(Math.random() * 100) + 1 <= tableIVChance) {
+        // Table IV rolls on d12
+        const roll = Math.floor(Math.random() * 12) + 1;
+        const itemEntry = this.MAGIC_ITEM_TABLE_IV.find(entry => entry.id === roll);
+        if (itemEntry) {
+          items.push(itemEntry.item);
+        }
+      }
+    }
+    
+    return items;
   }
 
   /**
