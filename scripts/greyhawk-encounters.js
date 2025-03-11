@@ -249,14 +249,21 @@ export class GreyhawkEncounters {
           content += `<p>Notes: ${result.notes}</p>`;
         }
         
-        // Special handling for Character encounters
+          // Special handling for Character encounters
         if (result.monster === "Character" && result.partyInfo) {
           content += `<hr><h4>Adventuring Party</h4>`;
           content += `<p>${result.partyInfo}</p>`;
           if (result.henchmenInfo) {
             content += `<p>${result.henchmenInfo}</p>`;
           }
-        } else if (result.notes) {
+        } 
+        else if (result.adjustedNumber && result.adjustedNumber !== result.number) {
+          content += `<p>Adjusted Number: ${result.adjustedNumber} (based on dungeon level)</p>`;
+          if (result.notes) {
+            content += `<p>Notes: ${result.notes}</p>`;
+          }
+        }
+        else if (result.notes) {
           content += `<p>Notes: ${result.notes}</p>`;
         }
         
@@ -1014,32 +1021,44 @@ if (subtable) {
   if (subtable === "human") {
     const subtableResult = this._rollOnHumanSubtable();
     console.log(`Human subtable result:`, subtableResult);
-    
+   
     monster = subtableResult.encounter;
     numberPattern = subtableResult.number || numberPattern;
     notes = subtableResult.notes || notes;
     subtable = subtableResult.subtable || null;
-    
+   
     // If this is a character encounter from human subtable, generate it
     if (subtable === "character") {
       console.log(`Rolling on character subtable from human subtable`);
       const characterResult = this._generateCharacterEncounter(dungeonLevel);
       console.log(`Character encounter result:`, characterResult);
-      
+     
       numberPattern = characterResult.number.toString() || numberPattern;
       notes = characterResult.notes || notes;
-      
+     
       partyInfo = characterResult.partyInfo;
       henchmenInfo = characterResult.henchmenInfo;
     }
   }
-  // Handle other subtable types here
-}
-
-// Special case: Direct Character encounter (not from human subtable)
-// This handles Monster Level II entry for "Character"
+  else if (subtable === "character") {
+    // Direct handling for character encounters from monster tables
+    console.log(`Direct Character encounter from monster table`);
+    const characterResult = this._generateCharacterEncounter(dungeonLevel);
+    console.log(`Character encounter result:`, characterResult);
+    
+    // Don't change the monster name - keep it as "Character"
+    numberPattern = characterResult.number.toString() || numberPattern;
+    notes = characterResult.notes || notes;
+    
+    // Set the character-specific properties
+    partyInfo = characterResult.partyInfo;
+    henchmenInfo = characterResult.henchmenInfo;
+  }
+  // Add handling for other subtable types as needed
+} 
+// Also handle direct Character monsters (not from a subtable)
 else if (monster === "Character") {
-  console.log(`Direct Character encounter from monster table`);
+  console.log(`Character monster directly from table (no subtable)`);
   const characterResult = this._generateCharacterEncounter(dungeonLevel);
   console.log(`Character encounter result:`, characterResult);
   
