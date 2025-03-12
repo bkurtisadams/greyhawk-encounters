@@ -35,7 +35,7 @@ Hooks.once('init', async function() {
     default: true
   });
 
-  // In your module.js setup code
+  // MM stats
   game.settings.register('greyhawk-encounters', 'useMonsterManualStats', {
     name: "Use Monster Manual Stats for Human Encounters",
     hint: "When enabled, human encounters will use more detailed Monster Manual statistics with proper leaders and special members",
@@ -43,6 +43,16 @@ Hooks.once('init', async function() {
     config: true,
     type: Boolean,
     default: true
+  });
+
+  // last used inputs
+  game.settings.register('greyhawk-encounters', 'lastUsedSettings', {
+    name: "Last Used Encounter Settings",
+    hint: "Automatically saves the last used encounter form settings",
+    scope: "client", // Use client scope so each user has their own saved values
+    config: false,
+    type: Object,
+    default: {}
   });
 
   // Add CSS styles

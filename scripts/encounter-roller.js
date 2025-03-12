@@ -134,20 +134,14 @@ export class GreyhawkEncounterRoller extends Application {
   
   activateListeners(html) {
     super.activateListeners(html);
-    
-    // Toggle between DMG and WoG systems
-    html.find('select[name="encounterSystem"]').change(ev => {
-      const system = ev.currentTarget.value;
-      html.find('.dmg-system-container').toggle(system === 'dmg');
-      html.find('.wog-system-container').toggle(system === 'wog');
+
+      // Load saved values when the form opens
+      this._loadSavedFormValues(html);
       
-      // Update appropriate encounter type options
-      if (system === 'dmg') {
-        this._updateDmgOptions(html.find('select[name="dmgEncounterType"]').val(), html);
-      } else {
-        this._updateWogOptions(html.find('select[name="wogEncounterType"]').val(), html);
-      }
-    });
+      // Save form values when any input changes
+      html.find('select, input').change(ev => {
+        this._saveCurrentFormValues();
+      });
     
     // DMG encounter type
     html.find('select[name="dmgEncounterType"]').change(ev => {
@@ -188,6 +182,111 @@ export class GreyhawkEncounterRoller extends Application {
     // Initialize with default DMG system
     html.find('.dmg-system-container').show();
     this._updateDmgOptions('outdoor', html);
+
+    // Toggle between DMG and WoG systems
+    html.find('select[name="encounterSystem"]').change(ev => {
+      const system = ev.currentTarget.value;
+      html.find('.dmg-system-container').toggle(system === 'dmg');
+      html.find('.wog-system-container').toggle(system === 'wog');
+      
+      // Update appropriate encounter type options
+      if (system === 'dmg') {
+        this._updateDmgOptions(html.find('select[name="dmgEncounterType"]').val(), html);
+      } else {
+        this._updateWogOptions(html.find('select[name="wogEncounterType"]').val(), html);
+      }
+    });
+
+    // Modified event listeners that should save form values after changing
+    html.find('select[name="encounterSystem"]').change(ev => {
+      const system = ev.currentTarget.value;
+      html.find('.dmg-system-container').toggle(system === 'dmg');
+      html.find('.wog-system-container').toggle(system === 'wog');
+      
+      // Update appropriate encounter type options
+      if (system === 'dmg') {
+        this._updateDmgOptions(html.find('select[name="dmgEncounterType"]').val(), html);
+      } else {
+        this._updateWogOptions(html.find('select[name="wogEncounterType"]').val(), html);
+      }
+      
+      this._saveCurrentFormValues();
+    });
+    
+    // Similar modifications for other event handlers
+    html.find('select[name="dmgEncounterType"]').change(ev => {
+      const type = ev.currentTarget.value;
+      this._updateDmgOptions(type, html);
+      this._saveCurrentFormValues();
+    });
+    
+    html.find('select[name="wogEncounterType"]').change(ev => {
+      const type = ev.currentTarget.value;
+      this._updateWogOptions(type, html);
+      this._saveCurrentFormValues();
+    });
+    
+    html.find('select[name="regionType"]').change(ev => {
+      const type = ev.currentTarget.value;
+      this._updateRegionList(type, html);
+      this._saveCurrentFormValues();
+    });
+    
+    // Initialize with default DMG system if no saved settings
+    if (!html.find('.dmg-system-container').is(':visible') && 
+        !html.find('.wog-system-container').is(':visible')) {
+      html.find('.dmg-system-container').show();
+      this._updateDmgOptions('outdoor', html);
+    }
+  }
+
+  // Save current form values when they change
+  _saveCurrentFormValues() {
+    const html = this.element;
+    const formData = {};
+    
+    // Collect all form values
+    html.find('select, input').each((i, el) => {
+      if (el.name) {
+        formData[el.name] = el.value;
+      }
+    });
+    
+    // Save to game settings
+    game.settings.set('greyhawk-encounters', 'lastUsedSettings', formData);
+  }
+
+  // Load saved form values
+  _loadSavedFormValues(html) {
+    const savedSettings = game.settings.get('greyhawk-encounters', 'lastUsedSettings');
+    
+    if (!savedSettings || Object.keys(savedSettings).length === 0) {
+      return; // No saved settings
+    }
+    
+    // Apply each saved value to the form
+    for (const [key, value] of Object.entries(savedSettings)) {
+      const el = html.find(`[name="${key}"]`);
+      if (el.length) {
+        el.val(value);
+      }
+    }
+    
+    // Trigger change events for key dropdowns to update form visibility
+    html.find('select[name="encounterSystem"]').trigger('change');
+    
+    // Get the currently shown system and trigger its encounter type change
+    const system = savedSettings.encounterSystem || 'dmg';
+    if (system === 'dmg') {
+      html.find('select[name="dmgEncounterType"]').trigger('change');
+    } else {
+      html.find('select[name="wogEncounterType"]').trigger('change');
+    }
+    
+    // For WoG regional encounters, update the region list
+    if (system === 'wog' && savedSettings.wogEncounterType === 'regional') {
+      this._updateRegionList(savedSettings.regionType || 'political', html);
+    }
   }
 
   _updateDmgOptions(encounterType, html) {
