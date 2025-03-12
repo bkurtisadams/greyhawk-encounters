@@ -190,8 +190,22 @@ export class GreyhawkEncounters {
       case 'outdoor': {
         // Add the encounter chance roll information
         if (result.initialRoll !== undefined) {
-          content += `<p>Encounter Check: ${result.initialRoll} on d${result.dieSize} (needed 1)</p>`;
-      }
+          if (result.initialRoll === 1) {
+            // Highlight successful rolls with bold, color, and an exclamation
+            content += `<p>Encounter Check: <strong style="color: #990000;">1</strong> on d${result.dieSize} (Encounter!)</p>`;
+          } else {
+            content += `<p>Encounter Check: ${result.initialRoll} on d${result.dieSize} (No encounter)</p>`;
+          }
+        }
+        
+        // Always add terrain and population
+        content += `<p>Terrain: ${options.terrain || 'Unknown'}</p>
+                    <p>Population: ${options.population || 'Unknown'}</p>`;
+        
+        // Always display distance if available (for all outdoor encounters)
+        if (result.distance !== undefined) {
+          content += `<p>Encounter Distance: ${result.distance}" (${result.distance * 10} yards)</p>`;
+        }
         
         if (result.result === "No encounter" || result.result === "No encounter check needed at this time of day") {
           content += `<p>Terrain: ${options.terrain || 'Unknown'}</p>
@@ -271,6 +285,11 @@ export class GreyhawkEncounters {
           }
          
           content += `<p>Number: ${result.number || '1'}</p>`;
+
+          // Add encounter distance here
+          if (result.distance !== undefined) {
+            content += `<p>Distance: ${result.distance}" (${result.distance * 10} yards)</p>`;
+          }
          
           if (result.notes) {
             content += `<p>Notes: ${result.notes}</p>`;
@@ -1040,7 +1059,9 @@ export class GreyhawkEncounters {
         // 10% chance of character encounter from Men subtable
         if (subtableRoll >= 11 && subtableRoll <= 20) {
           console.log("Men subtable resulted in Character encounter");
-          return this._generateCharacterEncounter(1, true); // true indicates wilderness encounter
+        // true indicates wilderness encounter
+        const isWilderness = (options.population === 'uninhabited'); // or another appropriate check
+        return this._generateCharacterEncounter(1, isWilderness);
         }
       }
       
@@ -1103,6 +1124,9 @@ export class GreyhawkEncounters {
     // Check if creature is airborne
     const isAirborne = options.isAirborne || (encounter.isAirborne && Math.random() < 0.75);
     
+    // Calculate encounter distance 
+    const encounterDistance = this._getEncounterDistance(dmgTerrain);
+
     return {
       result: "Encounter",
       typeRoll: roll,
@@ -1110,7 +1134,8 @@ export class GreyhawkEncounters {
       number: number,
       climate: climate,
       terrain: dmgTerrain,
-      isAirborne: isAirborne,
+      population: population,
+      distance: encounterDistance,  // Add the calculated distance here
       notes: isAirborne ? "Encountered while airborne" : ""
     };
   }
@@ -1185,66 +1210,47 @@ export class GreyhawkEncounters {
 }
 
 // Helper to roll on creature subtables
-static _rollOnSubtable(subtableName, roll) {
-  // Define subtables from DMG Appendix C
-  const subtables = {
-    demi_human: [
-      { min: 1, max: 5, creature: "Dwarf", number: "2d6" },
-      { min: 6, max: 70, creature: "Elf", number: "2d6" },
-      { min: 71, max: 80, creature: "Gnome", number: "2d6" },
-      { min: 81, max: 100, creature: "Halfling", number: "3d6" }
-    ],
-    dragon: [
-      { min: 1, max: 2, creature: "Black Dragon", number: "1" },
-      { min: 3, max: 4, creature: "Blue Dragon", number: "1" },
-      { min: 5, max: 6, creature: "Brass Dragon", number: "1" },
-      { min: 7, max: 8, creature: "Bronze Dragon", number: "1" },
-      { min: 9, max: 10, creature: "Chimera", number: "1" },
-      { min: 11, max: 12, creature: "Copper Dragon", number: "1" },
-      { min: 13, max: 28, creature: "Gold Dragon", number: "1" },
-      { min: 29, max: 30, creature: "Green Dragon", number: "1" },
-      { min: 31, max: 32, creature: "Red Dragon", number: "1" },
-      { min: 33, max: 34, creature: "White Dragon", number: "1" },
-      { min: 35, max: 100, creature: "Wyvern", number: "1" }
-    ],
-    giant: [
-      { min: 1, max: 2, creature: "Cloud Giant", number: "1" },
-      { min: 3, max: 4, creature: "Ettin", number: "1d2" },
-      { min: 5, max: 6, creature: "Fire Giant", number: "1d2" },
-      { min: 7, max: 8, creature: "Frost Giant", number: "1d2" },
-      { min: 9, max: 95, creature: "Hill Giant", number: "1d4" },
-      { min: 96, max: 98, creature: "Stone Giant", number: "1" },
-      { min: 99, max: 99, creature: "Storm Giant", number: "1" },
-      { min: 100, max: 100, creature: "Titan", number: "1" }
-    ],
-    humanoid: [
-      { min: 1, max: 5, creature: "Gnoll", number: "2d6" },
-      { min: 6, max: 10, creature: "Goblin", number: "3d6" },
-      { min: 11, max: 15, creature: "Hobgoblin", number: "2d6" },
-      { min: 16, max: 100, creature: "Orc", number: "3d6" }
-    ],
-    men: [
-      { min: 1, max: 5, creature: "Bandit", number: "2d6" },
-      { min: 6, max: 7, creature: "Berserker", number: "1d6" },
-      { min: 8, max: 10, creature: "Brigand", number: "2d6" },
-      { min: 23, max: 60, creature: "Merchant", number: "1d6" },
-      { min: 61, max: 90, creature: "Nomad", number: "3d10" },
-      { min: 91, max: 95, creature: "Pilgrim", number: "2d6" },
-      { min: 96, max: 100, creature: "Tribesman", number: "3d10" }
-    ],
-    snake: [
-      { min: 1, max: 10, creature: "Amphisbaena", number: "1" },
-      { min: 11, max: 80, creature: "Poisonous Snake", number: "1d3" },
-      { min: 81, max: 100, creature: "Spitting Snake", number: "1" }
-    ]
-    // Add other subtables as needed
-  };
+// In greyhawk-encounters.js:
+
+static _rollOnSubtable(subtableName, roll, subtableSet = null, terrain = null) {
+  console.log(`Rolling on subtable: ${subtableName}, terrain: ${terrain}, roll: ${roll}`);
   
-  const subtable = subtables[subtableName];
+  // Instead of defining DMG_TERRAIN_SUBTABLES here, use the imported tables
+  
+  // Try to find the right subtable
+  let subtable = null;
+  
+  // First check for terrain-specific subtable in your main tables
+  if (terrain) {
+    // Check for terrain-specific versions like "demi_human_mountains"
+    const terrainSpecificName = `${subtableName}_${terrain}`;
+    if (DMG_TABLES.TEMPERATE_SUBTABLES[terrainSpecificName]) {
+      subtable = DMG_TABLES.TEMPERATE_SUBTABLES[terrainSpecificName];
+    }
+    // Check for a terrain key within the subtable
+    else if (DMG_TABLES.DMG_TERRAIN_SUBTABLES && 
+             DMG_TABLES.DMG_TERRAIN_SUBTABLES[subtableName] &&
+             DMG_TABLES.DMG_TERRAIN_SUBTABLES[subtableName][terrain]) {
+      subtable = DMG_TABLES.DMG_TERRAIN_SUBTABLES[subtableName][terrain];
+    }
+  }
+  
+  // If no terrain-specific table, try the provided subtableSet
+  if (!subtable && subtableSet && subtableSet[subtableName]) {
+    subtable = subtableSet[subtableName];
+  }
+  
+  // Finally fall back to general subtables
+  if (!subtable && DMG_TABLES.TEMPERATE_SUBTABLES[subtableName]) {
+    subtable = DMG_TABLES.TEMPERATE_SUBTABLES[subtableName];
+  }
+  
   if (!subtable) {
+    console.warn(`No subtable found for ${subtableName} with terrain ${terrain}`);
     return { creature: "Unknown (subtable not found)" };
   }
   
+  // Find matching entry
   for (const entry of subtable) {
     if (roll >= entry.min && roll <= entry.max) {
       return entry;
@@ -1548,9 +1554,9 @@ else if (monster === "Character") {
   }
 
   // Helper method to generate character encounters
-  static _generateCharacterEncounter(dungeonLevel) {
+  static _generateCharacterEncounter(dungeonLevel, isWilderness = false) {
     console.log(`Generating character encounter, dungeon level: ${dungeonLevel}, wilderness: ${isWilderness}`);
-  
+    
     // For wilderness encounters, use the special note guidelines from the DMG
     if (isWilderness) {
       // Number of characters in party (standard adventuring party)
@@ -2037,38 +2043,39 @@ else if (monster === "Character") {
 
   static _getEncounterDistance(terrain, surpriseValue = 0) {
     // Base encounter distance is 6d4 (6" to 24")
-    let distance = 0;
+    // Roll 6d4 and track individual die results for terrain modifiers
+    const dieResults = [];
+    let totalDistance = 0;
+    
     for (let i = 0; i < 6; i++) {
-      distance += Math.floor(Math.random() * 4) + 1;
+      const dieRoll = Math.floor(Math.random() * 4) + 1;
+      dieResults.push(dieRoll);
+      totalDistance += dieRoll;
     }
     
-    // Apply surprise modifier
-    distance -= surpriseValue;
+    // Apply surprise modifier if provided
+    totalDistance -= surpriseValue;
     
     // Apply terrain modifiers
+    let terrainModifier = 0;
+    
     if (terrain === 'scrub') {
       // -1 per die on all 3's and 4's
-      for (let i = 0; i < 6; i++) {
-        const dieRoll = Math.floor(Math.random() * 4) + 1;
-        if (dieRoll >= 3) {
-          distance -= 1;
-        }
-      }
+      terrainModifier = dieResults.filter(die => die >= 3).length * -1;
     } else if (terrain === 'forest') {
       // -1 per die on all numbers
-      distance -= 6;
+      terrainModifier = -6;
     } else if (terrain === 'marsh') {
       // -1 per die on all 2's, 3's, and 4's
-      for (let i = 0; i < 6; i++) {
-        const dieRoll = Math.floor(Math.random() * 4) + 1;
-        if (dieRoll >= 2) {
-          distance -= 1;
-        }
-      }
+      terrainModifier = dieResults.filter(die => die >= 2).length * -1;
     }
+    // Plain, desert, hills, and mountains have no modifiers
     
-    // Ensure minimum distance of 0
-    return Math.max(0, distance);
+    const finalDistance = Math.max(0, totalDistance + terrainModifier);
+    
+    console.log(`Encounter distance: Base=${totalDistance}, Terrain=${terrain}, Modifier=${terrainModifier}, Final=${finalDistance}`);
+    
+    return finalDistance;
   }
 
   static calculateForcedMarchImpact(percentForced) {
@@ -2105,5 +2112,167 @@ else if (monster === "Character") {
       result: "Error generating encounter",
       options: options
     };
+  }
+
+  static _generateHumanEncounter(humanType, population = 'uninhabited') {
+    console.log(`Generating ${humanType} encounter`);
+    
+    let baseNumber = 0;
+    let leaderLevel = 0;
+    let notes = "";
+    let specialMembers = [];
+    
+    switch(humanType.toLowerCase()) {
+      case 'bandit':
+      case 'brigand': {
+        // Roll 20-200 bandits (or appropriate for dungeon)
+        baseNumber = population === 'uninhabited' ? Math.floor(Math.random() * 181) + 20 : Math.floor(Math.random() * 31) + 10;
+        
+        // Calculate leader levels based on MM rules
+        const isBrigand = humanType.toLowerCase() === 'brigand';
+        
+        // Leader level based on group size
+        if (baseNumber < 100) leaderLevel = 8;
+        else if (baseNumber < 150) leaderLevel = 9;
+        else leaderLevel = 10;
+        
+        // Add lieutenants and guards
+        specialMembers.push({
+          type: "Fighter", 
+          level: leaderLevel,
+          role: "Leader"
+        });
+        
+        specialMembers.push({
+          type: "Fighter", 
+          level: 7,
+          role: "Lieutenant"
+        });
+        
+        // Add 6 guards
+        for (let i = 0; i < 6; i++) {
+          specialMembers.push({
+            type: "Fighter", 
+            level: 2,
+            role: "Guard"
+          });
+        }
+        
+        // Add high level fighters based on group size
+        const thirdLevelCount = Math.floor(baseNumber / 20);
+        const fourthLevelCount = Math.floor(baseNumber / 30);
+        const fifthLevelCount = Math.floor(baseNumber / 40);
+        const sixthLevelCount = Math.floor(baseNumber / 50);
+        
+        for (let i = 0; i < thirdLevelCount; i++) {
+          specialMembers.push({
+            type: "Fighter", 
+            level: 3,
+            role: "Sergeant"
+          });
+        }
+        
+        // Continue for other fighter levels...
+        
+        // Check for magic-user
+        const magicUserChance = Math.floor(baseNumber / 50) * 25;
+        if (Math.random() * 100 < magicUserChance) {
+          const muLevel = Math.floor(Math.random() * 4) + 7; // 7-10
+          specialMembers.push({
+            type: "Magic-User", 
+            level: muLevel,
+            role: "Advisor"
+          });
+        }
+        
+        // Check for cleric
+        const clericChance = Math.floor(baseNumber / 50) * 15;
+        if (Math.random() * 100 < clericChance) {
+          const clericLevel = Math.floor(Math.random() * 2) + 5; // 5-6
+          specialMembers.push({
+            type: "Cleric", 
+            level: clericLevel,
+            role: "Healer"
+          });
+          
+          // Assistant cleric
+          const assistantLevel = Math.floor(Math.random() * 2) + 3; // 3-4
+          specialMembers.push({
+            type: "Cleric", 
+            level: assistantLevel,
+            role: "Assistant Healer"
+          });
+        }
+        
+        // Calculate equipment percentages
+        notes = isBrigand ? "Chaotic evil bandits with high morale (+1)" : "Neutral bandits";
+        notes += `\nArmed with: ${_calculateBanditEquipment(baseNumber)}`;
+        break;
+      }
+      
+      case 'merchant': {
+        // Roll 50-300 people in caravan
+        baseNumber = Math.floor(Math.random() * 251) + 50;
+        
+        // 10% merchants, 10% drovers, 80% guards
+        const merchants = Math.floor(baseNumber * 0.1);
+        const drovers = Math.floor(baseNumber * 0.1);
+        const guards = baseNumber - merchants - drovers;
+        
+        // Add caravan leader
+        const leaderLevel = Math.floor(Math.random() * 6) + 6; // 6-11
+        specialMembers.push({
+          type: "Fighter", 
+          level: leaderLevel,
+          role: "Caravan Leader"
+        });
+        
+        // Add lieutenant
+        specialMembers.push({
+          type: "Fighter", 
+          level: leaderLevel - 1,
+          role: "Lieutenant"
+        });
+        
+        // Add special characters based on caravan size
+        // Magic-user check
+        const muChance = Math.floor(baseNumber / 50) * 10;
+        if (Math.random() * 100 < muChance) {
+          const muLevel = Math.floor(Math.random() * 3) + 6; // 6-8
+          specialMembers.push({
+            type: "Magic-User", 
+            level: muLevel,
+            role: "Advisor"
+          });
+        }
+        
+        // Similar code for clerics and thieves
+        
+        notes = `Merchants: ${merchants}, Drovers: ${drovers}, Guards: ${guards}`;
+        notes += "\nCarrying merchandise worth 10,000-60,000 gp";
+        notes += "\nPay chest: 2,000-4,000 gp, 100-400 pp, 4-16 gems";
+        break;
+      }
+      
+      // Add cases for other human types: Berserker, Dervish, Nomad, Pilgrim, Tribesman
+    }
+    
+    return {
+      result: "Human Encounter",
+      encounter: humanType,
+      number: baseNumber,
+      specialMembers: specialMembers,
+      notes: notes,
+      distance: _getEncounterDistance(terrain)
+    };
+  }
+  
+  // Helper function to calculate bandit equipment
+  static _calculateBanditEquipment(number) {
+    // Calculate equipment based on percentages from Monster Manual
+    const mountedPercent = terrain === 'hills' || terrain === 'mountains' ? 10 : 90;
+    
+    // Calculate equipment types
+    return "Medium horse, chainmail & shield, sword (10%), etc."; // Full calculation in actual implementation
   }
 }
