@@ -208,69 +208,70 @@ export class GreyhawkEncounters {
         }
         
         if (result.result === "No encounter" || result.result === "No encounter check needed at this time of day") {
-          content += `<p>Terrain: ${options.terrain || 'Unknown'}</p>
-                      <p>Population: ${options.population || 'Unknown'}</p>
-                      <p>Time of Day: ${options.timeOfDay || 'Unknown'}</p>
+          content += `<p>Time of Day: ${options.timeOfDay || 'Unknown'}</p>
                       <p>Result: ${result.result || 'Unknown'}</p>`;
         } else if (result.result === "Patrol Encounter") {
-          content += `<p>Terrain: ${options.terrain || 'Unknown'}</p>
-                      <p>Population: ${options.population || 'Unknown'}</p>
-                      <p>Result: Patrol Encounter</p>
+          // Your existing patrol encounter handling
+          content += `<p>Result: Patrol Encounter</p>
                       <p>Patrol Type: ${result.patrolType || 'Standard'}</p>`;
           if (result.leader) {
             content += `<p>Leader: Level ${result.leader.level || '3'} ${result.leader.class || 'Fighter'}</p>`;
           }
-          if (result.lieutenant) {
-            content += `<p>Lieutenant: Level ${result.lieutenant.level || '2'} ${result.lieutenant.class || 'Fighter'}</p>`;
-          }
-          if (result.sergeant) {
-            content += `<p>Sergeant: Level ${result.sergeant.level || '1'} ${result.sergeant.class || 'Fighter'}</p>`;
-          }
-          content += `<p>Troops: ${result.troops || '6'} Soldiers</p>`;
-          if (result.spellcaster) {
-            content += `<p>Spellcaster: Level ${result.spellcaster.level || '1'} ${result.spellcaster.class || 'Magic-User'}</p>`;
-          }
+          // Rest of patrol display code...
         } else if (result.result === "Fortress Encounter") {
-          content += `<p>Terrain: ${options.terrain || 'Unknown'}</p>
-                      <p>Population: ${options.population || 'Unknown'}</p>
-                      <p>Result: Fortress Encounter</p>
+          // Your existing fortress encounter handling
+          content += `<p>Result: Fortress Encounter</p>
                       <p>Size: ${result.size}</p>
                       <p>Type: ${result.type}</p>
                       <p>Inhabitants: ${result.inhabitants}</p>`;
-          
-          // Now add the distance with proper syntax
-          if (result.distanceInMiles) {
-            content += `<p>Distance: ${result.distanceInMiles} miles</p>`;
+          // Rest of fortress display code...
+        } 
+        // Add new case for MM human encounters with special members
+        else if (result.specialMembers && result.specialMembers.length > 0) {
+          content += `<p>Time of Day: ${options.timeOfDay || 'Unknown'}</p>
+                      <p>Encounter: ${result.encounter || 'Unknown Creature'}</p>
+                      <p>Number: ${result.number || '1'}</p>`;
+                      
+          // Display alignment if available
+          if (result.alignment) {
+            content += `<p>Alignment: ${result.alignment}</p>`;
           }
           
-          if (result.details) {
-            if (typeof result.details === 'object') {
-              if (result.details.type) {
-                content += `<p>Type: ${result.details.type}</p>`;
-              }
-              if (result.details.number) {
-                content += `<p>Number: ${result.details.number}</p>`;
-              }
-              if (result.details.leader) {
-                content += `<p>Leader: ${result.details.leader}</p>`;
-              }
-              if (result.details.description) {
-                content += `<p>Description: ${result.details.description}</p>`;
-              } else {
-                content += `<p>Details: ${JSON.stringify(result.details)}</p>`;
-              }
+          // Special section for leader types
+          content += `<hr><h4>Special Members</h4>`;
+          
+          // Group members by role to avoid repetition
+          const membersByRole = {};
+          for (const member of result.specialMembers) {
+            if (!membersByRole[member.role]) {
+              membersByRole[member.role] = {
+                level: member.level,
+                type: member.type,
+                count: 1
+              };
             } else {
-              content += `<p>Details: ${result.details}</p>`;
+              membersByRole[member.role].count++;
             }
           }
           
+          // Display grouped members
+          for (const [role, info] of Object.entries(membersByRole)) {
+            content += `<p>${info.count > 1 ? info.count + ' ' : ''}${role}${info.count > 1 ? 's' : ''}: Level ${info.level} ${info.type}</p>`;
+          }
+          
+          // Add notes section if available
           if (result.notes) {
-            content += `<p>Notes: ${result.notes}</p>`;
+            content += `<hr><h4>Notes</h4>`;
+            const noteLines = result.notes.split('\n');
+            for (const line of noteLines) {
+              if (line.trim()) { // Only add non-empty lines
+                content += `<p>${line}</p>`;
+              }
+            }
           }
         } else if (result.result === "Encounter") {
-          content += `<p>Terrain: ${options.terrain || 'Unknown'}</p>
-                      <p>Population: ${options.population || 'Unknown'}</p>
-                      <p>Time of Day: ${options.timeOfDay || 'Unknown'}</p>
+          // Your existing standard encounter handling
+          content += `<p>Time of Day: ${options.timeOfDay || 'Unknown'}</p>
                       <p>Table Roll: ${result.typeRoll || 'N/A'}</p>`;
          
           if (result.subtableType && result.subtableRoll) {
@@ -285,19 +286,13 @@ export class GreyhawkEncounters {
           }
          
           content += `<p>Number: ${result.number || '1'}</p>`;
-
-          // Add encounter distance here
-          if (result.distance !== undefined) {
-            content += `<p>Distance: ${result.distance}" (${result.distance * 10} yards)</p>`;
-          }
          
           if (result.notes) {
             content += `<p>Notes: ${result.notes}</p>`;
           }
         } else {
-          content += `<p>Terrain: ${options.terrain || 'Unknown'}</p>
-                      <p>Population: ${options.population || 'Unknown'}</p>
-                      <p>Result: ${result.result || 'Unknown'}</p>`;
+          // Default case
+          content += `<p>Result: ${result.result || 'Unknown'}</p>`;
         }
         break;
       }
@@ -1056,12 +1051,43 @@ export class GreyhawkEncounters {
       
       // Special handling for "men" subtable - check for character encounter
       if (subtableNeeded === "men") {
+        console.log(`Rolling on men subtable with roll ${subtableRoll}`);
+        
         // 10% chance of character encounter from Men subtable
         if (subtableRoll >= 11 && subtableRoll <= 20) {
           console.log("Men subtable resulted in Character encounter");
-        // true indicates wilderness encounter
-        const isWilderness = (options.population === 'uninhabited'); // or another appropriate check
-        return this._generateCharacterEncounter(1, isWilderness);
+          const isWilderness = (options.population === 'uninhabited');
+          return this._generateCharacterEncounter(1, isWilderness);
+        }
+        
+        // Process the regular men subtable result
+        const subtableResult = this._rollOnSubtable(subtableNeeded, subtableRoll, subtableSet, terrain);
+        
+        // Check if we should use Monster Manual statistics
+        const useMMStats = game.settings.get('greyhawk-encounters', 'useMonsterManualStats');
+        
+        if (useMMStats && ["Bandit", "Berserker", "Brigand", "Dervish", "Merchant", "Nomad", "Pilgrim", "Tribesman"].includes(subtableResult.creature)) {
+          console.log(`Using MM stats for ${subtableResult.creature}`);
+          return this._generateMMHumanEncounter(subtableResult.creature.toLowerCase(), options);
+        } else {
+          // Use the basic DMG approach - calculate number from the pattern
+          let number;
+          try {
+            number = rollNumberFromPattern(subtableResult.number || "1d6");
+          } catch (error) {
+            console.error("Error rolling number pattern:", error);
+            number = 1;
+          }
+          
+          return {
+            result: "Encounter",
+            encounter: subtableResult.creature,
+            subtableType: "men",
+            subtableRoll: subtableRoll,
+            number: number,
+            distance: this._getEncounterDistance(dmgTerrain),
+            notes: subtableResult.notes || ""
+          };
         }
       }
       
@@ -1137,6 +1163,163 @@ export class GreyhawkEncounters {
       population: population,
       distance: encounterDistance,  // Add the calculated distance here
       notes: isAirborne ? "Encountered while airborne" : ""
+    };
+  }
+
+  static _generateMMHumanEncounter(humanType, options) {
+    console.log(`Generating MM-style ${humanType} encounter`);
+    
+    const terrain = options.terrain || 'plain';
+    const isWilderness = options.population === 'uninhabited';
+    
+    // Get the MM table for this human type
+    const mmTable = DMG_TABLES.MM_HUMAN_TABLES[humanType];
+    if (!mmTable) {
+      console.warn(`No MM table found for ${humanType}`);
+      return null;
+    }
+    
+    // Determine base number
+    let baseNumber;
+    if (isWilderness) {
+      baseNumber = Math.floor(Math.random() * (mmTable.numberRange[1] - mmTable.numberRange[0] + 1)) + mmTable.numberRange[0];
+    } else if (mmTable.dungeonNumberRange) {
+      baseNumber = Math.floor(Math.random() * (mmTable.dungeonNumberRange[1] - mmTable.dungeonNumberRange[0] + 1)) + mmTable.dungeonNumberRange[0];
+    } else {
+      baseNumber = Math.floor(mmTable.numberRange[0] / 2);
+    }
+    
+    // Determine leader level
+    let leaderLevel;
+    if (mmTable.leaderLevels) {
+      if (typeof mmTable.leaderLevels === 'object') {
+        if (baseNumber < 100) leaderLevel = mmTable.leaderLevels.small;
+        else if (baseNumber < 150) leaderLevel = mmTable.leaderLevels.medium;
+        else leaderLevel = mmTable.leaderLevels.large;
+      } else {
+        leaderLevel = mmTable.leaderLevels;
+      }
+    }
+    
+    // Generate special members
+    const specialMembers = [];
+    
+    // Add leader
+    if (leaderLevel) {
+      specialMembers.push({
+        type: "Fighter",
+        level: typeof leaderLevel === 'object' ? leaderLevel.chief : leaderLevel,
+        role: "Leader"
+      });
+      
+      // Add subchiefs/lieutenants if defined
+      if (typeof leaderLevel === 'object' && leaderLevel.subchiefs) {
+        specialMembers.push({
+          type: "Fighter",
+          level: leaderLevel.subchiefs,
+          role: "Subchieftain"
+        });
+      }
+    }
+    
+    // Process all special members
+    if (mmTable.specialMembers) {
+      for (const [role, details] of Object.entries(mmTable.specialMembers)) {
+        // Skip processing if this is for leader level
+        if (role === 'leader') continue;
+        
+        // Determine count of this member type
+        let count = details.count || 1;
+        if (details.countFormula) {
+          // Handle dice notation and math formulas
+          if (details.countFormula.includes('d')) {
+            count = rollNumberFromPattern(details.countFormula);
+          } else {
+            // Evaluate math formula with 'number' variable
+            const number = baseNumber;
+            count = eval(details.countFormula);
+          }
+        }
+        
+        // Check if there's a chance formula
+        if (details.chanceFormula) {
+          const number = baseNumber;
+          const chance = eval(details.chanceFormula);
+          if (Math.random() * 100 >= chance) {
+            continue; // Skip this member type
+          }
+        }
+        
+        // Handle level ranges
+        let level = details.level;
+        if (typeof level === 'string' && level.includes('-')) {
+          const levels = level.split('-').map(l => parseInt(l));
+          level = Math.floor(Math.random() * (levels[1] - levels[0] + 1)) + levels[0];
+        }
+        
+        // Add the special members
+        for (let i = 0; i < count; i++) {
+          specialMembers.push({
+            type: details.class,
+            level: level,
+            role: role.charAt(0).toUpperCase() + role.slice(1)
+          });
+        }
+        
+        // Add assistants if defined
+        if (details.assistant) {
+          let assistantCount = details.assistant.count || 1;
+          if (details.assistant.countFormula) {
+            if (details.assistant.countFormula.includes('d')) {
+              assistantCount = rollNumberFromPattern(details.assistant.countFormula);
+            } else {
+              const number = baseNumber;
+              assistantCount = eval(details.assistant.countFormula);
+            }
+          }
+          
+          // Handle assistant level ranges
+          let assistantLevel = details.assistant.level;
+          if (typeof assistantLevel === 'string' && assistantLevel.includes('-')) {
+            const levels = assistantLevel.split('-').map(l => parseInt(l));
+            assistantLevel = Math.floor(Math.random() * (levels[1] - levels[0] + 1)) + levels[0];
+          }
+          
+          // Add the assistants
+          for (let i = 0; i < assistantCount; i++) {
+            specialMembers.push({
+              type: details.assistant.class,
+              level: assistantLevel,
+              role: "Assistant " + role.charAt(0).toUpperCase() + role.slice(1)
+            });
+          }
+        }
+      }
+    }
+    
+    // Generate equipment description
+    let equipmentText = "";
+    if (mmTable.equipment && mmTable.equipment.length > 0) {
+      equipmentText = "Equipment:\n";
+      for (const eq of mmTable.equipment) {
+        equipmentText += `${eq.percent}%: ${eq.type}\n`;
+      }
+    }
+    
+    // Combine notes
+    let notes = mmTable.notes || "";
+    if (equipmentText) notes += "\n" + equipmentText;
+    if (mmTable.morale) notes += "\nMorale: " + mmTable.morale;
+    
+    return {
+      result: "Encounter",
+      typeRoll: 0,
+      encounter: humanType.charAt(0).toUpperCase() + humanType.slice(1),
+      number: baseNumber,
+      specialMembers: specialMembers,
+      distance: this._getEncounterDistance(terrain),
+      alignment: mmTable.alignment,
+      notes: notes
     };
   }
 

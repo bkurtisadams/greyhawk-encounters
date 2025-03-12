@@ -35,6 +35,16 @@ Hooks.once('init', async function() {
     default: true
   });
 
+  // In your module.js setup code
+  game.settings.register('greyhawk-encounters', 'useMonsterManualStats', {
+    name: "Use Monster Manual Stats for Human Encounters",
+    hint: "When enabled, human encounters will use more detailed Monster Manual statistics with proper leaders and special members",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
   // Add CSS styles
   const styles = `
     .region-options {

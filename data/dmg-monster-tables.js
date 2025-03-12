@@ -1080,154 +1080,458 @@ export const TEMPERATE_UNINHABITED_TABLES = {
         { min: 93, max: 94, creature: "Wasp, giant", number: "1d6" },
         { min: 95, max: 96, creature: "Weasel, giant", number: "1d2" },
         { min: 97, max: 100, creature: "Will-o-wisp", number: "1" }
-      ],
+      ]
+};
 
     // Complete this set of subtables to add to your TEMPERATE_SUBTABLES object
-
-// Frog Subtable
-frog: [
-    { min: 1, max: 70, creature: "Giant Frog", number: "2d6" },
-    { min: 71, max: 80, creature: "Killer Frog", number: "2d6" },
-    { min: 81, max: 100, creature: "Poisonous Frog", number: "1d6" }
-  ],
+    export const DMG_TERRAIN_SUBTABLES = {
   
-  // Complete Undead Subtable
-  undead: [
-    { min: 1, max: 10, creature: "Ghast", number: "1d4" },
-    { min: 11, max: 12, creature: "Ghost", number: "1" },
-    { min: 13, max: 55, creature: "Ghoul", number: "1d6" },
-    { min: 56, max: 56, creature: "Lich", number: "1" },
-    { min: 57, max: 70, creature: "Shadow", number: "1d8" },
-    { min: 71, max: 79, creature: "Spectre", number: "1d4" },
-    { min: 80, max: 89, creature: "Vampire", number: "1" },
-    { min: 90, max: 96, creature: "Wight", number: "1d6" },
-    { min: 97, max: 100, creature: "Wraith", number: "1d4" }
-  ],
-  
-  // Lycanthrope Subtable for Mountains
-  lycanthrope_mountains: [
-    { min: 1, max: 75, creature: "Werebear", number: "1d2" },
-    { min: 76, max: 80, creature: "Wererat", number: "1d6" },
-    { min: 81, max: 90, creature: "Weretiger", number: "1d2" },
-    { min: 91, max: 100, creature: "Werewolf", number: "1d6" }
-  ],
-  
-  // Lycanthrope Subtable for Hills
-  lycanthrope_hills: [
-    { min: 1, max: 2, creature: "Werebear", number: "1d2" },
-    { min: 3, max: 15, creature: "Wereboar", number: "1d4" },
-    { min: 16, max: 20, creature: "Wererat", number: "1d6" },
-    { min: 21, max: 30, creature: "Weretiger", number: "1d2" },
-    { min: 31, max: 100, creature: "Werewolf", number: "1d6" }
-  ],
-  
-  // Lycanthrope Subtable for Forest
-  lycanthrope_forest: [
-    { min: 1, max: 10, creature: "Werebear", number: "1d2" },
-    { min: 11, max: 70, creature: "Wereboar", number: "1d4" },
-    { min: 71, max: 90, creature: "Weretiger", number: "1d2" },
-    { min: 91, max: 100, creature: "Werewolf", number: "1d6" }
-  ],
-  
-  // Demi-Human Subtable for Mountains
-  demi_human_mountains: [
-    { min: 1, max: 70, creature: "Dwarf", number: "2d6" },
-    { min: 71, max: 75, creature: "Elf", number: "2d6" },
-    { min: 76, max: 95, creature: "Gnome", number: "2d6" },
-    { min: 96, max: 100, creature: "Halfling", number: "3d6" }
-  ],
-  
-  // Demi-Human Subtable for Hills
-  demi_human_hills: [
-    { min: 1, max: 20, creature: "Dwarf", number: "2d6" },
-    { min: 21, max: 30, creature: "Elf", number: "2d6" },
-    { min: 31, max: 70, creature: "Gnome", number: "2d6" },
-    { min: 71, max: 100, creature: "Halfling", number: "3d6" }
-  ],
-  
-  // Demi-Human Subtable for Forest
-  demi_human_forest: [
-    { min: 1, max: 5, creature: "Dwarf", number: "2d6" },
-    { min: 6, max: 70, creature: "Elf", number: "2d6" },
-    { min: 71, max: 95, creature: "Gnome", number: "2d6" },
-    { min: 96, max: 100, creature: "Halfling", number: "3d6" }
-  ],
-  
-  // Spider Subtable for Forest
-  spider_forest: [
-    { min: 1, max: 55, creature: "Giant Spider", number: "1" },
-    { min: 56, max: 75, creature: "Huge Spider", number: "1d3" },
-    { min: 76, max: 80, creature: "Large Spider", number: "2d4" },
-    { min: 81, max: 100, creature: "Phase Spider", number: "1d2" }
-  ],
-  
-  // Dragon Subtable by Terrain (for temperate only - simplified)
-  dragon_plain: [
-    { min: 1, max: 2, creature: "Black Dragon", number: "1" },
-    { min: 3, max: 4, creature: "Blue Dragon", number: "1" },
-    { min: 5, max: 6, creature: "Brass Dragon", number: "1" },
-    { min: 7, max: 8, creature: "Bronze Dragon", number: "1" },
-    { min: 9, max: 10, creature: "Chimera", number: "1" },
-    { min: 11, max: 12, creature: "Copper Dragon", number: "1" },
-    { min: 13, max: 28, creature: "Gold Dragon", number: "1" },
-    { min: 29, max: 30, creature: "Green Dragon", number: "1" },
-    { min: 31, max: 32, creature: "Red Dragon", number: "1" },
-    { min: 33, max: 34, creature: "White Dragon", number: "1" },
-    { min: 35, max: 100, creature: "Wyvern", number: "1" }
-  ],
-  
-  dragon_forest: [
-    { min: 1, max: 16, creature: "Black Dragon", number: "1" },
-    { min: 17, max: 18, creature: "Blue Dragon", number: "1" },
-    { min: 19, max: 20, creature: "Brass Dragon", number: "1" },
-    { min: 21, max: 22, creature: "Bronze Dragon", number: "1" },
-    { min: 23, max: 30, creature: "Chimera", number: "1" },
-    { min: 31, max: 35, creature: "Copper Dragon", number: "1" },
-    { min: 36, max: 40, creature: "Gold Dragon", number: "1" },
-    { min: 41, max: 80, creature: "Green Dragon", number: "1" },
-    { min: 81, max: 82, creature: "Red Dragon", number: "1" },
-    { min: 83, max: 84, creature: "White Dragon", number: "1" },
-    { min: 85, max: 100, creature: "Wyvern", number: "1" }
-  ],
-  
-  dragon_marsh: [
-    { min: 1, max: 50, creature: "Black Dragon", number: "1" },
-    { min: 51, max: 52, creature: "Blue Dragon", number: "1" },
-    { min: 53, max: 54, creature: "Brass Dragon", number: "1" },
-    { min: 55, max: 56, creature: "Bronze Dragon", number: "1" },
-    { min: 57, max: 58, creature: "Chimera", number: "1" },
-    { min: 59, max: 60, creature: "Copper Dragon", number: "1" },
-    { min: 61, max: 62, creature: "Gold Dragon", number: "1" },
-    { min: 63, max: 75, creature: "Green Dragon", number: "1" },
-    { min: 76, max: 77, creature: "Red Dragon", number: "1" },
-    { min: 78, max: 79, creature: "White Dragon", number: "1" },
-    { min: 80, max: 100, creature: "Wyvern", number: "1" }
-  ],
-  
-  dragon_mountains: [
-    { min: 1, max: 4, creature: "Black Dragon", number: "1" },
-    { min: 5, max: 15, creature: "Blue Dragon", number: "1" },
-    { min: 16, max: 17, creature: "Brass Dragon", number: "1" },
-    { min: 18, max: 25, creature: "Bronze Dragon", number: "1" },
-    { min: 26, max: 30, creature: "Chimera", number: "1" },
-    { min: 31, max: 40, creature: "Copper Dragon", number: "1" },
-    { min: 41, max: 45, creature: "Gold Dragon", number: "1" },
-    { min: 46, max: 47, creature: "Green Dragon", number: "1" },
-    { min: 48, max: 60, creature: "Red Dragon", number: "1" },
-    { min: 61, max: 95, creature: "White Dragon", number: "1" },
-    { min: 96, max: 100, creature: "Wyvern", number: "1" }
-  ],
-  
-  // Men Subtable variations
-  men_desert: [
-    { min: 1, max: 5, creature: "Bandit", number: "3d10" },
-    { min: 6, max: 10, creature: "Brigand", number: "3d10" },
-    { min: 11, max: 20, creature: "Character", subtable: "character" },
-    { min: 21, max: 50, creature: "Dervish", number: "2d10" },
-    { min: 51, max: 75, creature: "Merchant", number: "2d6" },
-    { min: 76, max: 95, creature: "Nomad", number: "3d10" },
-    { min: 96, max: 100, creature: "Pilgrim", number: "3d10" }
-  ]
+      demi_human: {
+        plain: [
+          { min: 1, max: 5, creature: "Dwarf", number: "2d6" },
+          { min: 6, max: 70, creature: "Elf", number: "2d6" },
+          { min: 71, max: 80, creature: "Gnome", number: "2d6" },
+          { min: 81, max: 100, creature: "Halfling", number: "3d6" }
+        ],
+        scrub: [
+          { min: 1, max: 5, creature: "Dwarf", number: "2d6" },
+          { min: 6, max: 60, creature: "Elf", number: "2d6" },
+          { min: 61, max: 80, creature: "Gnome", number: "2d6" },
+          { min: 81, max: 100, creature: "Halfling", number: "3d6" }
+        ],
+        forest: [
+          { min: 1, max: 5, creature: "Dwarf", number: "2d6" },
+          { min: 6, max: 70, creature: "Elf", number: "2d6" },
+          { min: 71, max: 95, creature: "Gnome", number: "2d6" },
+          { min: 96, max: 100, creature: "Halfling", number: "3d6" }
+        ],
+        rough: [
+          { min: 1, max: 10, creature: "Dwarf", number: "2d6" },
+          { min: 11, max: 15, creature: "Elf", number: "2d6" },
+          { min: 16, max: 85, creature: "Gnome", number: "2d6" },
+          { min: 86, max: 100, creature: "Halfling", number: "3d6" }
+        ],
+        hills: [
+          { min: 1, max: 20, creature: "Dwarf", number: "2d6" },
+          { min: 21, max: 30, creature: "Elf", number: "2d6" },
+          { min: 31, max: 70, creature: "Gnome", number: "2d6" },
+          { min: 71, max: 100, creature: "Halfling", number: "3d6" }
+        ],
+        mountains: [
+          { min: 1, max: 70, creature: "Dwarf", number: "2d6" },
+          { min: 71, max: 75, creature: "Elf", number: "2d6" },
+          { min: 76, max: 95, creature: "Gnome", number: "2d6" },
+          { min: 96, max: 100, creature: "Halfling", number: "3d6" }
+        ]
+      },
+      
+      dragon: {
+        plain: [
+          { min: 1, max: 2, creature: "Black Dragon", number: "1" },
+          { min: 3, max: 4, creature: "Blue Dragon", number: "1" },
+          { min: 5, max: 6, creature: "Brass Dragon", number: "1" },
+          { min: 7, max: 8, creature: "Bronze Dragon", number: "1" },
+          { min: 9, max: 10, creature: "Chimera", number: "1" },
+          { min: 11, max: 12, creature: "Copper Dragon", number: "1" },
+          { min: 13, max: 28, creature: "Gold Dragon", number: "1" },
+          { min: 29, max: 30, creature: "Green Dragon", number: "1" },
+          { min: 31, max: 32, creature: "Red Dragon", number: "1" },
+          { min: 33, max: 34, creature: "White Dragon", number: "1" },
+          { min: 35, max: 100, creature: "Wyvern", number: "1" }
+        ],
+        scrub: [
+          { min: 1, max: 2, creature: "Black Dragon", number: "1" },
+          { min: 3, max: 4, creature: "Blue Dragon", number: "1" },
+          { min: 5, max: 6, creature: "Brass Dragon", number: "1" },
+          { min: 7, max: 8, creature: "Bronze Dragon", number: "1" },
+          { min: 9, max: 10, creature: "Chimera", number: "1" },
+          { min: 11, max: 14, creature: "Copper Dragon", number: "1" },
+          { min: 15, max: 16, creature: "Gold Dragon", number: "1" },
+          { min: 17, max: 36, creature: "Green Dragon", number: "1" },
+          { min: 37, max: 38, creature: "Red Dragon", number: "1" },
+          { min: 39, max: 40, creature: "White Dragon", number: "1" },
+          { min: 41, max: 100, creature: "Wyvern", number: "1" }
+        ],
+        forest: [
+          { min: 1, max: 16, creature: "Black Dragon", number: "1" },
+          { min: 17, max: 18, creature: "Blue Dragon", number: "1" },
+          { min: 19, max: 20, creature: "Brass Dragon", number: "1" },
+          { min: 21, max: 22, creature: "Bronze Dragon", number: "1" },
+          { min: 24, max: 30, creature: "Chimera", number: "1" },
+          { min: 31, max: 35, creature: "Copper Dragon", number: "1" },
+          { min: 36, max: 40, creature: "Gold Dragon", number: "1" },
+          { min: 41, max: 80, creature: "Green Dragon", number: "1" },
+          { min: 81, max: 82, creature: "Red Dragon", number: "1" },
+          { min: 83, max: 84, creature: "White Dragon", number: "1" },
+          { min: 85, max: 100, creature: "Wyvern", number: "1" }
+        ],
+        rough: [
+          { min: 1, max: 30, creature: "Black Dragon", number: "1" },
+          { min: 31, max: 32, creature: "Blue Dragon", number: "1" },
+          { min: 33, max: 40, creature: "Brass Dragon", number: "1" },
+          { min: 41, max: 45, creature: "Bronze Dragon", number: "1" },
+          { min: 46, max: 50, creature: "Chimera", number: "1" },
+          { min: 51, max: 55, creature: "Copper Dragon", number: "1" },
+          { min: 56, max: 57, creature: "Gold Dragon", number: "1" },
+          { min: 58, max: 59, creature: "Green Dragon", number: "1" },
+          { min: 60, max: 64, creature: "Red Dragon", number: "1" },
+          { min: 65, max: 66, creature: "White Dragon", number: "1" },
+          { min: 67, max: 100, creature: "Wyvern", number: "1" }
+        ],
+        desert: [
+          { min: 1, max: 2, creature: "Black Dragon", number: "1" },
+          { min: 3, max: 20, creature: "Blue Dragon", number: "1" },
+          { min: 21, max: 65, creature: "Brass Dragon", number: "1" },
+          { min: 66, max: 67, creature: "Bronze Dragon", number: "1" },
+          { min: 68, max: 70, creature: "Chimera", number: "1" },
+          { min: 71, max: 80, creature: "Copper Dragon", number: "1" },
+          { min: 81, max: 82, creature: "Gold Dragon", number: "1" },
+          { min: 83, max: 84, creature: "Green Dragon", number: "1" },
+          { min: 85, max: 88, creature: "Red Dragon", number: "1" },
+          { min: 89, max: 90, creature: "White Dragon", number: "1" },
+          { min: 91, max: 100, creature: "Wyvern", number: "1" }
+        ],
+        hills: [
+          { min: 1, max: 6, creature: "Black Dragon", number: "1" },
+          { min: 7, max: 10, creature: "Blue Dragon", number: "1" },
+          { min: 11, max: 20, creature: "Brass Dragon", number: "1" },
+          { min: 21, max: 25, creature: "Bronze Dragon", number: "1" },
+          { min: 26, max: 35, creature: "Chimera", number: "1" },
+          { min: 36, max: 45, creature: "Copper Dragon", number: "1" },
+          { min: 46, max: 50, creature: "Gold Dragon", number: "1" },
+          { min: 51, max: 52, creature: "Green Dragon", number: "1" },
+          { min: 53, max: 60, creature: "Red Dragon", number: "1" },
+          { min: 61, max: 65, creature: "White Dragon", number: "1" },
+          { min: 66, max: 100, creature: "Wyvern", number: "1" }
+        ],
+        mountains: [
+          { min: 1, max: 4, creature: "Black Dragon", number: "1" },
+          { min: 5, max: 15, creature: "Blue Dragon", number: "1" },
+          { min: 16, max: 17, creature: "Brass Dragon", number: "1" },
+          { min: 18, max: 25, creature: "Bronze Dragon", number: "1" },
+          { min: 26, max: 30, creature: "Chimera", number: "1" },
+          { min: 31, max: 40, creature: "Copper Dragon", number: "1" },
+          { min: 41, max: 45, creature: "Gold Dragon", number: "1" },
+          { min: 46, max: 47, creature: "Green Dragon", number: "1" },
+          { min: 48, max: 60, creature: "Red Dragon", number: "1" },
+          { min: 61, max: 95, creature: "White Dragon", number: "1" },
+          { min: 96, max: 100, creature: "Wyvern", number: "1" }
+        ],
+        marsh: [
+          { min: 1, max: 50, creature: "Black Dragon", number: "1" },
+          { min: 51, max: 52, creature: "Blue Dragon", number: "1" },
+          { min: 53, max: 54, creature: "Brass Dragon", number: "1" },
+          { min: 55, max: 56, creature: "Bronze Dragon", number: "1" },
+          { min: 57, max: 58, creature: "Chimera", number: "1" },
+          { min: 59, max: 60, creature: "Copper Dragon", number: "1" },
+          { min: 61, max: 62, creature: "Gold Dragon", number: "1" },
+          { min: 63, max: 75, creature: "Green Dragon", number: "1" },
+          { min: 76, max: 77, creature: "Red Dragon", number: "1" },
+          { min: 78, max: 79, creature: "White Dragon", number: "1" },
+          { min: 80, max: 100, creature: "Wyvern", number: "1" }
+        ]
+      },
+      
+      frog: {
+        marsh: [
+          { min: 1, max: 70, creature: "Giant Frog", number: "2d6" },
+          { min: 71, max: 80, creature: "Killer Frog", number: "2d6" },
+          { min: 81, max: 100, creature: "Poisonous Frog", number: "1d6" }
+        ]
+      },
+      
+      giant: {
+        plain: [
+          { min: 1, max: 2, creature: "Cloud Giant", number: "1" },
+          { min: 3, max: 4, creature: "Ettin", number: "1d2" },
+          { min: 5, max: 6, creature: "Fire Giant", number: "1d2" },
+          { min: 7, max: 8, creature: "Frost Giant", number: "1d2" },
+          { min: 9, max: 95, creature: "Hill Giant", number: "1d4" },
+          { min: 96, max: 98, creature: "Stone Giant", number: "1" },
+          { min: 99, max: 99, creature: "Storm Giant", number: "1" },
+          { min: 100, max: 100, creature: "Titan", number: "1" }
+        ],
+        scrub: [
+          { min: 1, max: 2, creature: "Cloud Giant", number: "1" },
+          { min: 3, max: 5, creature: "Ettin", number: "1d2" },
+          { min: 6, max: 7, creature: "Fire Giant", number: "1d2" },
+          { min: 8, max: 9, creature: "Frost Giant", number: "1d2" },
+          { min: 10, max: 94, creature: "Hill Giant", number: "1d4" },
+          { min: 95, max: 98, creature: "Stone Giant", number: "1" },
+          { min: 99, max: 99, creature: "Storm Giant", number: "1" },
+          { min: 100, max: 100, creature: "Titan", number: "1" }
+        ],
+        forest: [
+          { min: 1, max: 2, creature: "Cloud Giant", number: "1" },
+          { min: 3, max: 10, creature: "Ettin", number: "1d2" },
+          { min: 11, max: 12, creature: "Fire Giant", number: "1d2" },
+          { min: 13, max: 14, creature: "Frost Giant", number: "1d2" },
+          { min: 15, max: 93, creature: "Hill Giant", number: "1d4" },
+          { min: 94, max: 98, creature: "Stone Giant", number: "1" },
+          { min: 99, max: 99, creature: "Storm Giant", number: "1" },
+          { min: 100, max: 100, creature: "Titan", number: "1" }
+        ],
+        rough: [
+          { min: 1, max: 2, creature: "Cloud Giant", number: "1" },
+          { min: 3, max: 10, creature: "Ettin", number: "1d2" },
+          { min: 11, max: 20, creature: "Fire Giant", number: "1d2" },
+          { min: 21, max: 25, creature: "Frost Giant", number: "1d2" },
+          { min: 26, max: 85, creature: "Hill Giant", number: "1d4" },
+          { min: 86, max: 98, creature: "Stone Giant", number: "1" },
+          { min: 99, max: 99, creature: "Storm Giant", number: "1" },
+          { min: 100, max: 100, creature: "Titan", number: "1" }
+        ],
+        hills: [
+          { min: 1, max: 3, creature: "Cloud Giant", number: "1" },
+          { min: 4, max: 10, creature: "Ettin", number: "1d2" },
+          { min: 11, max: 15, creature: "Fire Giant", number: "1d2" },
+          { min: 16, max: 20, creature: "Frost Giant", number: "1d2" },
+          { min: 21, max: 81, creature: "Hill Giant", number: "1d4" },
+          { min: 82, max: 98, creature: "Stone Giant", number: "1" },
+          { min: 99, max: 99, creature: "Storm Giant", number: "1" },
+          { min: 100, max: 100, creature: "Titan", number: "1" }
+        ],
+        mountains: [
+          { min: 1, max: 15, creature: "Cloud Giant", number: "1" },
+          { min: 16, max: 20, creature: "Ettin", number: "1d2" },
+          { min: 21, max: 30, creature: "Fire Giant", number: "1d2" },
+          { min: 31, max: 45, creature: "Frost Giant", number: "1d2" },
+          { min: 46, max: 50, creature: "Hill Giant", number: "1d4" },
+          { min: 51, max: 90, creature: "Stone Giant", number: "1" },
+          { min: 91, max: 98, creature: "Storm Giant", number: "1" },
+          { min: 99, max: 100, creature: "Titan", number: "1" }
+        ]
+      },
+      
+      humanoid: {
+        plain: [
+          { min: 1, max: 5, creature: "Gnoll", number: "2d6" },
+          { min: 6, max: 10, creature: "Goblin", number: "3d6" },
+          { min: 11, max: 15, creature: "Hobgoblin", number: "2d6" },
+          { min: 16, max: 100, creature: "Orc", number: "3d6" }
+        ],
+        scrub: [
+          { min: 1, max: 10, creature: "Gnoll", number: "2d6" },
+          { min: 11, max: 15, creature: "Goblin", number: "3d6" },
+          { min: 16, max: 50, creature: "Hobgoblin", number: "2d6" },
+          { min: 51, max: 80, creature: "Kobold", number: "3d6" },
+          { min: 81, max: 100, creature: "Orc", number: "3d6" }
+        ],
+        forest: [
+          { min: 1, max: 10, creature: "Gnoll", number: "2d6" },
+          { min: 11, max: 20, creature: "Goblin", number: "3d6" },
+          { min: 21, max: 30, creature: "Hobgoblin", number: "2d6" },
+          { min: 31, max: 80, creature: "Kobold", number: "3d6" },
+          { min: 81, max: 100, creature: "Orc", number: "3d6" }
+        ],
+        rough: [
+          { min: 1, max: 20, creature: "Gnoll", number: "2d6" },
+          { min: 21, max: 30, creature: "Goblin", number: "3d6" },
+          { min: 31, max: 50, creature: "Hobgoblin", number: "2d6" },
+          { min: 51, max: 55, creature: "Kobold", number: "3d6" },
+          { min: 56, max: 100, creature: "Orc", number: "3d6" }
+        ],
+        desert: [
+          { min: 1, max: 40, creature: "Goblin", number: "3d6" },
+          { min: 41, max: 90, creature: "Hobgoblin", number: "2d6" },
+          { min: 91, max: 100, creature: "Orc", number: "3d6" }
+        ],
+        hills: [
+          { min: 1, max: 25, creature: "Gnoll", number: "2d6" },
+          { min: 26, max: 50, creature: "Goblin", number: "3d6" },
+          { min: 51, max: 75, creature: "Hobgoblin", number: "2d6" },
+          { min: 76, max: 100, creature: "Orc", number: "3d6" }
+        ],
+        mountains: [
+          { min: 1, max: 15, creature: "Gnoll", number: "2d6" },
+          { min: 16, max: 50, creature: "Goblin", number: "3d6" },
+          { min: 51, max: 65, creature: "Hobgoblin", number: "2d6" },
+          { min: 66, max: 100, creature: "Orc", number: "3d6" }
+        ],
+        marsh: [
+          { min: 1, max: 25, creature: "Gnoll", number: "2d6" },
+          { min: 26, max: 35, creature: "Goblin", number: "3d6" },
+          { min: 36, max: 75, creature: "Hobgoblin", number: "2d6" },
+          { min: 76, max: 100, creature: "Orc", number: "3d6" }
+        ]
+      },
+      
+      lycanthrope: {
+        plain: [
+          { min: 1, max: 2, creature: "Werebear", number: "1d2" },
+          { min: 3, max: 25, creature: "Wereboar", number: "1d4" },
+          { min: 26, max: 30, creature: "Wererat", number: "1d6" },
+          { min: 31, max: 40, creature: "Weretiger", number: "1d2" },
+          { min: 41, max: 100, creature: "Werewolf", number: "1d6" }
+        ],
+        forest: [
+          { min: 1, max: 10, creature: "Werebear", number: "1d2" },
+          { min: 11, max: 70, creature: "Wereboar", number: "1d4" },
+          { min: 71, max: 90, creature: "Weretiger", number: "1d2" },
+          { min: 91, max: 100, creature: "Werewolf", number: "1d6" }
+        ],
+        rough: [
+          { min: 1, max: 2, creature: "Werebear", number: "1d2" },
+          { min: 3, max: 15, creature: "Wereboar", number: "1d4" },
+          { min: 16, max: 90, creature: "Wererat", number: "1d6" },
+          { min: 91, max: 100, creature: "Werewolf", number: "1d6" }
+        ],
+        hills: [
+          { min: 1, max: 2, creature: "Werebear", number: "1d2" },
+          { min: 3, max: 15, creature: "Wereboar", number: "1d4" },
+          { min: 16, max: 20, creature: "Wererat", number: "1d6" },
+          { min: 21, max: 30, creature: "Weretiger", number: "1d2" },
+          { min: 31, max: 100, creature: "Werewolf", number: "1d6" }
+        ],
+        mountains: [
+          { min: 1, max: 75, creature: "Werebear", number: "1d2" },
+          { min: 76, max: 80, creature: "Wererat", number: "1d6" },
+          { min: 81, max: 90, creature: "Weretiger", number: "1d2" },
+          { min: 91, max: 100, creature: "Werewolf", number: "1d6" }
+        ]
+      },
+      
+      men: {
+        plain: [
+          { min: 1, max: 5, creature: "Bandit", number: "2d6" },
+          { min: 6, max: 7, creature: "Berserker", number: "1d6" },
+          { min: 8, max: 10, creature: "Brigand", number: "2d6" },
+          // 10% chance of Character (11-20) handled in code
+          { min: 21, max: 22, creature: "Dervish", number: "2d6" },
+          { min: 23, max: 60, creature: "Merchant", number: "1d6" },
+          { min: 61, max: 90, creature: "Nomad", number: "3d10" },
+          { min: 91, max: 95, creature: "Pilgrim", number: "2d6" },
+          { min: 96, max: 100, creature: "Tribesman", number: "3d10" }
+        ],
+        scrub: [
+          { min: 1, max: 10, creature: "Bandit", number: "2d6" },
+          { min: 11, max: 12, creature: "Berserker", number: "1d6" },
+          { min: 13, max: 15, creature: "Brigand", number: "2d6" },
+          // 10% chance of Character (16-25) handled in code
+          { min: 26, max: 27, creature: "Dervish", number: "2d6" },
+          { min: 28, max: 60, creature: "Merchant", number: "1d6" },
+          { min: 61, max: 80, creature: "Nomad", number: "3d10" },
+          { min: 81, max: 85, creature: "Pilgrim", number: "2d6" },
+          { min: 86, max: 100, creature: "Tribesman", number: "3d10" }
+        ],
+        forest: [
+          { min: 1, max: 10, creature: "Bandit", number: "2d6" },
+          { min: 11, max: 15, creature: "Brigand", number: "2d6" },
+          // 10% chance of Character (16-25) handled in code
+          { min: 26, max: 40, creature: "Merchant", number: "1d6" },
+          { min: 41, max: 45, creature: "Pilgrim", number: "2d6" },
+          { min: 46, max: 100, creature: "Tribesman", number: "3d10" }
+        ],
+        rough: [
+          { min: 1, max: 10, creature: "Bandit", number: "2d6" },
+          { min: 11, max: 12, creature: "Berserker", number: "1d6" },
+          { min: 13, max: 15, creature: "Brigand", number: "2d6" },
+          // 10% chance of Character (16-25) handled in code
+          { min: 26, max: 27, creature: "Dervish", number: "2d6" },
+          { min: 28, max: 50, creature: "Merchant", number: "1d6" },
+          { min: 51, max: 60, creature: "Nomad", number: "3d10" },
+          { min: 61, max: 80, creature: "Pilgrim", number: "2d6" },
+          { min: 81, max: 100, creature: "Tribesman", number: "3d10" }
+        ],
+        desert: [
+          { min: 1, max: 5, creature: "Bandit", number: "2d6" },
+          { min: 6, max: 10, creature: "Brigand", number: "2d6" },
+          // 10% chance of Character (11-20) handled in code
+          { min: 21, max: 50, creature: "Dervish", number: "2d6" },
+          { min: 51, max: 75, creature: "Merchant", number: "1d6" },
+          { min: 76, max: 95, creature: "Nomad", number: "3d10" },
+          { min: 96, max: 100, creature: "Pilgrim", number: "2d6" }
+        ],
+        hills: [
+          { min: 1, max: 10, creature: "Bandit", number: "2d6" },
+          { min: 11, max: 12, creature: "Berserker", number: "1d6" },
+          { min: 13, max: 20, creature: "Brigand", number: "2d6" },
+          // 10% chance of Character (21-30) handled in code
+          { min: 31, max: 40, creature: "Dervish", number: "2d6" },
+          { min: 41, max: 65, creature: "Merchant", number: "1d6" },
+          { min: 66, max: 80, creature: "Nomad", number: "3d10" },
+          { min: 81, max: 90, creature: "Pilgrim", number: "2d6" },
+          { min: 91, max: 100, creature: "Tribesman", number: "3d10" }
+        ],
+        mountains: [
+          { min: 1, max: 5, creature: "Bandit", number: "2d6" },
+          { min: 6, max: 10, creature: "Berserker", number: "1d6" },
+          { min: 11, max: 20, creature: "Brigand", number: "2d6" },
+          // 10% chance of Character (21-30) handled in code
+          { min: 31, max: 35, creature: "Dervish", number: "2d6" },
+          { min: 36, max: 50, creature: "Merchant", number: "1d6" },
+          { min: 51, max: 65, creature: "Pilgrim", number: "2d6" },
+          { min: 66, max: 100, creature: "Tribesman", number: "3d10" }
+        ],
+        marsh: [
+          { min: 1, max: 5, creature: "Bandit", number: "2d6" },
+          { min: 6, max: 10, creature: "Brigand", number: "2d6" },
+          // 10% chance of Character (11-20) handled in code
+          { min: 21, max: 35, creature: "Merchant", number: "1d6" },
+          { min: 36, max: 30, creature: "Pilgrim", number: "2d6" },
+          { min: 31, max: 100, creature: "Tribesman", number: "3d10" }
+        ]
+      },
+        undeadTables: {
+        forest: [
+          { min: 1, max: 10, creature: "Ghast", number: "1d4" },
+          { min: 11, max: 12, creature: "Ghost", number: "1" },
+          { min: 13, max: 55, creature: "Ghoul", number: "1d6" },
+          { min: 56, max: 56, creature: "Lich", number: "1" },
+          { min: 57, max: 70, creature: "Shadow", number: "1d8" },
+          { min: 71, max: 79, creature: "Spectre", number: "1d4" },
+          { min: 80, max: 89, creature: "Vampire", number: "1" },
+          { min: 90, max: 96, creature: "Wight", number: "1d6" },
+          { min: 97, max: 100, creature: "Wraith", number: "1d4" }
+        ],
+        rough: [
+          { min: 1, max: 15, creature: "Ghast", number: "1d4" },
+          { min: 16, max: 20, creature: "Ghost", number: "1" },
+          { min: 21, max: 55, creature: "Ghoul", number: "1d6" },
+          { min: 56, max: 60, creature: "Lich", number: "1" },
+          { min: 61, max: 70, creature: "Mummy", number: "1d3" },
+          { min: 71, max: 84, creature: "Shadow", number: "1d8" },
+          { min: 85, max: 87, creature: "Spectre", number: "1d4" },
+          { min: 88, max: 89, creature: "Vampire", number: "1" },
+          { min: 90, max: 98, creature: "Wight", number: "1d6" },
+          { min: 99, max: 100, creature: "Wraith", number: "1d4" }
+        ],
+        hills: [
+          { min: 1, max: 10, creature: "Ghast", number: "1d4" },
+          { min: 11, max: 12, creature: "Ghost", number: "1" },
+          { min: 13, max: 35, creature: "Ghoul", number: "1d6" },
+          { min: 36, max: 40, creature: "Lich", number: "1" },
+          { min: 41, max: 55, creature: "Mummy", number: "1d3" },
+          { min: 56, max: 61, creature: "Shadow", number: "1d8" },
+          { min: 62, max: 64, creature: "Spectre", number: "1d4" },
+          { min: 65, max: 74, creature: "Vampire", number: "1" },
+          { min: 75, max: 97, creature: "Wight", number: "1d6" },
+          { min: 98, max: 100, creature: "Wraith", number: "1d4" }
+        ],
+        mountains: [
+          { min: 1, max: 10, creature: "Ghast", number: "1d4" },
+          { min: 11, max: 13, creature: "Ghost", number: "1" },
+          { min: 14, max: 30, creature: "Ghoul", number: "1d6" },
+          { min: 31, max: 35, creature: "Lich", number: "1" },
+          { min: 36, max: 40, creature: "Mummy", number: "1d3" },
+          { min: 41, max: 50, creature: "Shadow", number: "1d8" },
+          { min: 51, max: 60, creature: "Spectre", number: "1d4" },
+          { min: 61, max: 75, creature: "Vampire", number: "1" },
+          { min: 76, max: 94, creature: "Wight", number: "1d6" },
+          { min: 95, max: 100, creature: "Wraith", number: "1d4" }
+        ],
+        marsh: [
+          { min: 1, max: 15, creature: "Ghast", number: "1d4" },
+          { min: 16, max: 18, creature: "Ghost", number: "1" },
+          { min: 19, max: 75, creature: "Ghoul", number: "1d6" },
+          { min: 76, max: 81, creature: "Shadow", number: "1d8" },
+          { min: 82, max: 91, creature: "Spectre", number: "1d4" },
+          { min: 92, max: 93, creature: "Vampire", number: "1" },
+          { min: 94, max: 100, creature: "Wraith", number: "1d4" }
+        ]
+      }
+      
+      // Add other subtables as needed
     };
 
 // Add this new object for inhabited/patrolled area tables
@@ -1748,6 +2052,384 @@ export const TROPICAL_SUBTABLES = {
       { min: 97, max: 100, creature: "Wraith", number: "1d4" }
     ]
   };
+
+  // Add to dmg-monster-tables.js
+export const MM_HUMAN_TABLES = {
+  bandit: {
+    numberRange: [20, 200],
+    dungeonNumberRange: [5, 30],
+    leaderLevels: {
+      small: 8,  // <100 bandits
+      medium: 9, // 100-150 bandits
+      large: 10  // >150 bandits
+    },
+    equipment: [
+      { percent: 10, type: "medium horse, chainmail & shield, sword" },
+      { percent: 10, type: "light horse, leather armor & shield, spear" },
+      { percent: 10, type: "light horse, leather armor, light crossbow" },
+      { percent: 10, type: "leather armor, pole arm" },
+      { percent: 10, type: "leather armor, light crossbow" },
+      { percent: 10, type: "leather armor, short bow" },
+      { percent: 40, type: "leather armor & shield, sword" }
+    ],
+    specialMembers: {
+      lieutenant: { level: 7, class: "Fighter", count: 1 },
+      guards: { level: 2, class: "Fighter", count: 6 },
+      thirdLevel: { level: 3, class: "Fighter", countFormula: "Math.floor(number/20)" },
+      fourthLevel: { level: 4, class: "Fighter", countFormula: "Math.floor(number/30)" },
+      fifthLevel: { level: 5, class: "Fighter", countFormula: "Math.floor(number/40)" },
+      sixthLevel: { level: 6, class: "Fighter", countFormula: "Math.floor(number/50)" },
+      magicUser: { 
+        level: "7-10", 
+        class: "Magic-User", 
+        chanceFormula: "Math.min(100, Math.floor(number/50) * 25)",
+        countFormula: "1"
+      },
+      cleric: {
+        level: "5-6",
+        class: "Cleric",
+        chanceFormula: "Math.min(100, Math.floor(number/50) * 15)",
+        countFormula: "1",
+        assistant: { level: "3-4", class: "Cleric", count: 1 }
+      }
+    },
+    alignment: "N",
+    notes: "Bandits roam every clime from temperate to subtropical."
+  },
+  
+  brigand: {
+    // Copy bandit entry and modify
+    inherits: "bandit",
+    numberRange: [20, 200],
+    dungeonNumberRange: [5, 30],
+    leaderLevels: {
+      small: 8,  // <100 brigands
+      medium: 9, // 100-150 brigands
+      large: 10  // >150 brigands
+    },
+    equipment: [
+      { percent: 10, type: "medium horse, chainmail & shield, sword" },
+      { percent: 10, type: "light horse, leather armor & shield, spear" },
+      { percent: 10, type: "light horse, leather armor, light crossbow" },
+      { percent: 10, type: "leather armor, pole arm" },
+      { percent: 10, type: "leather armor, light crossbow" },
+      { percent: 10, type: "leather armor, short bow" },
+      { percent: 40, type: "leather armor & shield, sword" }
+    ],
+    specialMembers: {
+      lieutenant: { level: 7, class: "Fighter", count: 1 },
+      guards: { level: 2, class: "Fighter", count: 6 },
+      thirdLevel: { level: 3, class: "Fighter", countFormula: "Math.floor(number/20)" },
+      fourthLevel: { level: 4, class: "Fighter", countFormula: "Math.floor(number/30)" },
+      fifthLevel: { level: 5, class: "Fighter", countFormula: "Math.floor(number/40)" },
+      sixthLevel: { level: 6, class: "Fighter", countFormula: "Math.floor(number/50)" },
+      magicUser: { 
+        level: "7-10", 
+        class: "Magic-User", 
+        chanceFormula: "Math.min(100, Math.floor(number/50) * 25)",
+        countFormula: "1"
+      },
+      cleric: {
+        level: "5-6",
+        class: "Cleric",
+        chanceFormula: "Math.min(100, Math.floor(number/50) * 15)",
+        countFormula: "1",
+        assistant: { level: "3-4", class: "Cleric", count: 1 }
+      }
+    },
+    alignment: "CE",
+    morale: "+1",
+    lairType: {
+      cave: 20, // 20% cave complex
+      castle: 30, // 30% castle
+      camp: 50   // 50% informal camp
+    },
+    prisoners: "1d10",
+    campFollowers: "20-50",  
+    notes: "Brigands are chaotic evil bandits with high morale in combat. They have higher percentage of fortified lairs than regular bandits."
+  },
+  
+  berserker: {
+    numberRange: [10, 100],
+    leaderLevels: {
+      small: { chief: 9, subchiefs: 6 },  // ≤60 berserkers
+      large: { chief: 10, subchiefs: 7 }  // >60 berserkers
+    },
+    specialMembers: {
+      firstLevel: { level: 1, class: "Fighter", countFormula: "Math.floor(number/10)" },
+      secondLevel: { level: 2, class: "Fighter", countFormula: "Math.floor(number/20)" },
+      thirdLevel: { level: 3, class: "Fighter", countFormula: "Math.floor(number/30)" },
+      fourthLevel: { level: 4, class: "Fighter", countFormula: "Math.floor(number/40)" },
+      fifthLevel: { level: 5, class: "Fighter", countFormula: "Math.floor(number/50)" },
+      cleric: {
+        level: 7,
+        class: "Cleric",
+        chanceFormula: "Math.min(100, Math.floor(number/10) * 50)",
+        countFormula: "1",
+        assistants: { level: "3-4", class: "Cleric", countFormula: "1d4" }
+      }
+    },
+    equipment: [],  // Scorn armor!
+    alignment: "N",
+    notes: "Berserkers never check morale. They strike twice or once with +2 due to battle lust."
+  },
+  
+  // Add entries for other human types: merchant, dervish, nomad, pilgrim, tribesman
+  // Add entries for other human types
+merchant: {
+  numberRange: [50, 300],
+  leaderLevels: {
+    leader: "6-11",
+    lieutenant: "5-10"
+  },
+  composition: {
+    merchants: 10,  // 10% are actual merchants
+    drovers: 10,    // 10% are drovers
+    guards: 80      // 80% are mercenary guards
+  },
+  equipment: [
+    { percent: 10, type: "heavy warhorse, plate armor & shield, lance, sword (1st level fighters)" },
+    { percent: 20, type: "medium warhorse, chainmail & shield, lance, sword" },
+    { percent: 10, type: "medium warhorse, chainmail & shield, flail, mace" },
+    { percent: 10, type: "light warhorse, scale mail, light crossbow, sword" },
+    { percent: 10, type: "chainmail, pole arm, mace" },
+    { percent: 10, type: "chainmail, heavy crossbow, mace" },
+    { percent: 30, type: "ringmail & shield, spear, morning star" }
+  ],
+  specialMembers: {
+    guards: { level: 2, class: "Fighter", count: 12 },
+    magicUser: { 
+      level: "6-8", 
+      class: "Magic-User", 
+      chanceFormula: "Math.min(100, Math.floor(number/50) * 10)",
+      countFormula: "1"
+    },
+    cleric: {
+      level: "5-7",
+      class: "Cleric",
+      chanceFormula: "Math.min(100, Math.floor(number/50) * 5)",
+      countFormula: "1"
+    },
+    thief: {
+      level: "8-10",
+      class: "Thief",
+      chanceFormula: "Math.min(100, Math.floor(number/50) * 15)",
+      countFormula: "1",
+      assistants: { level: "3-7", class: "Thief", countFormula: "1d4" }
+    }
+  },
+  alignment: "N",
+  treasure: {
+    merchants: ["J", "K", "L", "M", "N", "Q"],
+    mercenaries: ["K"],
+    leaders: ["M"],
+    payChest: "2000-4000 gp, 100-400 pp, 4d4 gems (100 gp base)",
+    merchandise: "10000-60000 gp"
+  },
+  notes: "Merchants travel in caravans with heavy guard. Their merchandise requires 1 wagon or 10 pack animals per 5000 gp value."
+},
+
+dervish: {
+  numberRange: [30, 300],
+  leaderLevels: {
+    small: 10,  // <125 dervishes
+    medium: 11, // 125-250 dervishes
+    large: 12   // >250 dervishes
+  },
+  equipment: [
+    { percent: 25, type: "medium warhorse, chainmail & shield, lance, sword" },
+    { percent: 5, type: "medium warhorse, chainmail & shield, composite bow, sword" },
+    { percent: 50, type: "light warhorse, leather armor & shield, lance, sword" },
+    { percent: 10, type: "light warhorse, leather armor & shield, composite bow, sword" },
+    { percent: 10, type: "light warhorse, leather armor & shield, light crossbow, mace" }
+  ],
+  specialMembers: {
+    bodyguards: [
+      { level: "4-8", class: "Cleric", count: 2 }
+    ],
+    thirdLevel: { level: 3, class: "Fighter", countFormula: "Math.floor(number/30)" },
+    fourthLevel: { level: 4, class: "Fighter", countFormula: "Math.floor(number/40)" },
+    fifthLevel: { level: 5, class: "Fighter", countFormula: "Math.floor(number/50)" },
+    sixthLevel: { level: 6, class: "Fighter", countFormula: "Math.floor(number/60)" },
+    magicUser: { 
+      level: "7-8", 
+      class: "Magic-User", 
+      chanceFormula: "Math.min(100, Math.floor(number/50) * 15)",
+      countFormula: "1",
+      assistants: { level: "3-4", class: "Magic-User", count: 2 }
+    }
+  },
+  alignment: "LG",
+  fortress: {
+    defenders: "200-300",
+    ballistae: "1d4",
+    lightCatapults: "1d4",
+    heavyCatapults: "1d2"
+  },
+  combatBonus: "+1 to hit and damage",
+  morale: "Never check morale in combat",
+  notes: "Dervishes are highly religious nomads found in deserts or steppes/plains. Due to their fanatical nature, they add +1 to hit and damage and never check morale."
+},
+
+nomad: {
+  numberRange: [30, 300],
+  leaderLevels: {
+    small: 8,   // <150 nomads
+    medium: 9,  // 150-250 nomads
+    large: 10   // >250 nomads
+  },
+  surpriseBonus: "1-4 due to terrain concealment",
+  equipment: {
+    desert: [
+      { percent: 10, type: "medium warhorse, chainmail & shield, lance & sword" },
+      { percent: 10, type: "medium warhorse, chainmail, light crossbow, sword" },
+      { percent: 50, type: "light warhorse, leather armor & shield, lance, sword" },
+      { percent: 20, type: "light warhorse, leather armor & shield, sword, 2 javelins" },
+      { percent: 10, type: "light warhorse, leather armor, light crossbow, sword" }
+    ],
+    steppes: [
+      { percent: 20, type: "medium warhorse, chainmail & shield, lance, sword" },
+      { percent: 10, type: "medium warhorse, chainmail, composite bow, sword" },
+      { percent: 20, type: "light warhorse, leather armor & shield, lance, sword" },
+      { percent: 50, type: "light warhorse, leather armor, composite bow, sword" }
+    ]
+  },
+  specialMembers: {
+    subcommander: { level: "6-8", class: "Fighter", count: 1 },
+    guards: { level: 2, class: "Fighter", count: 12 },
+    clerics: [
+      { level: 3, class: "Cleric", count: 2 },
+      { level: "4-7", class: "Cleric", chanceFormula: "Math.min(100, Math.floor(number/50) * 15)", countFormula: "1" }
+    ],
+    magicUsers: [
+      { level: 4, class: "Magic-User", count: 1 },
+      { level: "5-8", class: "Magic-User", chanceFormula: "Math.min(100, Math.floor(number/50) * 15)", countFormula: "1" }
+    ]
+  },
+  alignment: "N",
+  lairType: {
+    encampment: 90,
+    walledCity: 10
+  },
+  lairContents: {
+    females: "200% of males",
+    children: "100% of males",
+    slaves: "10-100",
+    horses: "100-400",
+    herdAnimals: "200-800"
+  },
+  tactics: "May feign retreat to lure enemies into ambush. Will withdraw if taking >25% casualties.",
+  notes: "Nomads roam freely herding and hunting. They're 75% likely to capture weaker groups, 90% likely to parley with equal strength parties."
+},
+
+pilgrim: {
+  numberRange: [10, 100],
+  mounted: 25, // 25% chance of being mounted, otherwise afoot
+  specialMembers: {
+    clerics: [
+      { level: 2, class: "Cleric", countFormula: "1d6" },
+      { level: 4, class: "Cleric", countFormula: "1d4" },
+      { level: 6, class: "Cleric", countFormula: "1d2" },
+      { level: 8, class: "Cleric", count: 1, assistants: [
+        { level: 3, class: "Cleric", count: 1 },
+        { level: 5, class: "Cleric", count: 1 }
+      ]}
+    ],
+    monk: { 
+      level: "5-6", 
+      class: "Monk", 
+      chance: 25,
+      countFormula: "1"
+    },
+    fighters: { 
+      level: "1-8", 
+      class: "Fighter", 
+      chanceFormula: "Math.min(100, Math.floor(number/10) * 10)",
+      countFormula: "1d10"
+    },
+    thieves: { 
+      level: "2-7", 
+      class: "Thief", 
+      chanceFormula: "Math.min(100, Math.floor(number/10) * 10)",
+      countFormula: "1d6"
+    },
+    magicUser: { 
+      level: "6-9", 
+      class: "Magic-User", 
+      chanceFormula: "Math.min(100, Math.floor(number/10) * 5)",
+      countFormula: "1"
+    }
+  },
+  alignment: {
+    LG: 35,
+    CG: 20,
+    N: 10,
+    CE: 15,
+    LE: 20
+  },
+  alignmentSpecial: {
+    LG: "Fighters are paladins",
+    CG: "Fighters are rangers",
+    N: "Clerics are druids",
+    LE: "All pilgrims fight as berserkers (armed with daggers)",
+    CE: "Thieves are assassins"
+  },
+  treasure: {
+    pilgrims: ["J"],
+    monks: ["J"],
+    fighters: ["L", "M"],
+    clerics: ["J", "K", "M"],
+    magicUsers: ["L", "N", "Q"],
+    thieves: ["J", "N", "Q"]
+  },
+  artifact: {
+    chance: 5,
+    notes: "Religious artifact carefully hidden and guarded by traps/magic"
+  },
+  notes: "Pilgrims are groups visiting locations holy or unholy to them. Special members vary based on alignment."
+},
+
+tribesman: {
+  numberRange: [10, 120],
+  armorClass: 7, // Use large shields
+  equipment: [
+    { percent: 30, type: "shield, spear & club" },
+    { percent: 40, type: "shield & 2 spears" },
+    { percent: 30, type: "shortbow & club" }
+  ],
+  specialMembers: {
+    chief: { level: 5, class: "Fighter", count: 1 },
+    subchiefs: { level: 4, class: "Fighter", countFormula: "1d4" },
+    lowClerics: { level: 4, class: "Cleric", countFormula: "Math.floor(number/10)" },
+    midClerics: { level: 6, class: "Cleric", countFormula: "Math.floor(number/30)" },
+    witchdoctor: { level: 8, class: "Cleric", count: 1 }
+  },
+  alignment: "N",
+  lairType: {
+    village: 100,
+    palisade: 50 // 50% chance of being protected by log palisade
+  },
+  lairContents: {
+    females: "100% of males",
+    young: "100% of males",
+    slaves: {
+      chance: 75,
+      number: "20-50"
+    },
+    captives: {
+      chance: 50,
+      number: "2-12",
+      notes: "Held for food!"
+    }
+  },
+  treasure: {
+    ivory: { chance: 5, value: "1000 gp per tusk", number: "2-12", notes: "2 men to carry each" },
+    goldNuggets: { chance: 5, value: "5 gp each", number: "20-80" },
+    gems: { chance: 5, value: "10 gp base", number: "1-100" }
+  },
+  notes: "Primitive tribesmen found in tropical jungles or islands. Clerics are druidical in nature. Can possess all three treasure types (unlike cavemen)."
+}
+};
   
   // Function to roll on temperate outdoor table
   // Updated function to roll on temperate outdoor table
@@ -1961,6 +2643,7 @@ export const rollOnSubtable = (subtableName, roll, subtableSet = TEMPERATE_SUBTA
     TEMPERATE_SUBTABLES,
     TROPICAL_SUBTABLES,
     TROPICAL_UNINHABITED_TABLES,
+    DMG_TERRAIN_SUBTABLES, // Add this!
     rollOnOutdoorTable,
     rollNumberFromPattern
     //rollOnTemperateTable,
