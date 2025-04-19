@@ -22,7 +22,7 @@ export const GREYHAWK_REGIONAL_TABLES = {
   { min: 47, max: 50, encounter: "Men, Nomads", number: "30d10" },
   { min: 51, max: 51, encounter: "Men, Patrol, Knights", number: "1d4 + 10" },
   { min: 52, max: 53, encounter: "Men, Patrol, Medium", number: "1d19 + 15" },
-  { min: 54, max: 55, encounter: "Men, Raiders", number: "1d56 + 34" },  // Or use "11d6 + 1d6" if needed
+  { min: 54, max: 55, encounter: "Men, Raiders", number: "11d6 + 1d6" },  // Or use "11d6 + 1d6" if needed
   { min: 56, max: 59, encounter: "Men, Tribesmen", number: "20d6" },
   { min: 60, max: 61, encounter: "Workers", number: "10d10" },
   { min: 62, max: 63, encounter: "Ogres", number: "4d4" },
@@ -39,7 +39,7 @@ export const GREYHAWK_REGIONAL_TABLES = {
 
   "Bissel_GranMarch_Keoland": [
     { min: 1, max: 2, encounter: "Demi-humans" },
-    { min: 3, max: 4, encounter: "Dwarves" },
+    { min: 3, max: 4, encounter: "Dwarves", number: "40d10" },
     { min: 5, max: 6, encounter: "Dwarves, Mountain" },
     { min: 7, max: 10, encounter: "Elves, High" },
     { min: 11, max: 15, encounter: "Elves, Sylvan" },
@@ -48,15 +48,15 @@ export const GREYHAWK_REGIONAL_TABLES = {
     { min: 19, max: 19, encounter: "Halflings, Stouts" },
     { min: 20, max: 20, encounter: "Halflings, Tallfellows" },
     { min: 21, max: 25, encounter: "Humanoids" },
-    { min: 26, max: 29, encounter: "Men, Bandits" },
-    { min: 30, max: 31, encounter: "Men, Brigands" },
-    { min: 32, max: 41, encounter: "Men, Merchants" },
+    { min: 26, max: 29, encounter: "Men, Bandits", number: "30d10" },
+    { min: 30, max: 31, encounter: "Men, Brigands", number: "30d10" },
+    { min: 32, max: 41, encounter: "Men, Merchants", number: "10d4" },
     { min: 42, max: 43, encounter: "Men, Patrol, Knights" },
     { min: 44, max: 48, encounter: "Men, Patrol, Light" },
     { min: 49, max: 55, encounter: "Men, Patrol, Medium" },
     { min: 56, max: 57, encounter: "Men, Pilgrims" },
-    { min: 58, max: 61, encounter: "Men, Raiders" },
-    { min: 62, max: 65, encounter: "Men, Tribesmen (marshmen)" },
+    { min: 58, max: 61, encounter: "Men, Raiders", number: "11d6 + 1d6" },
+    { min: 62, max: 65, encounter: "Men, Tribesmen (marshmen)", number: "20d6" },
     { min: 66, max: 100, encounter: "Use Standard Encounter Tables", useStandard: true }
   ],
 
