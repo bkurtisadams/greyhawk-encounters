@@ -871,11 +871,22 @@ export class GreyhawkEncounters {
           : monsterData;
 
         // 🛡️ Try to extract leader/special member info if applicable
+        // 🧭 Roll for % in Lair
+        let isLairEncounter = false;
+        const lairChance = parseInt(monsterData?.lairProbability || "0");
+        if (!isNaN(lairChance) && lairChance > 0) {
+          const lairRoll = Math.floor(Math.random() * 100) + 1;
+          isLairEncounter = lairRoll <= lairChance;
+          console.log(`🏰 Rolled ${lairRoll} for % in Lair (needed ≤ ${lairChance}) → ${isLairEncounter ? "LAIR" : "not lair"}`);
+        }
+
+        // 🛡️ Try to extract leader/special member info
         const specialMembers = monsterData?.leaders && numberAppearing
-          ? flattenLeaderData(monsterData.leaders, numberAppearing, /* isLair= */ false)
+          ? flattenLeaderData(monsterData.leaders, numberAppearing, isLairEncounter)
           : [];
     
         const flavor = `📍 <strong>Greyhawk Encounter</strong>`;
+
         let leaderBlock = "";
         if (specialMembers?.length) {
           leaderBlock = `<br><strong>Leaders & Special Members:</strong><ul style="margin-top: 0.25em;">`;
@@ -888,15 +899,16 @@ export class GreyhawkEncounters {
           }
           leaderBlock += `</ul>`;
         }
-
+        
         const content = `
           <strong>Region:</strong> ${region}<br>
           <strong>Roll:</strong> ${tableRollValue}<br>
           <strong>Encounter:</strong> ${encounterText}
           ${breakdown ? `<br><em>Number Appearing:</em> ${numberAppearing} 
             <em>(Dice: ${diceResults.join(', ')})</em>` : ""}
+          <br><strong>% In Lair:</strong> ${lairChance}% → <em>${isLairEncounter ? "Yes (lair encounter)" : "No"}</em>
           ${leaderBlock}
-        `;
+          `;
 
         await ChatMessage.create({
           speaker: ChatMessage.getSpeaker(),
@@ -914,6 +926,7 @@ export class GreyhawkEncounters {
           alignment: monsterData?.alignment,
           treasure: monsterData?.treasure,
           description: monsterData?.description,
+          isLair: isLairEncounter,
           specialMembers // ← use the variable you already built!
         };
         
