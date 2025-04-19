@@ -7,46 +7,88 @@
  * @returns {number} - The rolled result
  */
 export const rollNumberFromPattern = (pattern) => {
-    if (!pattern) return 1;
-    
-    // Handle simple numbers
-    if (!isNaN(pattern)) {
-      return parseInt(pattern);
+  if (!pattern) return { total: 1, rolls: [1] };
+
+  // Handle plain number
+  if (!isNaN(pattern)) {
+    const val = parseInt(pattern);
+    return { total: val, rolls: [val] };
+  }
+
+  // Handle ranges like "1-4"
+  if (pattern.includes('-')) {
+    const [min, max] = pattern.split('-').map(n => parseInt(n));
+    const result = Math.floor(Math.random() * (max - min + 1)) + min;
+    return { total: result, rolls: [result] };
+  }
+
+  // Handle dice like 2d6+1
+  const match = pattern.match(/^(\d+)d(\d+)(\+(\d+))?$/);
+  if (match) {
+    const dice = parseInt(match[1]);
+    const sides = parseInt(match[2]);
+    const bonus = parseInt(match[4]) || 0;
+    const rolls = [];
+
+    for (let i = 0; i < dice; i++) {
+      rolls.push(Math.floor(Math.random() * sides) + 1);
     }
-    
-    // Handle ranges like "1-4"
-    if (pattern.includes('-')) {
-      const [min, max] = pattern.split('-').map(n => parseInt(n));
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+
+    const total = rolls.reduce((sum, r) => sum + r, 0) + bonus;
+    return {
+      total,
+      rolls: bonus ? [...rolls, `+${bonus}`] : rolls
+    };
+  }
+
+  return { total: 1, rolls: [1] }; // Fallback
+};
+
+function rollNumberFromPatternWithDice(pattern) {
+  if (!pattern) return { total: 1, rolls: [1], diceResults: [1] };
+
+  // Handle plain number
+  if (!isNaN(pattern)) {
+    const val = parseInt(pattern);
+    return { total: val, rolls: [val], diceResults: [val] };
+  }
+
+  // Handle ranges like "1-4"
+  if (pattern.includes('-')) {
+    const [min, max] = pattern.split('-').map(n => parseInt(n));
+    const result = Math.floor(Math.random() * (max - min + 1)) + min;
+    return { total: result, rolls: [result], diceResults: [result] };
+  }
+
+  // Handle dice like 2d6+1
+  const match = pattern.match(/^(\d+)d(\d+)(\+(\d+))?$/);
+  if (match) {
+    const dice = parseInt(match[1]);
+    const sides = parseInt(match[2]);
+    const bonus = parseInt(match[4]) || 0;
+    const rolls = [];
+    const diceResults = [];
+
+    for (let i = 0; i < dice; i++) {
+      const result = Math.floor(Math.random() * sides) + 1;
+      rolls.push(result);
+      diceResults.push(result);
     }
+
+    const total = rolls.reduce((sum, r) => sum + r, 0) + bonus;
     
-    // Handle dice patterns like "2d6"
-    if (pattern.includes('d')) {
-      let modifier = 0;
-      let dicePattern = pattern;
-      
-      // Extract modifier if present
-      if (pattern.includes('+')) {
-        const parts = pattern.split('+');
-        dicePattern = parts[0];
-        modifier = parseInt(parts[1]) || 0;
-      }
-      
-      // Split into dice count and sides
-      const [diceCount, diceSides] = dicePattern.split('d').map(n => parseInt(n));
-      
-      // Roll the dice
-      let total = 0;
-      for (let i = 0; i < diceCount; i++) {
-        total += Math.floor(Math.random() * diceSides) + 1;
-      }
-      
-      // Add modifier
-      return total + modifier;
-    }
+    // Add the bonus as its own dice result for display
+    if (bonus) diceResults.push(bonus);
     
-    return 1; // Default fallback
-  };
+    return {
+      total,
+      rolls: bonus ? [...rolls, `+${bonus}`] : rolls,
+      diceResults
+    };
+  }
+
+  return { total: 1, rolls: [1], diceResults: [1] }; // Fallback
+}
   
   /**
    * Roll on a specific encounter table based on a roll

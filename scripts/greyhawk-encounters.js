@@ -521,15 +521,23 @@ export class GreyhawkEncounters {
       case 'uninhabited': dieSize = 10; break;
     }
   
-    // Use Foundry's Roll class for the encounter check
     const roll = new Roll(`1d${dieSize}`);
-    await roll.evaluate({ async: true });
+    await roll.evaluate(); // ✅ correct
+    
+    // Extract the individual dice values
+    const encounterDiceResults = [];
+    roll.dice.forEach(die => {
+      die.results.forEach(r => encounterDiceResults.push(r.result));
+    });
+    
     await roll.toMessage({
       speaker: ChatMessage.getSpeaker(),
-      flavor: `🎲 Encounter Check (${population} area): 1 in d${dieSize}`
+      flavor: `🎲 Encounter Check (${population} area): 1 in d${dieSize}<br>
+               <em>Rolled:</em> ${encounterDiceResults.join(', ')} (Total: ${roll.total})`
     });
-  
+      
     console.log(`🎲 Encounter check: rolled ${roll.total} on d${dieSize} (success if 1)`);
+    console.log(`Individual dice: ${encounterDiceResults.join(', ')}`);
   
     if (!forceEncounter && roll.total !== 1) {
       console.log(`⛔ No encounter: result was ${roll.total}`);
@@ -558,39 +566,74 @@ export class GreyhawkEncounters {
       table = GREYHAWK_REGIONAL_TABLES['greyhawk'];
     }
   
-    // 🔹 Step 3: Roll for the specific encounter from the table
+    // 🔹 Step 3: Roll 1d100 for the encounter table
     const tableRoll = new Roll("1d100");
     await tableRoll.evaluate({ async: true });
-    await tableRoll.toMessage({
-      flavor: `📜 Encounter Roll for ${region} Table`,
-      speaker: ChatMessage.getSpeaker()
-    });
-  
-    const rollValue = tableRoll.total;
-    console.log(`📜 Rolled ${rollValue} for encounter result on ${region} table`);
+
+    const tableRollValue = tableRoll.total;
+    console.log(`📜 Rolled ${tableRollValue} for encounter result on ${region} table`);
+    console.log(`Individual die result: ${tableRollValue}`);
   
     for (const entry of table) {
-      if (entry.max === 0 && rollValue >= entry.min) {
+      if (entry.max === 0 && tableRollValue >= entry.min) {
         console.log(`📌 Matched special range ${entry.min}+ → ${entry.encounter}`);
         if (entry.useStandard) {
           console.log(`↪️ Redirecting to standard encounter handler`);
           return this._rollStandardEncounter(options);
         } else {
-          return { roll: rollValue, encounter: entry.encounter };
+          return { roll: tableRollValue, encounter: entry.encounter };
         }
-      } else if (rollValue >= entry.min && rollValue <= entry.max) {
+      } else if (tableRollValue >= entry.min && tableRollValue <= entry.max) {
         console.log(`📌 Matched ${entry.min}-${entry.max} → ${entry.encounter}`);
-        return { roll: rollValue, encounter: entry.encounter };
+    
+        let numberAppearing = null;
+        let breakdown = null;
+        let diceResults = [];
+    
+        if (entry.number) {
+          // Use the existing rollNumberFromPattern but track individual dice results
+          const result = rollNumberFromPattern(entry.number);
+          numberAppearing = result.total;
+          breakdown = result.rolls;
+          
+          // If rolls is an array of numbers, those are our individual dice results
+          if (Array.isArray(result.rolls) && result.rolls.every(item => typeof item === 'number' || item.startsWith('+'))) {
+            diceResults = [...result.rolls];
+          }
+          
+          console.log(`🎯 Number Appearing: ${numberAppearing} [${breakdown.join(', ')}]`);
+        }
+    
+        const encounterText = numberAppearing
+          ? `${numberAppearing} ${entry.encounter}`
+          : entry.encounter;
+    
+        const flavor = `📍 <strong>Greyhawk Encounter</strong>`;
+        const content = `
+          <strong>Region:</strong> ${region}<br>
+          <strong>Roll:</strong> ${tableRollValue}<br>
+          <strong>Encounter:</strong> ${encounterText}
+          ${breakdown ? `<br><em>Number Appearing:</em> ${numberAppearing} 
+            <em>(Dice: ${diceResults.join(', ')})</em>` : ""}
+        `;
+
+        await ChatMessage.create({
+          speaker: ChatMessage.getSpeaker(),
+          flavor,
+          content,
+          type: CONST.CHAT_MESSAGE_STYLES.OTHER
+        });
+    
+        return {
+          roll: tableRollValue,
+          encounter: encounterText,
+          number: numberAppearing ?? null,
+          numberRolls: breakdown ?? [],
+          rawEncounter: entry.encounter,
+        };
       }
     }
-  
-    console.warn(`❓ No matching entry found in table for roll ${rollValue}`);
-    return {
-      roll: rollValue,
-      encounter: "No specific encounter found"
-    };
   }
-  
 
   // Add a new method for handling standard encounters from DMG Appendix C
   static _rollStandardEncounter(options) {
