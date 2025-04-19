@@ -33,9 +33,7 @@ export const GREYHAWK_REGIONAL_TABLES = {
   { min: 75, max: 76, encounter: "Soldiery (e.g. hobgoblin or orc troops)", number: "5d10 + 100" },
   { min: 77, max: 78, encounter: "Trolls", number: "2d6" },
   { min: 79, max: 100, encounter: "Use Standard Encounter Table", useStandard: true }
-]
-
-,
+],
 
   "Bissel_GranMarch_Keoland": [
     { min: 1, max: 2, encounter: "Demi-humans" },
