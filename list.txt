@@ -5,10 +5,13 @@ data
   dmg-city-tables.js
   dmg-dungeon-tables.js
   dmg-monster-tables.js
+  dmg-planar-tables.js
+  dmg-temperate-tables.js
   dmg-waterborne-tables.js
   greyhawk-geography.js
   greyhawk-patrols.js
   greyhawk-regions.js
+  monster-manual.js
   subtables.js
 scripts
   encounter-roller.js
@@ -26,3 +29,7 @@ list.txt
 listdir.bat
 module.json
 README.md
+scripts
+styles
+templates
+utils
