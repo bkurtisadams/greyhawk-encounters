@@ -189,51 +189,7 @@ export const MONSTER_MANUAL = {
       "treasure": "Nil",
       "description": "The baluchitherium is an enormous prehistoric rhinoceros-like creature. When frightened, it charges and attempts to trample opponents."
     },
-    {
-      "name": "Bandit",
-      "category": "Men",
-      "name_variants": "Brigand",
-      "frequency": "Common",
-      "numberAppearing": "20d10",
-      "size": "Man-sized",
-      "move": "120 ft",
-      "armorClass": "Determined by armor worn",
-      "hitDice": "1d6 hp",
-      "attacks": 1,
-      "damage": "By weapon",
-      "specialAttacks": "Leader types may have spells",
-      "specialDefenses": "None",
-      "magicResistance": "Standard",
-      "lairProbability": "20%",
-      "intelligence": "Mean (average to very)",
-      "alignment": "Neutral (chaotic evil)",
-      "levelXP": "Variable",
-      "description": "Bandits are found wherever civilization exists, preying upon the weak. Brigands are a more ferocious variant that fight with +1 morale.",
-      "leaders": {
-        "per_20": {"level": 3, "class": "fighter", "count": 1},
-        "per_30": {"level": 4, "class": "fighter", "count": 1},
-        "per_40": {"level": 5, "class": "fighter", "count": 1},
-        "per_50": {"level": 6, "class": "fighter", "count": 1},
-        "commander": {
-          "under_100": {"level": 8, "class": "fighter", "count": 1},
-          "100_to_150": {"level": 9, "class": "fighter", "count": 1},
-          "over_150": {"level": 10, "class": "fighter", "count": 1}
-        }
-      },
-      "treasure": {
-        "individual": "2d4 gp",
-        "lair": {
-          "cp": {"amount": "1d6×1,000", "chance": "25%"},
-          "sp": {"amount": "1d6×1,000", "chance": "30%"},
-          "ep": {"amount": "1d6×1,000", "chance": "35%"},
-          "gp": {"amount": "1d10×1,000", "chance": "40%"},
-          "pp": {"amount": "1d4×100", "chance": "25%"},
-          "gems": {"amount": "4d10", "chance": "60%"},
-          "jewellery": {"amount": "3d10", "chance": "50%"},
-          "magic_items": {"amount": 3, "chance": "30%"}
-        }
-      }
-    },
+    
     {
       "name": "Banshee",
       "category": "Undead",
@@ -447,51 +403,6 @@ export const MONSTER_MANUAL = {
       "treasure": "None",
       "description": "Black bears are the least aggressive bear type but will defend themselves and cubs. Paw hits of 18+ cause additional hug damage. Brown bears (including grizzlies) are more aggressive, with good hearing and smell but weak vision. If reduced to 0 hp, brown bears continue fighting for 1d4 rounds or until reaching -9 hp."
     },
-
-    {
-      "name": "Berserker",
-      "category": "Men",
-      "frequency": "Rare",
-      "numberAppearing": "10d10",
-      "size": "Man-sized",
-      "move": "120 ft",
-      "armorClass": 7,
-      "hitDice": "1d6+1 hp",
-      "attacks": "1 (or 2)",
-      "damage": "By weapon",
-      "specialAttacks": "Battle fury (strike twice or at +2)",
-      "specialDefenses": "Never check morale",
-      "magicResistance": "Standard",
-      "lairProbability": "10%",
-      "intelligence": "Mean (average to very)",
-      "alignment": "Neutral",
-      "levelXP": "Variable",
-      "description": "Berserkers are warrior bands that fight with fierce battle-fury, either striking twice per round or making one attack at +2. They never use armor and never make morale checks in battle.",
-      "leaders": {
-        "per_10": {"level": 1, "class": "fighter", "count": 1},
-        "per_20": {"level": 2, "class": "fighter", "count": 1},
-        "per_30": {"level": 3, "class": "fighter", "count": 1},
-        "per_40": {"level": 4, "class": "fighter", "count": 1},
-        "per_50": {"level": 5, "class": "fighter", "count": 1},
-        "war_chief": {
-          "less_than_60": {"level": 9, "class": "fighter", "count": 1},
-          "more_than_60": {"level": 10, "class": "fighter", "count": 1}
-        }
-      },
-      "treasure": {
-        "individual": "3d6 sp",
-        "lair": {
-          "cp": {"amount": "1d8×1,000", "chance": "50%"},
-          "sp": {"amount": "1d6×1,000", "chance": "25%"},
-          "ep": {"amount": "1d4×1,000", "chance": "25%"},
-          "pp": {"amount": "1d3×1,000", "chance": "25%"},
-          "gems": {"amount": "1d8", "chance": "30%"},
-          "jewellery": {"amount": "1d4", "chance": "20%"},
-          "magic_items": {"amount": 1, "chance": "10%"}
-        }
-      }
-    },
-
     {
       "name": "Bird",
       "category": "Animal",
@@ -607,46 +518,6 @@ export const MONSTER_MANUAL = {
       "treasure": "None",
       "description": "Tropical relatives of common boars, warthogs attack only if threatened or cornered. Groups larger than two consist of mated pairs with young. All fight for 1-2 rounds below 0 hit points, or to -6 hp. Young have 1-2 HD and do 1d4-1 or 1d4+1 damage."
     },
-
-    {
-      "name": "Buccaneer",
-      "category": "Men",
-      "name_variants": "Pirate",
-      "frequency": "Uncommon",
-      "numberAppearing": "50d6",
-      "size": "Man-sized",
-      "move": "120 ft",
-      "armorClass": "Determined by armor worn",
-      "hitDice": "1d6 hp",
-      "attacks": 1,
-      "damage": "By weapon",
-      "specialAttacks": "Leader types",
-      "specialDefenses": "Leader types",
-      "magicResistance": "Standard",
-      "lairProbability": "80% or 100%",
-      "intelligence": "Mean (average to very)",
-      "alignment": "Neutral (chaotic evil)",
-      "levelXP": "Variable",
-      "description": "Buccaneers are seafaring raiders found on large bodies of water. Their lair is typically their ship. Pirates are a more vicious variant with chaotic evil alignment.",
-      "leaders": {
-        "per_50": {"level": 3, "class": "fighter", "count": 1},
-        "per_100": {"level": 5, "class": "fighter", "count": 1},
-        "captain": {
-          "less_than_200": {"level": 8, "class": "fighter", "count": 1},
-          "more_than_200": {"level": 10, "class": "fighter", "count": 1}
-        }
-      },
-      "treasure": {
-        "individual": "3d6 sp",
-        "lair": {
-          "gp": {"amount": "5d6×1,000", "chance": "60%"},
-          "pp": {"amount": "1d8×100", "chance": "15%"},
-          "gems": {"amount": "1d8×10", "chance": "60%"},
-          "jewellery": {"amount": "5d8", "chance": "50%"},
-          "map": {"chance": "55%"}
-        }
-      }
-    },
     {
       "name": "Bugbear",
       "category": "Humanoid",
@@ -667,12 +538,61 @@ export const MONSTER_MANUAL = {
       "levelXP": "3/135+4/hp",
       "description": "Bugbears are stealthy goblinoid raiders with a talent for surprising prey. Their lair contains chieftains, sub-chiefs, females, and young. They use looted weapons and speak hobgoblin, goblin, and their own tongue.",
       "leaders": {
-        "hunting_party": "Leader (4 HD, AC 4, 22-25 hp, 2d8+1 damage)",
+        "per_12": {
+          "leader": {
+            "hitPoints": "22-25",
+            "armorClass": 4,
+            "attacks": "As 4 HD monster",
+            "damage": "+1 on damage caused"
+          }
+        },
+        "per_24": {
+          "additions": [
+            {
+              "chief": {
+                "hitPoints": "28-30",
+                "armorClass": 3,
+                "attacks": "As 4 HD monster",
+                "damage": "+2 damage"
+              }
+            },
+            {
+              "subChief": {
+                "hitPoints": "22-25",
+                "armorClass": 4,
+                "attacks": "As 4 HD monster",
+                "damage": "+1 on damage caused"
+              }
+            }
+          ]
+        },
         "lair": {
-          "chief": "4 HD, AC 3, 28-30 hp, 2d8+2 damage",
-          "subchief": "Same as hunting leader",
-          "females_young": "50% each of male population; females fight as hobgoblins, young as kobolds"
+          "leadership": "Always a chief and sub-chief",
+          "females": "50% of males; fight as hobgoblins if in life-threatening situation",
+          "young": "50% of males; fight as kobolds if in life-threatening situation"
         }
+      },
+      "equipment": {
+        "weapons": {
+          "types": [
+            "Swords",
+            "Morning stars (wooden clubs with spikes)",
+            "Spears",
+            "Axes",
+            "Maces",
+            "Hammers"
+          ],
+          "missileUse": {
+            "types": ["Spears", "Axes", "Maces", "Hammers"],
+            "range": {
+              "maximum": "4\"",
+              "medium": "Under 2\""
+            }
+          }
+        }
+      },
+      "specialAbilities": {
+        "strength": "Strong enough to throw heavy weapons up to 4\""
       },
       "treasure": {
         "individual": "4d6 sp, 2d4 gp",
@@ -814,43 +734,6 @@ export const MONSTER_MANUAL = {
       "alignment": "Neutral",
       "treasure": "None",
       "description": "Buffalo attack if approached within 60 ft, potentially causing the whole herd to charge. Charges (minimum 40 ft) deal 3d6 impact plus 1d4 trampling damage. 50% are non-aggressive. Bulls are very aggressive (75% chance to charge if approached within 80 ft), dealing 3d4 impact plus 1d4 trampling damage over minimum 30 ft. Wild cattle are skittish herd animals; stampedes cause characters to be trampled by 2d4 animals for 1d4 damage each."
-    },
-
-    {
-      "name": "Caveman",
-      "category": "Humanoid",
-      "frequency": "Rare",
-      "numberAppearing": "10d10",
-      "size": "Man-sized",
-      "move": "120 ft",
-      "armorClass": 8,
-      "hitDice": 2,
-      "attacks": 1,
-      "damage": "By weapon (+1 damage from strength)",
-      "specialAttacks": "None",
-      "specialDefenses": "None",
-      "magicResistance": "Standard",
-      "lairProbability": "40%",
-      "intelligence": "Low (to average)",
-      "alignment": "Neutral",
-      "levelXP": "2/20+2/hp",
-      "description": "Cavemen are primitive humans living in caves. They use spears, stone axes, and clubs, and are fearful of the unknown (–1 morale).",
-      "leaders": {
-        "hunting_party": "3rd level fighter",
-        "lair": {
-          "chief": "5th level fighter",
-          "guards": "1d4 4th level fighters"
-        },
-        "shaman": "10% chance per 10: 3rd level cleric"
-      },
-      "treasure": {
-        "lair": {
-          "ivory_tusks": "2d6 (1,000 gp each)",
-          "gold_nuggets": "2d4×10 (5 gp each)",
-          "gems": "1d% (10 gp each)",
-          "chance": "5% per 10 cavemen"
-        }
-      }
     },
     {
       "name": "Coffer Corpse",
@@ -1544,61 +1427,6 @@ export const MONSTER_MANUAL = {
         "magic_weapons": {"amount": 1, "chance": "10%"}
       }
     },
-
-    {
-      "name": "Dervish",
-      "category": "Men",
-      "name_variants": "Nomad",
-      "frequency": "Rare (Uncommon)",
-      "numberAppearing": "30d10",
-      "size": "Man-sized",
-      "move": "120 ft",
-      "armorClass": "Determined by armor worn",
-      "hitDice": "1d6 hp",
-      "attacks": 1,
-      "damage": "By weapon",
-      "specialAttacks": "Leader types",
-      "specialDefenses": "Leader types",
-      "magicResistance": "Standard",
-      "lairProbability": "5% (15%)",
-      "intelligence": "Mean (average to very)",
-      "alignment": "Lawful good (neutral)",
-      "levelXP": "Variable",
-      "description": "Dervishes are highly religious desert nomads who are fanatical devotees to their religion. They gain +1 to combat and never check morale. Always mounted on light or medium warhorses.",
-      "leaders": {
-        "fighters": {
-          "per_30": {"level": 3, "class": "fighter", "count": 1},
-          "per_40": {"level": 4, "class": "fighter", "count": 1},
-          "per_50": {"level": 5, "class": "fighter", "count": 1}
-        },
-        "clerics": {
-          "under_125": {
-            "main": {"level": 10, "class": "cleric", "count": 1},
-            "assistants": [
-              {"level": 4, "class": "cleric", "count": 1},
-              {"level": 5, "class": "cleric", "count": 1}
-            ]
-          }
-        }
-      },
-      "treasure": {
-        "individual": {
-          "dervish": "3d12 cp",
-          "nomad": "2d6 ep"
-        },
-        "lair": {
-          "cp": {"amount": "1d3×1,000", "chance": "20%"},
-          "sp": {"amount": "1d4×1,000", "chance": "25%"},
-          "ep": {"amount": "1d4×1,000", "chance": "25%"},
-          "gp": {"amount": "1d4×1,000", "chance": "30%"},
-          "pp": {"amount": "1d6×100", "chance": "30%"},
-          "gems": {"amount": "1d6×10", "chance": "55%"},
-          "jewellery": {"chance": "50%"},
-          "magic_items": {"amount": 3, "chance": "50%"}
-        }
-      }
-    },
-
     {
       "name": "Dog",
       "category": "Animal",
@@ -3223,8 +3051,392 @@ export const MONSTER_MANUAL = {
         }
       }
     },
+    
     {
-      "name": "Merchant",
+      "name": "Men, Bandit",
+      "category": "Men",
+      "name_variants": "Brigand",
+      "frequency": "Common",
+      "numberAppearing": "20d10",
+      "size": "Man-sized",
+      "move": "120 ft",
+      "armorClass": "Determined by armor worn",
+      "hitDice": "1d6 hp",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "Leader types may have spells",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "20%",
+      "intelligence": "Mean (average to very)",
+      "alignment": "Neutral (chaotic evil)",
+      "levelXP": "Variable",
+      "description": "Bandits roam every clime from temperate to subtropical. They travel in groups, generally led by high level fighters, magic-users and clerics. Those encountered in dungeons will be far fewer in number and often cooperating with thieves.",
+      "leaders": {
+        "per_20": {"level": 3, "class": "fighter", "count": 1},
+        "per_30": {"level": 4, "class": "fighter", "count": 1},
+        "per_40": {"level": 5, "class": "fighter", "count": 1},
+        "per_50": {"level": 6, "class": "fighter", "count": 1},
+        "commander": {
+          "under_100": {"level": 8, "class": "fighter", "count": 1},
+          "100_to_150": {"level": 9, "class": "fighter", "count": 1},
+          "over_150": {"level": 10, "class": "fighter", "count": 1},
+          "lieutenant": {"level": 7, "class": "fighter", "count": 1},
+          "guards": {"level": 2, "class": "fighter", "count": 6}
+        },
+        "magic_user": {
+          "chance": "25% per 50 bandits",
+          "level": "7th to 10th (1d4+6)"
+        },
+        "cleric": {
+          "chance": "15% per 50 bandits",
+          "level": "5th or 6th",
+          "assistant": {"level": "3rd or 4th", "count": 1}
+        },
+        "psionic_abilities": "Normal chances for leader-types"
+      },
+      "lair": {
+        "types": {
+          "informal_camp": "80%",
+          "cave_complex": {"chance": "10%", "features": "Secret entrance"},
+          "castle": {"chance": "10%", "defenses": "1-4 light catapults"}
+        },
+        "occupants": {
+          "important_prisoners": "2-20",
+          "camp_followers_slaves": "5-30"
+        }
+      },
+      "equipment": {
+        "mounts_armor_weapons": {
+          "medium_horse_chainmail_shield_sword": "10%",
+          "light_horse_leather_shield_spear": "10%",
+          "light_horse_leather_light_crossbow": "10%",
+          "leather_polearm": "10%",
+          "leather_light_crossbow": "10%",
+          "leather_short_bow": "10%",
+          "leather_shield_sword": "40%"
+        },
+        "mounted_percentage": {
+          "hills_mountains": "No more than 10%",
+          "open_country": "90%"
+        }
+      },
+      "brigand_variant": {
+        "description": "Brigands are chaotic evil bandits with +1 morale in combat",
+        "lair": {
+          "cave_complex": "20%",
+          "castle": "30%",
+          "important_prisoners": "1-10",
+          "camp_followers_slaves": "20-50"
+        }
+      },
+      "treasure": {
+        "individual": "2d4 gp",
+        "lair": {
+          "cp": {"amount": "1d6×1,000", "chance": "25%"},
+          "sp": {"amount": "1d6×1,000", "chance": "30%"},
+          "ep": {"amount": "1d6×1,000", "chance": "35%"},
+          "gp": {"amount": "1d10×1,000", "chance": "40%"},
+          "pp": {"amount": "1d4×100", "chance": "25%"},
+          "gems": {"amount": "4d10", "chance": "60%"},
+          "jewellery": {"amount": "3d10", "chance": "50%"},
+          "magic_items": {"amount": 3, "chance": "30%"}
+        }
+      }
+    },
+    {
+      "name": "Men, Berserker",
+      "category": "Men",
+      "frequency": "Rare",
+      "numberAppearing": "10d10",
+      "size": "Man-sized",
+      "move": "120 ft",
+      "armorClass": 7,
+      "hitDice": "1d6+1 hp",
+      "attacks": "1 (or 2)",
+      "damage": "By weapon",
+      "specialAttacks": "Battle fury (strike twice or at +2)",
+      "specialDefenses": "Never check morale",
+      "magicResistance": "Standard",
+      "lairProbability": "10%",
+      "intelligence": "Mean (average to very)",
+      "alignment": "Neutral",
+      "levelXP": "Variable",
+      "description": "Berserkers are warrior bands that fight with fierce battle-fury, either striking twice per round or making one attack at +2. They never use armor and never make morale checks in battle.",
+      "leaders": {
+        "per_10": {"level": 1, "class": "fighter", "count": 1},
+        "per_20": {"level": 2, "class": "fighter", "count": 1},
+        "per_30": {"level": 3, "class": "fighter", "count": 1},
+        "per_40": {"level": 4, "class": "fighter", "count": 1},
+        "per_50": {"level": 5, "class": "fighter", "count": 1},
+        "war_chief": {
+          "less_than_60": {"level": 9, "class": "fighter", "count": 1},
+          "more_than_60": {"level": 10, "class": "fighter", "count": 1}
+        }
+      },
+      "treasure": {
+        "individual": "3d6 sp",
+        "lair": {
+          "cp": {"amount": "1d8×1,000", "chance": "50%"},
+          "sp": {"amount": "1d6×1,000", "chance": "25%"},
+          "ep": {"amount": "1d4×1,000", "chance": "25%"},
+          "pp": {"amount": "1d3×1,000", "chance": "25%"},
+          "gems": {"amount": "1d8", "chance": "30%"},
+          "jewellery": {"amount": "1d4", "chance": "20%"},
+          "magic_items": {"amount": 1, "chance": "10%"}
+        }
+      }
+    },
+    {
+      "name": "Men, Buccaneer",
+      "category": "Men",
+      "name_variants": "Pirate",
+      "frequency": "Uncommon",
+      "numberAppearing": "50d6",
+      "size": "Man-sized",
+      "move": "120 ft",
+      "armorClass": "Determined by armor worn",
+      "hitDice": "1d6 hp",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "Leader types",
+      "specialDefenses": "Leader types",
+      "magicResistance": "Standard",
+      "lairProbability": "80% or 100%",
+      "intelligence": "Mean (average to very)",
+      "alignment": "Neutral (chaotic evil)",
+      "levelXP": "Variable",
+      "description": "Buccaneers are seafaring raiders found on oceans, seas, large lakes, and broad rivers. Their lair is typically their vessel(s). Only 20% of the time will they be encountered off their ship(s) along some coast or shore. Pirates are chaotic evil buccaneers who otherwise conform to the same characteristics.",
+      "leaders": {
+        "per_50": {"level": 3, "class": "fighter", "count": 1},
+        "per_100": {"level": 5, "class": "fighter", "count": 1},
+        "captain": {
+          "less_than_200": {"level": 8, "class": "fighter", "count": 1},
+          "more_than_200": {"level": 10, "class": "fighter", "count": 1}
+        },
+        "officers": {
+          "lieutenant": {"level": "6th or 7th", "count": 1},
+          "mates": {"level": 4, "count": 4}
+        },
+        "spellcasters": {
+          "cleric": {"level": "12th to 15th", "chance": "15% per 50 buccaneers"},
+          "magic_user": {"level": "6th to 8th", "chance": "10% per 50 buccaneers"}
+        }
+      },
+      "prisoners": "2-5 in lair, held for ransom",
+      "equipment": {
+        "armor_weapons": {
+          "chainmail_shield_sword_handaxe": "5%",
+          "chainmail_sword": "10%",
+          "leather_shield_sword": "20%",
+          "leather_spear": "10%",
+          "leather_axe": "20%",
+          "leather_heavy_crossbow": "5%",
+          "leather_light_crossbow": "30%"
+        },
+        "leader_armor": "Leaders wear chainmail rather than plate armor; magic armor will be chain variety"
+      },
+      "treasure": {
+        "individual": "3d6 sp",
+        "lair": {
+          "gp": {"amount": "5d6×1,000", "chance": "60%"},
+          "pp": {"amount": "1d8×100", "chance": "15%"},
+          "gems": {"amount": "1d8×10", "chance": "60%"},
+          "jewellery": {"amount": "5d8", "chance": "50%"},
+          "map": {"chance": "55%"}
+        }
+      }
+    },
+    {
+      "name": "Men, Caveman",
+      "category": "Men",
+      "frequency": "Rare",
+      "numberAppearing": "10d10",
+      "size": "Man-sized",
+      "move": "120 ft",
+      "armorClass": 8,
+      "hitDice": 2,
+      "attacks": 1,
+      "damage": "By weapon (+1 damage from strength)",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "40%",
+      "intelligence": "Low (to average)",
+      "alignment": "Neutral",
+      "levelXP": "2/20+2/hp",
+      "description": "Cavemen are primitive humans living in caves. They use spears, stone axes, and clubs, and are fearful of the unknown (–1 morale).",
+      "leaders": {
+        "hunting_party": "3rd level fighter",
+        "lair": {
+          "chief": "5th level fighter",
+          "guards": "1d4 4th level fighters"
+        },
+        "shaman": "10% chance per 10: 3rd level cleric"
+      },
+      "treasure": {
+        "lair": {
+          "ivory_tusks": "2d6 (1,000 gp each)",
+          "gold_nuggets": "2d4×10 (5 gp each)",
+          "gems": "1d% (10 gp each)",
+          "chance": "5% per 10 cavemen"
+        }
+      }
+    },
+    {
+      "name": "Men, Dervish",
+      "category": "Men",
+      "name_variants": "Nomad",
+      "frequency": "Rare (Uncommon)",
+      "numberAppearing": "30d10",
+      "size": "Man-sized",
+      "move": "120 ft",
+      "armorClass": "Determined by armor worn",
+      "hitDice": "1d6 hp",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "Leader types, +1 to hit and damage",
+      "specialDefenses": "Never check morale",
+      "magicResistance": "Standard",
+      "lairProbability": "5% (15%)",
+      "intelligence": "Mean (average to very)",
+      "alignment": "Lawful good (neutral)",
+      "levelXP": "Variable",
+      "description": "Dervishes are highly religious desert nomads who are fanatical devotees to their religion. They gain +1 to combat and never check morale. Always mounted on light or medium warhorses. Encountered only in desert or steppes/plains areas.",
+      "leaders": {
+        "fighters": {
+          "per_30": {"level": 3, "class": "fighter", "count": 1},
+          "per_40": {"level": 4, "class": "fighter", "count": 1},
+          "per_50": {"level": 5, "class": "fighter", "count": 1},
+          "per_60": {"level": 6, "class": "fighter", "count": 1}
+        },
+        "clerics": {
+          "under_125": {"level": 10, "class": "cleric", "count": 1},
+          "under_250": {"level": 11, "class": "cleric", "count": 1},
+          "over_250": {"level": 12, "class": "cleric", "count": 1},
+          "assistants": {"level": "4th to 8th", "class": "cleric", "count": 2}
+        },
+        "magic_users": {
+          "chance": "15% per 50 dervishes",
+          "main": {"level": "7th or 8th", "count": 1},
+          "assistants": {"level": "3rd or 4th", "count": 2},
+          "note": "If more than 200 dervishes, magic-users will be higher level"
+        },
+        "psionic_abilities": "Leaders have normal chances for possession"
+      },
+      "equipment": {
+        "mounts_armor_weapons": {
+          "medium_warhorse_chainmail_shield_lance_sword": "25%",
+          "medium_warhorse_chainmail_shield_composite_bow_sword": "5%",
+          "light_warhorse_leather_shield_lance_sword": "50%",
+          "light_warhorse_leather_shield_composite_bow_sword": "10%",
+          "light_warhorse_leather_shield_light_crossbow_mace": "10%"
+        },
+        "leader_armor": "Leaders wear chainmail; if magic armor indicated, will be of that variety"
+      },
+      "fortress": {
+        "population": "200-300 dervishes",
+        "defenses": {
+          "walls": true,
+          "ballistae": "1-4",
+          "light_catapults": "1-4",
+          "heavy_catapults": "1-2"
+        }
+      },
+      "nomad_variant": {
+        "description": "Bands of desert or steppes/plains dwellers who roam freely about herding and hunting. They surprise on a 1-4 due to ability to use terrain.",
+        "leaders": {
+          "fighters": {
+            "same_as_dervish": true,
+            "main_leader": {
+              "under_150": {"level": 8, "class": "fighter", "count": 1},
+              "150_to_250": {"level": 9, "class": "fighter", "count": 1},
+              "over_250": {"level": 10, "class": "fighter", "count": 1}
+            },
+            "subcommander": {"level": "6th to 8th", "count": 1},
+            "guards": {"level": 2, "count": 12}
+          },
+          "clerics": {
+            "chance": "15% per 50 nomads",
+            "level": "4th to 7th",
+            "permanent": {"level": 3, "count": 2}
+          },
+          "magic_users": {
+            "chance": "15% per 50 nomads",
+            "level": "5th to 8th",
+            "permanent": {"level": 4, "count": 1}
+          },
+          "psionic_abilities": "Normal possibilities"
+        },
+        "equipment": {
+          "desert_nomads": {
+            "medium_warhorse_chainmail_shield_lance_sword": "10%",
+            "medium_warhorse_chainmail_light_crossbow_sword": "10%",
+            "light_warhorse_leather_shield_lance_sword": "50%",
+            "light_warhorse_leather_shield_sword_javelins": "20%",
+            "light_warhorse_leather_light_crossbow_sword": "10%"
+          },
+          "steppes_plains_nomads": {
+            "medium_warhorse_chainmail_shield_lance_sword": "20%",
+            "medium_warhorse_chainmail_composite_bow_sword": "10%",
+            "light_warhorse_leather_shield_lance_sword": "20%",
+            "light_warhorse_leather_composite_bow_sword": "50%"
+          }
+        },
+        "lair": {
+          "type": {
+            "tents_or_yurts": {
+              "chance": "90%",
+              "location": "Oasis or stream"
+            },
+            "walled_city": {
+              "chance": "10%",
+              "additional_forces": {
+                "footmen": "20-80",
+                "armor": "Chain and shield",
+                "weapons": {
+                  "spear_sword": "50%",
+                  "composite_bow_sword": "50%"
+                }
+              }
+            }
+          },
+          "population": {
+            "females": "200% of males",
+            "children": "100% of males",
+            "slaves": "10-100"
+          },
+          "animals": {
+            "horses": "100-400",
+            "herd_animals": "200-800 (sheep, goats, camels, cattle, and/or yaks)"
+          }
+        },
+        "tactics": {
+          "withdrawal": "Withdraw if over 25% casualties and enemy continues resistance",
+          "feigned_retreat": "Will feign retreat to lure enemies into ambush",
+          "capture": "75% likely to capture weaker groups",
+          "parley": "90% likely to parley with near equal strength"
+        }
+      },
+      "treasure": {
+        "individual": {
+          "dervish": "3d12 cp",
+          "nomad": "2d6 ep"
+        },
+        "lair": {
+          "cp": {"amount": "1d3×1,000", "chance": "20%"},
+          "sp": {"amount": "1d4×1,000", "chance": "25%"},
+          "ep": {"amount": "1d4×1,000", "chance": "25%"},
+          "gp": {"amount": "1d4×1,000", "chance": "30%"},
+          "pp": {"amount": "1d6×100", "chance": "30%"},
+          "gems": {"amount": "1d6×10", "chance": "55%"},
+          "jewellery": {"chance": "50%"},
+          "magic_items": {"amount": 3, "chance": "50%"}
+        }
+      }
+    },
+    {
+      "name": "Men, Merchant",
       "category": "Men",
       "frequency": "Common",
       "numberAppearing": "50d6",
@@ -3264,6 +3476,54 @@ export const MONSTER_MANUAL = {
         "caravan_goods": {
           "value": "10,000 to 60,000 gp",
           "transport": "10 pack animals or 1 cart per 5,000 gp worth of goods"
+        }
+      }
+    },
+    {
+      "name": "Men, Pilgrim",
+      "category": "Men",
+      "frequency": "Uncommon",
+      "numberAppearing": "10d10",
+      "size": "Man-sized",
+      "move": "120 ft",
+      "armorClass": "Determined by armor worn",
+      "hitDice": "1d6 hp",
+      "attacks": "See below",
+      "damage": "By weapon",
+      "specialAttacks": "See below",
+      "specialDefenses": "See below",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Mean (very to high)",
+      "alignment": "See below",
+      "levelXP": "Variable",
+      "description": "Pilgrims are religious followers traveling to holy sites. Most (75%) travel without mounts, but if mounted, all members will be mounted.",
+      "leaders": {
+        "clerics": {
+          "level_2": {"level": 2, "class": "cleric", "count": "1d6"},
+          "level_4": {"level": 4, "class": "cleric", "count": "1d4"},
+          "level_6": {"level": 6, "class": "cleric", "count": "1d2"},
+          "level_8": {"level": 8, "class": "cleric", "count": 1},
+          "assistants": [
+            {"level": 3, "class": "cleric", "count": 1},
+            {"level": 5, "class": "cleric", "count": 1}
+          ]
+        },
+        "fighters": {
+          "chance": "10% per 10 pilgrims",
+          "count": "1d10",
+          "level": "1d8"
+        }
+      },
+      "treasure": {
+        "pilgrims": "3d12 cp each",
+        "fighters": "2d6 ep each",
+        "clerics": "3d12 cp, 3d6 sp, and 2d4 gp each",
+        "magic_users": "2d6 ep, 1d6 pp, and 1d4 gems (50%) each",
+        "thieves": "3d12 cp, 1d6 pp, and 1d4 gems (50%) each",
+        "holy_item": {
+          "chance": "5%",
+          "description": "If present, will be hidden and carefully guarded"
         }
       }
     },
@@ -3470,54 +3730,6 @@ export const MONSTER_MANUAL = {
           "gems": {"amount": "1d6", "chance": "25%"},
           "jewellery": {"amount": "1d3", "chance": "20%"},
           "potions": {"amount": "2d4", "chance": "40%"}
-        }
-      }
-    },
-    {
-      "name": "Pilgrim",
-      "category": "Men",
-      "frequency": "Uncommon",
-      "numberAppearing": "10d10",
-      "size": "Man-sized",
-      "move": "120 ft",
-      "armorClass": "Determined by armor worn",
-      "hitDice": "1d6 hp",
-      "attacks": "See below",
-      "damage": "By weapon",
-      "specialAttacks": "See below",
-      "specialDefenses": "See below",
-      "magicResistance": "Standard",
-      "lairProbability": "Nil",
-      "intelligence": "Mean (very to high)",
-      "alignment": "See below",
-      "levelXP": "Variable",
-      "description": "Pilgrims are religious followers traveling to holy sites. Most (75%) travel without mounts, but if mounted, all members will be mounted.",
-      "leaders": {
-        "clerics": {
-          "level_2": {"level": 2, "class": "cleric", "count": "1d6"},
-          "level_4": {"level": 4, "class": "cleric", "count": "1d4"},
-          "level_6": {"level": 6, "class": "cleric", "count": "1d2"},
-          "level_8": {"level": 8, "class": "cleric", "count": 1},
-          "assistants": [
-            {"level": 3, "class": "cleric", "count": 1},
-            {"level": 5, "class": "cleric", "count": 1}
-          ]
-        },
-        "fighters": {
-          "chance": "10% per 10 pilgrims",
-          "count": "1d10",
-          "level": "1d8"
-        }
-      },
-      "treasure": {
-        "pilgrims": "3d12 cp each",
-        "fighters": "2d6 ep each",
-        "clerics": "3d12 cp, 3d6 sp, and 2d4 gp each",
-        "magic_users": "2d6 ep, 1d6 pp, and 1d4 gems (50%) each",
-        "thieves": "3d12 cp, 1d6 pp, and 1d4 gems (50%) each",
-        "holy_item": {
-          "chance": "5%",
-          "description": "If present, will be hidden and carefully guarded"
         }
       }
     },

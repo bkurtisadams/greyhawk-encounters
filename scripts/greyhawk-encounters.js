@@ -58,38 +58,62 @@ function findMonsterByName(name) {
   });
 }
 
-function flattenLeaderData(leaders, count) {
+function flattenLeaderData(leaders, count, isLair = false) {
   const specialMembers = [];
 
   for (const [key, data] of Object.entries(leaders)) {
-    if (key.startsWith('per_')) {
-      const perNum = parseInt(key.split('_')[1]);
-      const times = Math.floor(count / perNum);
-      for (let i = 0; i < times * (data.count || 1); i++) {
-        specialMembers.push({ role: `Leader (${perNum})`, level: data.level, type: data.class });
+    if (key.startsWith("per_")) {
+      const per = parseInt(key.split("_")[1]);
+      const sets = Math.floor(count / per);
+
+      for (let i = 0; i < sets; i++) {
+        // Simple case: a single leader object
+        if (data.leader) {
+          specialMembers.push({
+            role: "Leader",
+            ...data.leader
+          });
+        }
+
+        // Compound case: multiple additions
+        if (Array.isArray(data.additions)) {
+          for (const entry of data.additions) {
+            for (const [role, details] of Object.entries(entry)) {
+              specialMembers.push({
+                role: role.replace(/([a-z])([A-Z])/g, '$1 $2'), // e.g., subChief → sub Chief
+                ...details
+              });
+            }
+          }
+        }
       }
-    } else if (key === 'commander' || key === 'war_chief') {
-      const group = leaders[key];
-      if (count < 100 && group.under_100) {
-        specialMembers.push({ role: 'Commander', level: group.under_100.level, type: group.under_100.class });
-      } else if (count >= 100 && group['100_to_150']) {
-        specialMembers.push({ role: 'Commander', level: group['100_to_150'].level, type: group['100_to_150'].class });
-      } else if (group.over_150) {
-        specialMembers.push({ role: 'Commander', level: group.over_150.level, type: group.over_150.class });
+    }
+
+    // Optional: lair notes
+    if (key === "lair" && isLair) {
+      if (data.leadership) {
+        specialMembers.push({
+          role: "Lair Leadership",
+          notes: data.leadership
+        });
       }
-    } else if (key === 'war_chief') {
-      const group = leaders[key];
-      if (count < 60 && group.less_than_60) {
-        specialMembers.push({ role: 'War Chief', level: group.less_than_60.level, type: group.less_than_60.class });
-      } else if (group.more_than_60) {
-        specialMembers.push({ role: 'War Chief', level: group.more_than_60.level, type: group.more_than_60.class });
+      if (data.females) {
+        specialMembers.push({
+          role: "Females",
+          notes: data.females
+        });
+      }
+      if (data.young) {
+        specialMembers.push({
+          role: "Young",
+          notes: data.young
+        });
       }
     }
   }
 
   return specialMembers;
 }
-
 
 // Main module class
 export class GreyhawkEncounters {
@@ -333,7 +357,11 @@ export class GreyhawkEncounters {
           
           // Display grouped members
           for (const [role, info] of Object.entries(membersByRole)) {
-            content += `<p>${info.count > 1 ? info.count + ' ' : ''}${role}${info.count > 1 ? 's' : ''}: Level ${info.level} ${info.type}</p>`;
+            if (info.level && info.type) {
+              content += `<p>${info.count > 1 ? info.count + ' ' : ''}${role}${info.count > 1 ? 's' : ''}: Level ${info.level} ${info.type}</p>`;
+            } else {
+              content += `<p>${role}: ${info.notes || 'Special unit'}</p>`;
+            }
           }
           
           // Add notes section if available
@@ -677,7 +705,7 @@ export class GreyhawkEncounters {
 
         // 🛡️ Try to extract leader/special member info if applicable
         const specialMembers = monsterData?.leaders && numberAppearing
-          ? flattenLeaderData(monsterData.leaders, numberAppearing)
+          ? flattenLeaderData(monsterData.leaders, numberAppearing, /* isLair= */ false)
           : [];
     
         const flavor = `📍 <strong>Greyhawk Encounter</strong>`;
