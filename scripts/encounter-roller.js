@@ -252,7 +252,7 @@ export class GreyhawkEncounterRoller extends Application {
     html.find('select[name="encounterSystem"]').change(ev => {
       const system = ev.currentTarget.value;
       html.find('.dmg-system-container').toggle(system === 'dmg');
-      html.find('.wog-system-container').toggle(system === 'wog');
+      html.find('.wog-system-container, .wog-regional-options').toggle(system === 'wog');
       
       // Update appropriate encounter type options
       if (system === 'dmg') {
@@ -548,12 +548,14 @@ export class GreyhawkEncounterRoller extends Application {
                   const population = html.find('select[name="population"]').val() || 'moderate';
                   const climate = html.find('select[name="climate"]').val() || 'temperate';
                   let timeOfDay = html.find('select[name="timeOfDay"]').val() || 'noon';
+                  const forceEncounter = html.find('input[name="forceEncounter"]').is(':checked');
+
                   if (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
                     const timeInfo = GreyhawkEncounters.getCurrentTimeInfo();
                     if (timeInfo?.timeOfDay) timeOfDay = timeInfo.timeOfDay;
                   }
                   const isWarZone = html.find('input[name="isWarZone"]').is(':checked');
-                  options = { ...options, terrain, population, timeOfDay, climate, isWarZone };
+                  options = { ...options, terrain, population, timeOfDay, climate, isWarZone, forceEncounter };
                   break;
                 }
         
@@ -606,6 +608,7 @@ export class GreyhawkEncounterRoller extends Application {
               const regionType = html.find('select[name="regionType"]').val();
               const region = html.find('select[name="region"]').val();
               const isWarZone = html.find('input[name="isWarZone"]').is(':checked');
+              const forceEncounter = html.find('input[name="forceEncounter"]').is(':checked');
 
               if (!region) {
                 ui.notifications.warn("Please select a specific region");
@@ -617,7 +620,8 @@ export class GreyhawkEncounterRoller extends Application {
               try {
                 const result = await GreyhawkEncounters._rollRegionalEncounter({
                   specificRegion: region,
-                  isWarZone: isWarZone
+                  isWarZone: isWarZone,
+                  forceEncounter
                 });
 
                 if (result) {

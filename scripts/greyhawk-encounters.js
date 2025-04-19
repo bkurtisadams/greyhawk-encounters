@@ -507,6 +507,7 @@ export class GreyhawkEncounters {
     const region = options.specificRegion || 'greyhawk';
     const isWarZone = options.isWarZone ?? false;
     const population = options.population || 'moderate';
+    const forceEncounter = options.forceEncounter === true;
   
     console.log(`🗺️ Regional Encounter Starting...`);
     console.log(`  ➤ Region: ${region}`);
@@ -520,31 +521,24 @@ export class GreyhawkEncounters {
       case 'uninhabited': dieSize = 10; break;
     }
   
-    // Replace Roll.fromFormula with rollNumberFromPattern from utility
-    const encounterRoll = { 
-      total: await rollNumberFromPattern(`1d${dieSize}`),
-      toMessage: async function(opts) {
-        // Create a message using ChatMessage if needed
-        return ChatMessage.create({
-          content: `<div class="dice-roll"><div class="dice-result"><div class="dice-formula">1d${dieSize}</div><div class="dice-total">${this.total}</div></div></div>`,
-          ...opts
-        });
-      }
-    };
-    
-    console.log(`🎲 Encounter check: rolled ${encounterRoll.total} on d${dieSize} (success if 1)`);
-  
-    await encounterRoll.toMessage({
-      flavor: `🎲 Encounter Check (${population} area): 1 in d${dieSize}`,
-      speaker: ChatMessage.getSpeaker()
+    // Use Foundry's Roll class for the encounter check
+    const roll = new Roll(`1d${dieSize}`);
+    await roll.evaluate({ async: true });
+    await roll.toMessage({
+      speaker: ChatMessage.getSpeaker(),
+      flavor: `🎲 Encounter Check (${population} area): 1 in d${dieSize}`
     });
   
-    if (encounterRoll.total !== 1) {
-      console.log(`⛔ No encounter: result was ${encounterRoll.total}`);
+    console.log(`🎲 Encounter check: rolled ${roll.total} on d${dieSize} (success if 1)`);
+  
+    if (!forceEncounter && roll.total !== 1) {
+      console.log(`⛔ No encounter: result was ${roll.total}`);
       return {
-        roll: encounterRoll.total,
-        encounter: `No encounter (rolled ${encounterRoll.total} on d${dieSize})`
+        roll: roll.total,
+        encounter: `No encounter (rolled ${roll.total} on d${dieSize})`
       };
+    } else if (forceEncounter) {
+      console.log(`⚠️ Forcing encounter due to test mode override.`);
     }
   
     // 🔹 Step 2: Resolve the proper encounter table
@@ -565,48 +559,38 @@ export class GreyhawkEncounters {
     }
   
     // 🔹 Step 3: Roll for the specific encounter from the table
-    // Replace Roll.fromFormula with rollNumberFromPattern from utility
-    const tableRoll = {
-      total: await rollNumberFromPattern("1d100"),
-      toMessage: async function(opts) {
-        // Create a message using ChatMessage if needed
-        return ChatMessage.create({
-          content: `<div class="dice-roll"><div class="dice-result"><div class="dice-formula">1d100</div><div class="dice-total">${this.total}</div></div></div>`,
-          ...opts
-        });
-      }
-    };
-    
-    console.log(`📜 Rolled ${tableRoll.total} for encounter result on ${region} table`);
-  
+    const tableRoll = new Roll("1d100");
+    await tableRoll.evaluate({ async: true });
     await tableRoll.toMessage({
       flavor: `📜 Encounter Roll for ${region} Table`,
       speaker: ChatMessage.getSpeaker()
     });
   
-    const roll = tableRoll.total;
+    const rollValue = tableRoll.total;
+    console.log(`📜 Rolled ${rollValue} for encounter result on ${region} table`);
   
     for (const entry of table) {
-      if (entry.max === 0 && roll >= entry.min) {
+      if (entry.max === 0 && rollValue >= entry.min) {
         console.log(`📌 Matched special range ${entry.min}+ → ${entry.encounter}`);
         if (entry.useStandard) {
           console.log(`↪️ Redirecting to standard encounter handler`);
           return this._rollStandardEncounter(options);
         } else {
-          return { roll, encounter: entry.encounter };
+          return { roll: rollValue, encounter: entry.encounter };
         }
-      } else if (roll >= entry.min && roll <= entry.max) {
+      } else if (rollValue >= entry.min && rollValue <= entry.max) {
         console.log(`📌 Matched ${entry.min}-${entry.max} → ${entry.encounter}`);
-        return { roll, encounter: entry.encounter };
+        return { roll: rollValue, encounter: entry.encounter };
       }
     }
   
-    console.warn(`❓ No matching entry found in table for roll ${roll}`);
+    console.warn(`❓ No matching entry found in table for roll ${rollValue}`);
     return {
-      roll,
+      roll: rollValue,
       encounter: "No specific encounter found"
     };
   }
+  
 
   // Add a new method for handling standard encounters from DMG Appendix C
   static _rollStandardEncounter(options) {
@@ -741,11 +725,12 @@ export class GreyhawkEncounters {
     const initialRoll = roll.total;
     
     // Check if encounter occurs (roll a 1 on the appropriate die)
-    if (initialRoll !== checkValue) {
-      return { 
+    // OR force an encounter for testing
+    if (!options.forceEncounter && initialRoll !== checkValue) {
+      return {
         result: "No encounter",
-        initialRoll: initialRoll, 
-        dieSize: dieSize,
+        initialRoll,
+        dieSize,
         encounterCheck: `Needed ${checkValue} on d${dieSize}`
       };
     }

@@ -1,3 +1,25 @@
+<style>
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  fieldset {
+    border: 1px solid #888;
+    border-radius: 4px;
+    padding: 0.75em;
+    margin-bottom: 1em;
+    background-color: #f9f9f9;
+  }
+
+  legend {
+    font-weight: bold;
+    padding: 0 0.5em;
+  }
+</style>
+
 <form class="greyhawk-encounters">
   <!-- Encounter System -->
   <div class="form-group">
@@ -8,7 +30,7 @@
     </select>
   </div>
 
-  <!-- Shared Encounter Context -->
+  <!-- Encounter Context Shared -->
   <fieldset>
     <legend>Encounter Context</legend>
 
@@ -20,17 +42,6 @@
         {{/each}}
       </select>
     </div>
-
-    <div class="form-group">
-      <label>
-        <input type="checkbox" name="isPatrolled" {{#if isPatrolled}}checked{{/if}} {{#if (eq population "uninhabited")}}disabled{{/if}}>
-        Area is Patrolled (enables patrol encounter rolls)
-      </label>
-      {{#if (eq population "uninhabited")}}
-        <p class="note text-muted">(Uninhabited areas are not patrolled by default)</p>
-      {{/if}}
-    </div>
-
 
     <div class="form-group">
       <label for="population">Population Density:</label>
@@ -59,163 +70,113 @@
       </select>
     </div>
 
-    <div class="form-group">
-      <label>
-        <input type="checkbox" name="isWarZone">
-        Is War Zone (double patrol chance)
-      </label>
+    <div class="checkbox-row">
+      <input type="checkbox" name="forceEncounter" id="forceEncounter">
+      <label for="forceEncounter">Force Encounter (Testing Only)</label>
+    </div>
+
+    <div class="checkbox-row">
+      <input type="checkbox" name="isPatrolled" id="isPatrolled">
+      <label for="isPatrolled">Area is Patrolled (enables patrol encounter rolls)</label>
+    </div>
+
+    <div class="checkbox-row">
+      <input type="checkbox" name="isWarZone" id="isWarZone">
+      <label for="isWarZone">Is War Zone (double patrol chance)</label>
     </div>
   </fieldset>
 
-  <!-- DMG Specific Options -->
+  <!-- DMG-Specific Section -->
   <div class="dmg-system-container" style="display: none;">
-    <div class="form-group">
-      <label for="dmgEncounterType">Encounter Type:</label>
-      <select name="dmgEncounterType">
-        <option value="outdoor">Outdoor</option>
-        <option value="dungeon">Dungeon</option>
-        <option value="underwater">Underwater</option>
-        <option value="waterborne">Waterborne</option>
-        <option value="city">City/Town</option>
-        <option value="airborne">Airborne</option>
-        <option value="astral">Astral Plane</option>
-        <option value="ethereal">Ethereal Plane</option>
-      </select>
-    </div>
+    <fieldset>
+      <legend>DMG Options</legend>
 
-    <!-- Outdoor -->
-    <div class="dmg-outdoor-options" style="display: none;"></div>
-
-    <!-- Dungeon -->
-    <div class="dmg-dungeon-options" style="display: none;">
       <div class="form-group">
-        <label for="dungeonLevel">Dungeon Level:</label>
-        <input type="number" name="dungeonLevel" value="1" min="1" max="20">
+        <label for="dmgEncounterType">Encounter Type:</label>
+        <select name="dmgEncounterType">
+          <option value="outdoor">Outdoor</option>
+          <option value="dungeon">Dungeon</option>
+          <option value="underwater">Underwater</option>
+          <option value="waterborne">Waterborne</option>
+          <option value="city">City/Town</option>
+          <option value="airborne">Airborne</option>
+          <option value="astral">Astral Plane</option>
+          <option value="ethereal">Ethereal Plane</option>
+        </select>
       </div>
-      <div class="form-group">
-        <label>Wandering Monster Check</label>
-        <div class="form-fields">
-          <select name="periodicDieSize">
-            <option value="4">d4</option>
-            <option value="6" selected>d6</option>
-            <option value="8">d8</option>
-            <option value="10">d10</option>
-            <option value="12">d12</option>
-            <option value="20">d20</option>
-            <option value="100">d100</option>
-          </select>
-          <span>Success on roll of</span>
-          <input type="number" name="periodicSuccessValue" value="1" min="1" max="100">
-          <span>or less</span>
+
+      <!-- Subsections are shown dynamically via JS -->
+      <div class="dmg-dungeon-options" style="display: none;">
+        <div class="form-group">
+          <label for="dungeonLevel">Dungeon Level:</label>
+          <input type="number" name="dungeonLevel" value="1" min="1" max="20">
         </div>
-        <p class="notes">Standard: 1 in 6 chance every 3 turns (30 minutes)</p>
+        <div class="form-group">
+          <label>Wandering Monster Check</label>
+          <div class="form-fields">
+            <select name="periodicDieSize">
+              <option value="4">d4</option>
+              <option value="6" selected>d6</option>
+              <option value="8">d8</option>
+              <option value="10">d10</option>
+              <option value="12">d12</option>
+              <option value="20">d20</option>
+              <option value="100">d100</option>
+            </select>
+            <span>Success on roll of</span>
+            <input type="number" name="periodicSuccessValue" value="1" min="1" max="100">
+            <span>or less</span>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <!-- Waterborne -->
-    <div class="dmg-waterborne-options" style="display: none;">
-      <div class="form-group">
-        <label for="waterType">Water Type:</label>
-        <select name="waterType">
-          <option value="open">Open Ocean</option>
-          <option value="coastal">Coastal Waters</option>
-          <option value="river">River</option>
-          <option value="lake">Lake</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Underwater -->
-    <div class="dmg-underwater-options" style="display: none;">
-      <div class="form-group">
-        <label for="waterType">Water Type:</label>
-        <select name="waterType">
-          <option value="fresh">Fresh Water</option>
-          <option value="salt">Salt Water</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="depth">Depth:</label>
-        <select name="depth">
-          <option value="shallow">Shallow</option>
-          <option value="deep">Deep</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Airborne -->
-    <div class="dmg-airborne-options" style="display: none;">
-      <div class="form-group">
-        <label for="airborneClimate">Climate:</label>
-        <select name="airborneClimate">
-          <option value="temperate">Temperate/Subtropical</option>
-          <option value="tropical">Tropical</option>
-          <option value="subarctic">Subarctic</option>
-          <option value="arctic">Arctic</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- City -->
-    <div class="dmg-city-options" style="display: none;">
-      <div class="form-group">
-        <label for="citySize">Settlement Size:</label>
-        <select name="citySize">
-          <option value="village">Village/Hamlet (< 1000)</option>
-          <option value="town" selected>Town (1000-6000)</option>
-          <option value="city">City (6000-25000)</option>
-          <option value="metropolis">Large City/Metropolis (> 25000)</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="cityTimeOfDay">Time of Day:</label>
-        <select name="cityTimeOfDay">
-          <option value="day">Day</option>
-          <option value="night">Night</option>
-        </select>
-      </div>
-    </div>
+    </fieldset>
   </div>
 
-  <!-- WoG Region Controls -->
+  <!-- WoG Regional Section -->
   <div class="wog-regional-options" style="display: none;">
-    <div class="form-group">
-      <label for="regionType">Region Category:</label>
-      <select name="regionType">
-        {{#each regionTypes}}
-          <option value="{{this.id}}">{{this.label}}</option>
-        {{/each}}
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="region">Specific Region:</label>
-      <select name="region">
-        <!-- Populated dynamically -->
-      </select>
-    </div>
+    <fieldset>
+      <legend>World of Greyhawk Region</legend>
+
+      <div class="form-group">
+        <label for="regionType">Region Category:</label>
+        <select name="regionType">
+          {{#each regionTypes}}
+            <option value="{{this.id}}">{{this.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="region">Specific Region:</label>
+        <select name="region">
+          <!-- Populated dynamically -->
+        </select>
+      </div>
+    </fieldset>
   </div>
 
-  <!-- Shared Calendar Options -->
-  <div class="form-group calendar-options">
-    <label>
-      <input type="checkbox" name="useSimpleCalendar" {{#if useSimpleCalendar}}checked{{/if}}>
-      Use Simple Calendar for Time of Day/Season
-    </label>
-  </div>
-
-  {{#if useSimpleCalendar}}
-    <div class="simple-calendar-info">
-      {{#if timeInfo}}
-        <p><strong>Current Date:</strong> {{timeInfo.day}}/{{timeInfo.month}}/{{timeInfo.year}}</p>
-        <p><strong>Current Time:</strong> {{timeInfo.hour}}:{{timeInfo.minute}}</p>
-        <p><strong>Time of Day:</strong> {{timeInfo.timeOfDay}}</p>
-        <p><strong>Season:</strong> {{timeInfo.season}}</p>
-        <p><strong>Weather:</strong> {{timeInfo.weather}}</p>
-      {{else}}
-        <p>Simple Calendar data not available</p>
-      {{/if}}
+  <!-- Calendar Options -->
+  <fieldset>
+    <legend>Calendar Settings</legend>
+    <div class="checkbox-row">
+      <input type="checkbox" name="useSimpleCalendar" id="useSimpleCalendar" {{#if useSimpleCalendar}}checked{{/if}}>
+      <label for="useSimpleCalendar">Use Simple Calendar for Time of Day/Season</label>
     </div>
-  {{/if}}
+
+    {{#if useSimpleCalendar}}
+      <div class="simple-calendar-info">
+        {{#if timeInfo}}
+          <p><strong>Current Date:</strong> {{timeInfo.day}}/{{timeInfo.month}}/{{timeInfo.year}}</p>
+          <p><strong>Current Time:</strong> {{timeInfo.hour}}:{{timeInfo.minute}}</p>
+          <p><strong>Time of Day:</strong> {{timeInfo.timeOfDay}}</p>
+          <p><strong>Season:</strong> {{timeInfo.season}}</p>
+          <p><strong>Weather:</strong> {{timeInfo.weather}}</p>
+        {{else}}
+          <p>Simple Calendar data not available</p>
+        {{/if}}
+      </div>
+    {{/if}}
+  </fieldset>
 
   <!-- Buttons -->
   <div class="button-group">
