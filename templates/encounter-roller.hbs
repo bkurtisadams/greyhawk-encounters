@@ -1,4 +1,5 @@
 <form class="greyhawk-encounters">
+  <!-- Encounter System -->
   <div class="form-group">
     <label for="encounterSystem">Encounter System:</label>
     <select name="encounterSystem">
@@ -6,70 +7,91 @@
       <option value="wog">World of Greyhawk</option>
     </select>
   </div>
-  
-  <!-- DMG System Options -->
+
+  <!-- Shared Encounter Context -->
+  <fieldset>
+    <legend>Encounter Context</legend>
+
+    <div class="form-group">
+      <label for="terrain">Terrain Type:</label>
+      <select name="terrain">
+        {{#each terrainTypes}}
+          <option value="{{this.id}}">{{this.label}}</option>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" name="isPatrolled" {{#if isPatrolled}}checked{{/if}} {{#if (eq population "uninhabited")}}disabled{{/if}}>
+        Area is Patrolled (enables patrol encounter rolls)
+      </label>
+      {{#if (eq population "uninhabited")}}
+        <p class="note text-muted">(Uninhabited areas are not patrolled by default)</p>
+      {{/if}}
+    </div>
+
+
+    <div class="form-group">
+      <label for="population">Population Density:</label>
+      <select name="population">
+        {{#each populationTypes}}
+          <option value="{{this.id}}">{{this.label}}</option>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="climate">Climate:</label>
+      <select name="climate">
+        {{#each climateTypes}}
+          <option value="{{this.id}}">{{this.label}}</option>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="form-group time-of-day-group">
+      <label for="timeOfDay">Time of Day:</label>
+      <select name="timeOfDay">
+        {{#each timesOfDay}}
+          <option value="{{this.id}}">{{this.label}}</option>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" name="isWarZone">
+        Is War Zone (double patrol chance)
+      </label>
+    </div>
+  </fieldset>
+
+  <!-- DMG Specific Options -->
   <div class="dmg-system-container" style="display: none;">
     <div class="form-group">
       <label for="dmgEncounterType">Encounter Type:</label>
       <select name="dmgEncounterType">
-      <option value="outdoor">Outdoor</option>
-      <option value="dungeon">Dungeon</option>
-      <option value="underwater">Underwater</option>
-      <option value="waterborne">Waterborne</option>
-      <option value="city">City/Town</option>
-      <option value="airborne">Airborne</option>
-      <option value="astral">Astral Plane</option>
-      <option value="ethereal">Ethereal Plane</option>
-    </select>
+        <option value="outdoor">Outdoor</option>
+        <option value="dungeon">Dungeon</option>
+        <option value="underwater">Underwater</option>
+        <option value="waterborne">Waterborne</option>
+        <option value="city">City/Town</option>
+        <option value="airborne">Airborne</option>
+        <option value="astral">Astral Plane</option>
+        <option value="ethereal">Ethereal Plane</option>
+      </select>
     </div>
-    
-    <!-- DMG Outdoor Options -->
-    <div class="dmg-outdoor-options" style="display: none;">
-      <div class="form-group">
-        <label for="terrain">Terrain Type:</label>
-        <select name="terrain">
-          {{#each terrainTypes}}
-            <option value="{{this.id}}">{{this.label}}</option>
-          {{/each}}
-        </select>
-      </div>
-      
-      <div class="form-group">
-        <label for="population">Population Density:</label>
-        <select name="population">
-          {{#each populationTypes}}
-            <option value="{{this.id}}">{{this.label}}</option>
-          {{/each}}
-        </select>
-      </div>
-      
-        <!-- climate selector here -->
-      <div class="form-group">
-        <label for="climate">Climate:</label>
-        <select name="climate">
-          {{#each climateTypes}}
-            <option value="{{this.id}}">{{this.label}}</option>
-          {{/each}}
-        </select>
-      </div>
 
-      <div class="form-group time-of-day-group">
-        <label for="timeOfDay">Time of Day:</label>
-        <select name="timeOfDay">
-          {{#each timesOfDay}}
-            <option value="{{this.id}}">{{this.label}}</option>
-          {{/each}}
-        </select>
-      </div>
-    </div>
-    
-    <!-- DMG Dungeon Options -->
+    <!-- Outdoor -->
+    <div class="dmg-outdoor-options" style="display: none;"></div>
+
+    <!-- Dungeon -->
     <div class="dmg-dungeon-options" style="display: none;">
       <div class="form-group">
         <label for="dungeonLevel">Dungeon Level:</label>
         <input type="number" name="dungeonLevel" value="1" min="1" max="20">
       </div>
-      
       <div class="form-group">
         <label>Wandering Monster Check</label>
         <div class="form-fields">
@@ -90,7 +112,7 @@
       </div>
     </div>
 
-    <!-- DMG Waterborne Options -->
+    <!-- Waterborne -->
     <div class="dmg-waterborne-options" style="display: none;">
       <div class="form-group">
         <label for="waterType">Water Type:</label>
@@ -102,8 +124,8 @@
         </select>
       </div>
     </div>
-    
-    <!-- DMG Underwater Options -->
+
+    <!-- Underwater -->
     <div class="dmg-underwater-options" style="display: none;">
       <div class="form-group">
         <label for="waterType">Water Type:</label>
@@ -112,7 +134,6 @@
           <option value="salt">Salt Water</option>
         </select>
       </div>
-      
       <div class="form-group">
         <label for="depth">Depth:</label>
         <select name="depth">
@@ -121,16 +142,8 @@
         </select>
       </div>
     </div>
-    
-    <!-- DMG Planar Options -->
-    <div class="dmg-planar-options" style="display: none;">
-      <div class="form-group">
-        <label>Planar encounters use standard tables based on the selected encounter type</label>
-      </div>
-    </div>
-  </div>
 
-    <!-- DMG Airborne Options -->
+    <!-- Airborne -->
     <div class="dmg-airborne-options" style="display: none;">
       <div class="form-group">
         <label for="airborneClimate">Climate:</label>
@@ -143,91 +156,68 @@
       </div>
     </div>
 
-  <!-- DMG City Options -->
-  <div class="dmg-city-options" style="display: none;">
-    <div class="form-group">
-      <label for="citySize">Settlement Size:</label>
-      <select name="citySize">
-        <option value="village">Village/Hamlet (< 1000)</option>
-        <option value="town" selected>Town (1000-6000)</option>
-        <option value="city">City (6000-25000)</option>
-        <option value="metropolis">Large City/Metropolis (> 25000)</option>
-      </select>
-    </div>
-    
-    <div class="form-group">
-      <label for="timeOfDay">Time of Day:</label>
-      <select name="cityTimeOfDay">
-        <option value="day">Day</option>
-        <option value="night">Night</option>
-      </select>
-    </div>
-  </div>
-  
-  <!-- World of Greyhawk System Options -->
-  <div class="wog-system-container" style="display: none;">
-    <div class="form-group">
-      <label for="wogEncounterType">Encounter Type:</label>
-      <select name="wogEncounterType">
-        <option value="regional">Regional</option>
-        <option value="patrol">Patrol</option>
-      </select>
-    </div>
-    
-    <!-- WoG Regional Options -->
-    <div class="wog-regional-options" style="display: none;">
+    <!-- City -->
+    <div class="dmg-city-options" style="display: none;">
       <div class="form-group">
-        <label for="regionType">Region Category:</label>
-        <select name="regionType">
-          {{#each regionTypes}}
-            <option value="{{this.id}}">{{this.label}}</option>
-          {{/each}}
+        <label for="citySize">Settlement Size:</label>
+        <select name="citySize">
+          <option value="village">Village/Hamlet (< 1000)</option>
+          <option value="town" selected>Town (1000-6000)</option>
+          <option value="city">City (6000-25000)</option>
+          <option value="metropolis">Large City/Metropolis (> 25000)</option>
         </select>
       </div>
-      
       <div class="form-group">
-        <label for="region">Specific Region:</label>
-        <select name="region">
-          <!-- Populated dynamically -->
-        </select>
-      </div>
-    </div>
-    
-    <!-- WoG Patrol Options -->
-    <div class="wog-patrol-options" style="display: none;">
-      <div class="form-group">
-        <label for="patrolType">Patrol Type:</label>
-        <select name="patrolType">
-          {{#each patrolTypes}}
-            <option value="{{this.id}}">{{this.label}}</option>
-          {{/each}}
+        <label for="cityTimeOfDay">Time of Day:</label>
+        <select name="cityTimeOfDay">
+          <option value="day">Day</option>
+          <option value="night">Night</option>
         </select>
       </div>
     </div>
   </div>
-  
-  <!-- Calendar Options - Apply to both systems -->
+
+  <!-- WoG Region Controls -->
+  <div class="wog-regional-options" style="display: none;">
+    <div class="form-group">
+      <label for="regionType">Region Category:</label>
+      <select name="regionType">
+        {{#each regionTypes}}
+          <option value="{{this.id}}">{{this.label}}</option>
+        {{/each}}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="region">Specific Region:</label>
+      <select name="region">
+        <!-- Populated dynamically -->
+      </select>
+    </div>
+  </div>
+
+  <!-- Shared Calendar Options -->
   <div class="form-group calendar-options">
     <label>
       <input type="checkbox" name="useSimpleCalendar" {{#if useSimpleCalendar}}checked{{/if}}>
       Use Simple Calendar for Time of Day/Season
     </label>
   </div>
-  
+
   {{#if useSimpleCalendar}}
-  <div class="simple-calendar-info">
-    {{#if timeInfo}}
-    <p><strong>Current Date:</strong> {{timeInfo.day}}/{{timeInfo.month}}/{{timeInfo.year}}</p>
-    <p><strong>Current Time:</strong> {{timeInfo.hour}}:{{timeInfo.minute}}</p>
-    <p><strong>Time of Day:</strong> {{timeInfo.timeOfDay}}</p>
-    <p><strong>Season:</strong> {{timeInfo.season}}</p>
-    <p><strong>Weather:</strong> {{timeInfo.weather}}</p>
-    {{else}}
-    <p>Simple Calendar data not available</p>
-    {{/if}}
-  </div>
+    <div class="simple-calendar-info">
+      {{#if timeInfo}}
+        <p><strong>Current Date:</strong> {{timeInfo.day}}/{{timeInfo.month}}/{{timeInfo.year}}</p>
+        <p><strong>Current Time:</strong> {{timeInfo.hour}}:{{timeInfo.minute}}</p>
+        <p><strong>Time of Day:</strong> {{timeInfo.timeOfDay}}</p>
+        <p><strong>Season:</strong> {{timeInfo.season}}</p>
+        <p><strong>Weather:</strong> {{timeInfo.weather}}</p>
+      {{else}}
+        <p>Simple Calendar data not available</p>
+      {{/if}}
+    </div>
   {{/if}}
-  
+
+  <!-- Buttons -->
   <div class="button-group">
     <button type="button" class="roll-encounter-button">Roll Encounter</button>
     <button type="button" class="check-lost-button">Check if Lost</button>

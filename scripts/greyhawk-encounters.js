@@ -14,6 +14,24 @@ import { rollCityEncounter } from '../data/dmg-city-tables.js';
 import { rollNumberFromPattern } from '../utils/utility.js';
 import { rollPlanarEncounter } from '../data/dmg-planar-tables.js';
 
+const REGION_TABLE_MAP = {
+  "Bandit Kingdoms": "BanditKingdoms_HornedSociety_Iuz_Rovers",
+  "Horned Society": "BanditKingdoms_HornedSociety_Iuz_Rovers",
+  "Iuz": "BanditKingdoms_HornedSociety_Iuz_Rovers",
+  "Rovers of the Barrens": "BanditKingdoms_HornedSociety_Iuz_Rovers",
+  // Add other mappings...
+};
+
+const TERRAIN_CHECK_TIMES = {
+  plain:       ['morning', 'evening', 'midnight'],
+  scrub:       ['morning', 'evening', 'night', 'pre-dawn'],
+  forest:      ['morning', 'noon', 'evening', 'night', 'midnight', 'pre-dawn'],
+  desert:      ['morning', 'night', 'pre-dawn'],
+  hills:       ['noon', 'night', 'pre-dawn'],
+  mountains:   ['morning', 'night'],
+  marsh:       ['morning', 'noon', 'evening', 'night', 'midnight', 'pre-dawn']
+};
+
 // Main module class
 export class GreyhawkEncounters {
   static ID = 'greyhawk-encounters';
@@ -485,70 +503,107 @@ export class GreyhawkEncounters {
   /**
    * Roll a regional encounter specific to Greyhawk.
    */
-  static _rollRegionalEncounter(options) {
+  static async _rollRegionalEncounter(options) {
     const region = options.specificRegion || 'greyhawk';
-    const roll = Math.floor(Math.random() * 100) + 1;
-    
-    console.log(`Rolling regional encounter for ${region} with roll ${roll}`);
-    
-    // Determine which table to use based on region type
-    let table = null;
-    
-    // Check in political regions
-    table = GREYHAWK_REGIONAL_TABLES[region];
-    
-    // Check in geographical features if not found
-    if (!table) {
-      // Check if this is a forest
-      const forestTables = ['adri_forest', 'grandwood_forest', 'amedio_jungle', 'axewood', 
-                          'dreadwood', 'menowood', 'rieuwood', 'silverwood'];
-      if (forestTables.includes(region)) {
-        table = GREYHAWK_GEOGRAPHICAL_TABLES[region] || GREYHAWK_GEOGRAPHICAL_TABLES['adri_forest'];
-      }
-      
-      // Check if this is a mountain range
-      const mountainTables = ['barrier_peaks', 'crystalmist_mountains', 'jotens', 'clatspur_range', 'yatil_mountains'];
-      if (mountainTables.includes(region)) {
-        table = GREYHAWK_GEOGRAPHICAL_TABLES[region] || GREYHAWK_GEOGRAPHICAL_TABLES['barrier_peaks'];
-      }
-      
-      // Similarly check for hills, water bodies, marshes, and wastelands
+    const isWarZone = options.isWarZone ?? false;
+    const population = options.population || 'moderate';
+  
+    console.log(`🗺️ Regional Encounter Starting...`);
+    console.log(`  ➤ Region: ${region}`);
+    console.log(`  ➤ Population: ${population}`);
+    console.log(`  ➤ Is War Zone: ${isWarZone}`);
+  
+    // 🔹 Step 1: Roll to see if an encounter occurs based on DMG population rules
+    let dieSize = 12;
+    switch (population) {
+      case 'dense': dieSize = 20; break;
+      case 'uninhabited': dieSize = 10; break;
     }
+  
+    // Replace Roll.fromFormula with rollNumberFromPattern from utility
+    const encounterRoll = { 
+      total: await rollNumberFromPattern(`1d${dieSize}`),
+      toMessage: async function(opts) {
+        // Create a message using ChatMessage if needed
+        return ChatMessage.create({
+          content: `<div class="dice-roll"><div class="dice-result"><div class="dice-formula">1d${dieSize}</div><div class="dice-total">${this.total}</div></div></div>`,
+          ...opts
+        });
+      }
+    };
     
-    // If still not found, use Greyhawk as default
+    console.log(`🎲 Encounter check: rolled ${encounterRoll.total} on d${dieSize} (success if 1)`);
+  
+    await encounterRoll.toMessage({
+      flavor: `🎲 Encounter Check (${population} area): 1 in d${dieSize}`,
+      speaker: ChatMessage.getSpeaker()
+    });
+  
+    if (encounterRoll.total !== 1) {
+      console.log(`⛔ No encounter: result was ${encounterRoll.total}`);
+      return {
+        roll: encounterRoll.total,
+        encounter: `No encounter (rolled ${encounterRoll.total} on d${dieSize})`
+      };
+    }
+  
+    // 🔹 Step 2: Resolve the proper encounter table
+    let table = GreyhawkEncounters.resolveRegionalTable(region);
+    console.log(`📦 Table resolved via REGION_TABLE_MAP: ${!!table}`);
+  
     if (!table) {
-      console.warn(`No encounter table found for region: ${region}, using Greyhawk`);
+      const fallback = GREYHAWK_GEOGRAPHICAL_TABLES[region];
+      if (fallback) {
+        console.log(`🌄 Using fallback geographical table for ${region}`);
+        table = fallback;
+      }
+    }
+  
+    if (!table) {
+      console.warn(`⚠️ No encounter table found for region: ${region}, using Greyhawk`);
       table = GREYHAWK_REGIONAL_TABLES['greyhawk'];
     }
+  
+    // 🔹 Step 3: Roll for the specific encounter from the table
+    // Replace Roll.fromFormula with rollNumberFromPattern from utility
+    const tableRoll = {
+      total: await rollNumberFromPattern("1d100"),
+      toMessage: async function(opts) {
+        // Create a message using ChatMessage if needed
+        return ChatMessage.create({
+          content: `<div class="dice-roll"><div class="dice-result"><div class="dice-formula">1d100</div><div class="dice-total">${this.total}</div></div></div>`,
+          ...opts
+        });
+      }
+    };
     
-    // Find the appropriate entry based on the roll
+    console.log(`📜 Rolled ${tableRoll.total} for encounter result on ${region} table`);
+  
+    await tableRoll.toMessage({
+      flavor: `📜 Encounter Roll for ${region} Table`,
+      speaker: ChatMessage.getSpeaker()
+    });
+  
+    const roll = tableRoll.total;
+  
     for (const entry of table) {
-      // Handle the special case where max is 0 (indicating 46-00 range)
-      if (entry.max === 0) {
-        if (roll >= entry.min) {
-          // If this result indicates using standard tables
-          if (entry.useStandard) {
-            return this._rollStandardEncounter(options);
-          } else {
-            return {
-              roll: roll,
-              encounter: entry.encounter
-            };
-          }
+      if (entry.max === 0 && roll >= entry.min) {
+        console.log(`📌 Matched special range ${entry.min}+ → ${entry.encounter}`);
+        if (entry.useStandard) {
+          console.log(`↪️ Redirecting to standard encounter handler`);
+          return this._rollStandardEncounter(options);
+        } else {
+          return { roll, encounter: entry.encounter };
         }
-      } 
-      // Normal range check
-      else if (roll >= entry.min && roll <= entry.max) {
-        return {
-          roll: roll,
-          encounter: entry.encounter
-        };
+      } else if (roll >= entry.min && roll <= entry.max) {
+        console.log(`📌 Matched ${entry.min}-${entry.max} → ${entry.encounter}`);
+        return { roll, encounter: entry.encounter };
       }
     }
-    
-    // Fallback in case something goes wrong
+  
+    console.warn(`❓ No matching entry found in table for roll ${roll}`);
     return {
-      roll: roll,
+      roll,
       encounter: "No specific encounter found"
     };
   }
@@ -639,8 +694,21 @@ export class GreyhawkEncounters {
    */
   static async rollOutdoorEncounter(terrain, population, timeOfDay, options = {}) {
     // Check if this is a time we should be rolling encounters
-    if (!this._shouldRollEncounterForTime(timeOfDay)) {
-      return { result: "No encounter check needed at this time of day" };
+    if (!this._shouldRollEncounterForTime(timeOfDay, terrain, options.partySize || 0)) {
+      const msg = `🌄 <strong>No encounter check made</strong><br>
+      <em>Reason:</em> According to DMG rules, encounters are not checked at <strong>${timeOfDay}</strong> in <strong>${terrain}</strong> terrain unless the party numbers over 100 creatures.`;
+    
+      await ChatMessage.create({
+        user: game.user.id,
+        speaker: ChatMessage.getSpeaker(),
+        content: msg
+      });
+    
+      console.log(`⛔ Encounter skipped due to DMG terrain/time rule — Time: ${timeOfDay}, Terrain: ${terrain}`);
+      return {
+        result: "Encounter check skipped",
+        skipped: true
+      };
     }
     
     // Determine die size based on population density
@@ -664,7 +732,13 @@ export class GreyhawkEncounters {
     }
     
     // Roll for encounter
-    const initialRoll = Math.floor(Math.random() * dieSize) + 1;
+    const roll = await new Roll(`1d${dieSize}`).roll({ async: true });
+    await roll.toMessage({
+      flavor: `🌲 Encounter Check (${population} area)`,
+      speaker: ChatMessage.getSpeaker(),
+    });
+
+    const initialRoll = roll.total;
     
     // Check if encounter occurs (roll a 1 on the appropriate die)
     if (initialRoll !== checkValue) {
@@ -679,19 +753,34 @@ export class GreyhawkEncounters {
     // Determine if this is a patrol encounter (for inhabited areas)
     // or a fortress encounter (for uninhabited areas)
     const isInhabited = population !== 'uninhabited';
+    const isWarZone = options.isWarZone ?? false;
+
+    // 🔥 Adjust special chance roll for patrol/fortress
+    let patrolChance = isInhabited ? 5 : 0; // base 5 in 20 = 25%
+    let fortressChance = !isInhabited ? 1 : 0; // base 1 in 20 = 5%
+  
+    if (isWarZone) {
+      patrolChance *= 2;    // 50% in war zones
+      fortressChance *= 2;  // optionally 10% for fortresses if desired
+    }
+
     const specialRoll = Math.floor(Math.random() * 20) + 1;
     
-    if (isInhabited && specialRoll <= 5) { // 5 in 20 chance (25%)
+    if (isInhabited && specialRoll <= patrolChance) {
       const patrolResult = await this.rollPatrolEncounter({ patrolType: population });
       patrolResult.initialRoll = initialRoll;
       patrolResult.dieSize = dieSize;
       patrolResult.encounterCheck = `Rolled ${initialRoll} on d${dieSize}`;
+      patrolResult.specialRoll = specialRoll;
+      patrolResult.specialType = "Patrol";
       return patrolResult;
-    } else if (!isInhabited && specialRoll === 1) { // 1 in 20 chance (5%)
+    } else if (!isInhabited && specialRoll <= fortressChance) {
       const fortressResult = await this._rollFortressEncounter(terrain, options);
       fortressResult.initialRoll = initialRoll;
       fortressResult.dieSize = dieSize;
       fortressResult.encounterCheck = `Rolled ${initialRoll} on d${dieSize}`;
+      fortressResult.specialRoll = specialRoll;
+      fortressResult.specialType = "Fortress";
       return fortressResult;
     }
     
@@ -2458,4 +2547,18 @@ else if (monster === "Character") {
     // Calculate equipment types
     return "Medium horse, chainmail & shield, sword (10%), etc."; // Full calculation in actual implementation
   }
+
+  static resolveRegionalTable(region) {
+    // Normalize casing
+    const normalized = region.trim().replace(/\s+/g, ' ');
+    const titleCased = normalized
+      .split(' ')
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+      .join(' ');
+  
+    const key = REGION_TABLE_MAP[titleCased] ?? titleCased;
+    return GREYHAWK_REGIONAL_TABLES[key];
+  }
+  
+  
 }
