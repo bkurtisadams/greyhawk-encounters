@@ -13,6 +13,8 @@ import { rollAirborneEncounter } from '../data/dmg-airborne-tables.js';
 import { rollCityEncounter } from '../data/dmg-city-tables.js';
 import { rollNumberFromPattern } from '../utils/utility.js';
 import { rollPlanarEncounter } from '../data/dmg-planar-tables.js';
+import { MONSTER_MANUAL } from '../data/monster-manual.js';
+
 
 const REGION_TABLE_MAP = {
   "Bandit Kingdoms": "BanditKingdoms_HornedSociety_Iuz_Rovers",
@@ -31,6 +33,63 @@ const TERRAIN_CHECK_TIMES = {
   mountains:   ['morning', 'night'],
   marsh:       ['morning', 'noon', 'evening', 'night', 'midnight', 'pre-dawn']
 };
+
+function findMonsterByName(name) {
+  const normalized = name.toLowerCase().trim();
+
+  return MONSTER_MANUAL.monsters.find(mon => {
+    // Handle primary name
+    if (mon.name?.toLowerCase() === normalized) return true;
+
+    // Handle name variants
+    if (mon.name_variants && typeof mon.name_variants === 'string') {
+      return mon.name_variants.toLowerCase().includes(normalized);
+    }
+
+    // Handle variants (e.g., for "Bat, Mobat" under "Bat")
+    if (Array.isArray(mon.variants)) {
+      for (const variant of mon.variants) {
+        const fullVariant = `${mon.name}, ${variant.type}`.toLowerCase();
+        if (fullVariant === normalized) return { ...mon, ...variant };
+      }
+    }
+
+    return false;
+  });
+}
+
+function flattenLeaderData(leaders, count) {
+  const specialMembers = [];
+
+  for (const [key, data] of Object.entries(leaders)) {
+    if (key.startsWith('per_')) {
+      const perNum = parseInt(key.split('_')[1]);
+      const times = Math.floor(count / perNum);
+      for (let i = 0; i < times * (data.count || 1); i++) {
+        specialMembers.push({ role: `Leader (${perNum})`, level: data.level, type: data.class });
+      }
+    } else if (key === 'commander' || key === 'war_chief') {
+      const group = leaders[key];
+      if (count < 100 && group.under_100) {
+        specialMembers.push({ role: 'Commander', level: group.under_100.level, type: group.under_100.class });
+      } else if (count >= 100 && group['100_to_150']) {
+        specialMembers.push({ role: 'Commander', level: group['100_to_150'].level, type: group['100_to_150'].class });
+      } else if (group.over_150) {
+        specialMembers.push({ role: 'Commander', level: group.over_150.level, type: group.over_150.class });
+      }
+    } else if (key === 'war_chief') {
+      const group = leaders[key];
+      if (count < 60 && group.less_than_60) {
+        specialMembers.push({ role: 'War Chief', level: group.less_than_60.level, type: group.less_than_60.class });
+      } else if (group.more_than_60) {
+        specialMembers.push({ role: 'War Chief', level: group.more_than_60.level, type: group.more_than_60.class });
+      }
+    }
+  }
+
+  return specialMembers;
+}
+
 
 // Main module class
 export class GreyhawkEncounters {
@@ -568,7 +627,7 @@ export class GreyhawkEncounters {
   
     // 🔹 Step 3: Roll 1d100 for the encounter table
     const tableRoll = new Roll("1d100");
-    await tableRoll.evaluate({ async: true });
+    await tableRoll.evaluate();
 
     const tableRollValue = tableRoll.total;
     console.log(`📜 Rolled ${tableRollValue} for encounter result on ${region} table`);
@@ -607,6 +666,19 @@ export class GreyhawkEncounters {
         const encounterText = numberAppearing
           ? `${numberAppearing} ${entry.encounter}`
           : entry.encounter;
+
+        // Try to find full monster data from Monster Manual
+        let monsterData = findMonsterByName(entry.encounter);
+
+        if (!monsterData && entry.encounter.includes(",")) {
+          const alt = entry.encounter.split(",")[1].trim();
+          monsterData = findMonsterByName(alt);
+        }
+
+        // 🛡️ Try to extract leader/special member info if applicable
+        const specialMembers = monsterData?.leaders && numberAppearing
+          ? flattenLeaderData(monsterData.leaders, numberAppearing)
+          : [];
     
         const flavor = `📍 <strong>Greyhawk Encounter</strong>`;
         const content = `
@@ -630,7 +702,12 @@ export class GreyhawkEncounters {
           number: numberAppearing ?? null,
           numberRolls: breakdown ?? [],
           rawEncounter: entry.encounter,
+          alignment: monsterData?.alignment,
+          treasure: monsterData?.treasure,
+          description: monsterData?.description,
+          specialMembers: monsterData?.leaders ? flattenLeaderData(monsterData.leaders, numberAppearing) : [],
         };
+        
       }
     }
   }

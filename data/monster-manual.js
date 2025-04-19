@@ -1,5 +1,5 @@
-{
-  "monsters" [
+export const MONSTER_MANUAL = {
+  monsters: [
     {
       "name": "Aerial Servant",
       "category": "Extraplanar",
@@ -1826,35 +1826,197 @@
 
     {
       "name": "Elf",
+      "category": "Demi-Human",
+      "variants": [
+        {
+          "name": "High Elf",
+          "description": "The standard elven type. Slim of build and pale complected with dark hair and green eyes. Typically wear pastel garb of blue, green, or violet, often covered by a greenish gray cloak.",
+          "lifespan": "Over 1,200 years"
+        },
+        {
+          "name": "Aquatic Elf",
+          "description": "Sea elves with gill slits on the throat, greenish-silver skin, and green or blue-green hair. Live in caverns in lagoon bottoms and reefs.",
+          "specialAbilities": {
+            "movement": "Seaweed affords little or no hindrance",
+            "invisibility": "Invisible in weeds or on reefs",
+            "companions": "50% chance of 1-3 friendly dolphins per 20 sea elves"
+          },
+          "equipment": {
+            "weapons": "Spears and tridents, usually with nets",
+            "noMagic": true
+          },
+          "relationships": {
+            "friends": ["Dolphins", "Land elves"],
+            "enemies": ["Sharks", "Sahuagin"],
+            "neutral": ["All others"],
+            "dislike": ["Fishermen"]
+          },
+          "languages": ["Elvish only"]
+        },
+        {
+          "name": "Drow",
+          "description": "The 'Black Elves' are only legend. They purportedly dwell deep beneath the surface in a strange subterranean realm. Said to be as dark as faeries are bright and as evil as the latter are good.",
+          "combat": {
+            "fighting": "Weak",
+            "magic": "Strong"
+          },
+          "status": "Legendary, not confirmed to exist"
+        },
+        {
+          "name": "Gray Elf (Faerie)",
+          "description": "Noble elves, the rarest and most powerful of their kind. They favor white, yellow, silver, or gold garments with cloaks often deep blue or purple.",
+          "appearance": {
+            "variant1": {"hair": "Silver", "eyes": "Amber"},
+            "variant2": {"hair": "Pale golden", "eyes": "Violet", "name": "Faerie"}
+          },
+          "specialAbilities": {
+            "intelligence": "+1 on dice roll",
+            "wizardry": "Those with supra-genius abilities can become wizards"
+          },
+          "equipment": {
+            "armor": "Chain mail and shield",
+            "weapons": "All carry swords"
+          },
+          "mounts": {
+            "hippogriffs": {"chance": "50% × 70%"},
+            "griffons": {"number": "3-12", "chance": "50% × 30%"}
+          },
+          "behavior": "Very reclusive, live in isolated meadowlands, never associate with other humanoids (except elves) for long",
+          "languages": "Same as high elves",
+          "lifespan": "Beyond 1,500 years"
+        },
+        {
+          "name": "Half-Elf",
+          "description": "All half-elves are of human stock. Handsome folk with good features of each race. Slightly taller than average elf (5½') and weighing about 150 pounds.",
+          "specialAbilities": {
+            "secretDoors": "Detect as elves (⅓ to ½ chance)",
+            "infravision": "Normal",
+            "multiclass": "Can progress in two or three categories simultaneously"
+          },
+          "maxLevel": {
+            "standard": "6/6/4 (fighter/magic-user/cleric)",
+            "exceptional": {
+              "strength17": "7th level fighter",
+              "strength18": "8th level fighter",
+              "intelligence17": "7th level magic-user",
+              "intelligence18": "8th level magic-user"
+            }
+          },
+          "languages": ["Goblin", "Orcish", "Gnoll", "Halflingish", "Gnomish", "Elvish", "Alignment", "Common"],
+          "lifespan": "250 years"
+        },
+        {
+          "name": "Wood Elf",
+          "description": "Also called sylvan elves, very reclusive and generally avoid all contact (75%). Fair complexion with yellow to coppery red hair and light brown, light green, or hazel eyes. Wear russets, reds, brown and tans with green or greenish brown cloaks.",
+          "specialAbilities": {
+            "strength": "+1 to all die rolls (19 treated as 18)",
+            "intelligence": "Slightly lower (18 treated as 17)"
+          },
+          "equipment": {
+            "armor": "Studded leather or ring mail (AC 6)",
+            "weapons": {
+              "bows": "50%",
+              "swords": "20%",
+              "spears": "40%"
+            }
+          },
+          "lairGuards": {
+            "chance": "70%",
+            "options": [
+              {"type": "Giant owls", "number": "2-8", "chance": "80%"},
+              {"type": "Giant lynx", "number": "1-6", "chance": "20%"}
+            ]
+          },
+          "habitat": "Primaeval forests and distant woodlands",
+          "languages": ["Elvish", "Certain woods animals", "Treant"],
+          "alignment": "More neutral than other elves",
+          "lifespan": "Several centuries"
+        }
+      ],
+      "frequency": "Uncommon",
+      "numberAppearing": "20-200",
+      "size": "M (5'+ tall)",
+      "move": "12\"",
+      "armorClass": 5,
+      "hitDice": "1+1",
+      "attacks": 1,
+      "damage": "By weapon type",
+      "specialAttacks": "+1 with normal bow or sword",
+      "specialDefenses": "90% resistant to charm and sleep spells",
+      "magicResistance": "90% to charm and sleep only",
+      "lairProbability": "10%",
+      "intelligence": "High and up",
+      "alignment": "Chaotic good",
+      "psionicAbility": "Nil",
+      "specialAbilities": {
+        "multiclass": "Able to operate in two or more classes simultaneously",
+        "stealth": {
+          "movement": "In natural surroundings can move silently (surprise on 1-4)",
+          "invisibility": "Can blend into vegetation as long as not attacking"
+        },
+        "combat": "Can move, fire bows, and move back all in the same round",
+        "senses": {
+          "infravision": "60 ft",
+          "secretDoors": "Note secret or hidden doors ⅓ to ½ of the time"
+        },
+        "languages": ["Common", "Alignment", "Elvish", "Halflingish", "Gnomish", "Goblin", "Orc", "Hobgoblin", "Gnoll"]
+      },
       "leaders": {
-        "over_20": "Likely 2nd level or better fighter",
-        "over_40": "Likely 2nd level fighter / 2nd level magic-user or better",
+        "per_20": {"level": "2nd or 3rd", "class": "fighter", "count": 1},
+        "per_40": {"level": ["2nd or 3rd fighter", "1st or 2nd magic-user"], "count": 1},
         "over_100": [
-          "1 4th level fighter / 8th level magic-user",
-          "2 4th level fighters / 5th level magic-users",
-          "1 4th level fighter / 4th level magic-user / 4th level cleric"
+          {"level": ["4th fighter", "8th magic-user"], "count": 1},
+          {"level": ["4th fighter", "5th magic-user"], "count": 2},
+          {"level": ["4th fighter", "4th magic-user", "4th cleric"], "count": 1}
         ],
-        "lair": "Equal number of males and females; 5% of couples have children",
-        "magic_item_chance": "10% per level per class for fighter/magic-user and triple-classed leaders"
+        "over_160": {
+          "main": [
+            {"level": ["6th fighter", "9th magic-user"], "count": 1},
+            {"level": ["6th fighter", "6th magic-user", "6th cleric"], "count": 1}
+          ],
+          "retainers": [
+            {"level": ["4th fighter", "5th magic-user"], "count": 2},
+            {"level": ["3rd fighter", "3rd magic-user", "3rd cleric"], "count": 2}
+          ]
+        },
+        "lair_additional": [
+          {"level": ["4th fighter", "7th magic-user"], "count": 1},
+          {"level": "4th fighter", "count": "1 per 40 elves"},
+          {"level": ["2nd fighter", "2nd magic-user", "2nd cleric"], "count": "1 per 40 elves"},
+          {"level": "5th fighter", "count": 1},
+          {"level": "6th fighter", "count": 1},
+          "Females and young equal to 100% and 5% respectively"
+        ],
+        "magic_item_chance": "10% per level per class for usable items"
+      },
+      "dwelling": {
+        "location": "Secluded copse, wood or forest",
+        "guards": {"type": "Giant eagles", "number": "2-12", "chance": "65%"}
+      },
+      "equipment": {
+        "armor": "Usually in scale, ring, or chain mail, most carry shields",
+        "weaponDistribution": {
+          "swordAndBow": "10%",
+          "swordAndSpear": "20%",
+          "sword": "20%",
+          "twoHandedSword": "5%",
+          "spear": "30%",
+          "bow": "15%"
+        }
+      },
+      "mounts": {
+        "unicorns": {
+          "riders": "Female fighters (elfmaids)",
+          "number": "10-30",
+          "chance": "5%"
+        }
       },
       "treasure": {
-        "individual": "1d6 pp plus magic items from leaders"
-      },
-      "lore": {
-        "society": "Loose bands under elven royalty; often dwell in forests and meadows. Home guarded by 2-12 giant eagles (65%).",
-        "military_composition": {
-          "weapons_distribution": {
-            "sword_and_bow": "10%",
-            "sword_and_spear": "20%",
-            "sword": "20%",
-            "two_handed_sword": "5%",
-            "spear": "30%",
-            "bow": "15%"
-          },
-          "mounts": "5% chance of mounted elfmaidens on unicorns (10-30 encountered)."
-        }
+        "individual": "N",
+        "lair": "G, S, T"
       }
     },
+
     {
       "name": "Ettin",
       "category": "Giants",
@@ -2503,36 +2665,125 @@
     {
       "name": "Halfling",
       "category": "Demi-Human",
+      "variants": [
+        {
+          "name": "Hairfoot",
+          "description": "The standard halfling type. They are stealthy rural folk with a strong resistance to magic and poison. Experts at hiding outdoors. Often accompanied by guard dogs.",
+          "size": "Small (~3')",
+          "armorClass": 7,
+          "abilities": {
+            "missile": "+3 to hit with bow or sling",
+            "stealth": "Surprise on 1-4; invisible in foliage",
+            "magicResistance": "Save vs magic/poison as if 4 levels higher"
+          },
+          "maxLevel": "Fighter 4"
+        },
+        {
+          "name": "Tallfellow",
+          "description": "A taller, slimmer halfling, with fairer skin and hair. Very rare. Very friendly with elves.",
+          "size": "Small (~4')",
+          "armorClass": 6,
+          "lifespan": "180 years average",
+          "abilities": {
+            "missile": "+3 to hit with bow or sling",
+            "stealth": "Surprise on 1-4; invisible in foliage",
+            "magicResistance": "Save vs magic/poison as if 4 levels higher",
+            "languages": "Can speak elvish"
+          },
+          "equipment": {
+            "weapons": "Use more spears",
+            "mounts": "Ride ponies"
+          },
+          "maxLevel": {
+            "fighter": {
+              "standard": "4th level",
+              "exceptional": "5th or 6th level with 17-18 strength"
+            }
+          }
+        },
+        {
+          "name": "Stout",
+          "description": "Smaller and stockier than the typical halfling. They have no fear of water and can swim. Enjoy dwarven company.",
+          "size": "Small (~3½')",
+          "armorClass": 6,
+          "lifespan": "200+ years",
+          "abilities": {
+            "missile": "+3 to hit with bow or sling",
+            "stealth": "Surprise on 1-4; invisible in foliage",
+            "magicResistance": "Save vs magic/poison as if 4 levels higher",
+            "infravision": true,
+            "dungeoneering": "Can detect sloping passageways",
+            "swimming": true,
+            "languages": "Can speak dwarvish"
+          },
+          "equipment": {
+            "weapons": "Use morning stars in addition to usual halfling arms"
+          },
+          "maxLevel": {
+            "fighter": {
+              "standard": "4th level",
+              "exceptional": "5th level with 18 strength"
+            }
+          }
+        }
+      ],
       "frequency": "Rare",
-      "numberAppearing": "30d10",
-      "size": "Small",
-      "move": "90 ft",
+      "numberAppearing": "30-300",
+      "size": "Small (3+ ' tall)",
+      "move": "9\"",
       "armorClass": 7,
-      "hitDice": "1d6 hp",
+      "hitDice": "1d6 hitpoints",
       "attacks": 1,
-      "damage": "1d6 or by weapon",
-      "specialAttacks": "+3 to hit with bow or sling",
-      "specialDefenses": "Surprise on 1-4; invisible in foliage",
-      "magicResistance": "Save vs magic/poison as if 4 levels higher",
+      "damage": "By weapon",
+      "specialAttacks": "+3 with bow",
+      "specialDefenses": "Save at 4 levels higher",
+      "magicResistance": "As above",
       "lairProbability": "70%",
       "intelligence": "Very",
       "alignment": "Lawful good",
+      "psionicAbility": "Nil (possible to exist in unusual characters)",
       "levelXP": "1/5 + 1/hp",
-      "description": "Halflings are stealthy rural folk with a strong resistance to magic and poison. Experts at hiding outdoors. Often accompanied by guard dogs.",
+      "dwelling": "Villages with burrow homes and surface cottages, typically in pastoral countryside",
+      "equipment": {
+        "armor": "Padded or leather armor",
+        "weaponDistribution": {
+          "smallSwordAndShortBow": "10%",
+          "smallSwordAndSpear": "10%",
+          "shortBow": "10%",
+          "sling": "20%",
+          "smallSword": "10%",
+          "spear": "20%",
+          "handAxe": "20%"
+        }
+      },
       "leaders": {
-        "per_30": "2nd level fighter",
-        "over_90": "Add 3rd level fighter",
-        "over_150": "Add 4th level fighter",
+        "per_30": {"level": 2, "class": "fighter", "count": 2},
+        "over_90": {"level": 3, "class": "fighter", "count": 1},
+        "over_150": {
+          "additional": [
+            {"level": 4, "class": "fighter", "count": 1},
+            {"level": 3, "class": "fighter", "count": 2},
+            {"level": 2, "class": "fighter", "count": 3}
+          ]
+        },
+        "higherLevelArmor": {
+          "normal": {"armorClass": 6},
+          "third": {"armorClass": 5},
+          "fourth": {"armorClass": 4},
+          "magicChance": "10% per level of having magic armor and/or miscellaneous weapons"
+        },
         "lair": {
-          "gender_ratio": "Equal number of males and females",
-          "children": "60% of couples have children",
-          "guards": "1d4 dogs"
+          "females": "100% of adult males",
+          "children": "60% of adult males",
+          "guards": "1-4 dogs per halfling (treat as wild dogs)"
         }
       },
       "treasure": {
-        "individual": "3d8 sp"
+        "individual": "K",
+        "lair": "B"
       }
     },
+
     {
       "name": "Hippopotamus",
       "category": "Animal",
@@ -3151,6 +3402,41 @@
       }
     },
     {
+      "name": "Ogrillon",
+      "category": "Giants",
+      "name_variants": "",
+      "frequency": "Rare",
+      "numberAppearing": "1-4 (5-30 in lair)",
+      "size": "M",
+      "move": "12\"",
+      "armorClass": 6,
+      "hitDice": 2,
+      "attacks": 2,
+      "damage": "2-7/2-7",
+      "specialAttacks": "Nil",
+      "specialDefenses": "Nil",
+      "magicResistance": "Standard",
+      "lairProbability": "20%",
+      "intelligence": "Low",
+      "alignment": "Chaotic evil",
+      "levelXP": "11/28 + 2 per hit point",
+      "description": "The ogrillon is a smaller species of the ogre, being an orc-ogre crossbreed and displays the same general behaviour as its larger cousin with one exception - it never wields a weapon and fights with its horny fists.",
+      "specialAbilities": {
+        "strength": "18(01)",
+        "appearance": {
+          "orc-like": {"chance": "90%", "note": "Cannot be distinguished from orcs"},
+          "ogre-like": {"chance": "10%", "note": "Smaller than true ogres, distinguishable from orcs"}
+        },
+        "languages": ["Ogrish", "Alignment language"]
+      },
+      "associations": "Often associate with orcs for short periods",
+      "combat": "Fights with horny fists, never wields weapons",
+      "treasure": {
+        "individual": "M",
+        "lair": "C, S"
+      }
+    },
+    {
       "name": "Orc",
       "category": "Humanoid",
       "frequency": "Common",
@@ -3277,6 +3563,50 @@
       "levelXP": "1 HD 2/45+1/hp; 2 HD 3/80+2/hp; 3 HD 4/110+3/hp; 4 HD 4/150+4/hp",
       "treasure": "None",
       "description": "These creatures float in warm salt water with poisonous tentacles trailing below. Their venom causes damage and paralysis (save negates paralysis), and paralyzed victims are consumed in 3d4 turns. The flotation sac is translucent and 90% likely to be unseen without detect invisibility. Size varies with HD: body diameter is 2½ ft per HD, with 10 tentacles per HD, each 10 ft long per HD. Damaging tentacles doesn't harm the creature but requires 1d3 days for regrowth."
+    },
+    {
+      "name": "Qullan",
+      "category": "Humanoids",
+      "name_variants": "",
+      "frequency": "Rare",
+      "numberAppearing": "1d6",
+      "size": "L (8'+ tall)",
+      "move": "12\"",
+      "armorClass": 10,
+      "hitDice": 2,
+      "attacks": 1,
+      "damage": "2d4+3",
+      "specialAttacks": "Confusion aura",
+      "specialDefenses": "Confusion feedback",
+      "magicResistance": "Standard",
+      "lairProbability": "10%",
+      "intelligence": "Low",
+      "alignment": "Chaotic evil",
+      "levelXP": "2/73 + 2 per hit point",
+      "description": "Qullans are strong, large, seemingly insane humanoids which wear warpaint in a wild variety of clashing colours and sport their battle-scars proudly, often emphasising them with cosmetic paint. They never wear armour, either wandering naked or clad in tiger-skins.",
+      "specialAbilities": {
+        "confusion": {
+          "aura": "Continually radiates confusion in a 5' radius",
+          "effect": "Victims must save each round or be confused (equal probability of standing still, attacking nearest qullan without regard for safety, or attacking nearest friend)",
+          "recovery": "New save allowed each round, effect disappears if victim moves outside radius"
+        },
+        "confusionFeedback": {
+          "trigger": "Any attempt to force a qullan to do something it would not normally do",
+          "result": "Instant death of the qullan",
+          "spellEffect": "Same reaction when fails to save against any charm or control spell"
+        }
+      },
+      "weapons": {
+        "broadsword": {
+          "special": "Honed to incredible sharpness using technique not emulated by man",
+          "bonus": "+3 hit probability, +3 damage (5-11 total)",
+          "usage": "Wielded two-handed (no additional advantage)",
+          "blunting": "20% cumulative chance per hit of becoming normal broadsword",
+          "transferability": "Non-magical, can be used by humans but will blunt normally"
+        }
+      },
+      "behavior": "Extremely hostile, attacks all human or near-human races regardless of alignment or party size",
+      "treasure": "Most types in lair but in small quantity (10% of A at most)"
     },
     {
       "name": "Rat",
