@@ -50,7 +50,12 @@ function findMonsterByName(name) {
     if (Array.isArray(mon.variants)) {
       for (const variant of mon.variants) {
         const fullVariant = `${mon.name}, ${variant.type}`.toLowerCase();
-        if (fullVariant === normalized) return { ...mon, ...variant };
+        if (fullVariant === normalized) {
+          // Instead of returning the merged object here...
+          mon._variant = variant; // Attach the matched variant
+          return true;            // Let .find return the monster
+        }
+        
       }
     }
 
@@ -58,30 +63,196 @@ function findMonsterByName(name) {
   });
 }
 
-function flattenLeaderData(leaders, count, isLair = false) {
+function normalizeEncounterName(name) {
+  return name
+    .replace(/^Men,\s*/, "Men, ") // Consistent prefix
+    .replace(/\bBrigands?\b/gi, "Bandit")
+    .replace(/\bNomads?\b/gi, "Nomad")
+    .replace(/\bRaiders?\b/gi, "Raider")
+    .replace(/\bTribesmen\b/gi, "Tribesman")
+    .replace(/\bWorkers\b/gi, "Worker")
+    .replace(/\bCentaurs\b/gi, "Centaur")
+    .replace(/\bGoblins\b/gi, "Goblin")
+    .replace(/\bOrcs\b/gi, "Orc")
+    .replace(/\bHobgoblins\b/gi, "Hobgoblin")
+    .replace(/\bKobolds\b/gi, "Kobold")
+    .replace(/\bGnolls\b/gi, "Gnoll")
+    .replace(/\bTrolls\b/gi, "Troll")
+    .replace(/\bOgres\b/gi, "Ogre")
+    .replace(/\bOgrillons\b/gi, "Ogrillon")
+    .trim();
+}
+
+function parseLevel(level) {
+  if (typeof level !== "string") return level;
+
+  // Extract dice pattern like "1d4+6"
+  const diceMatch = level.match(/(\d+d\d+(\s*\+\s*\d+)?)/i);
+  if (diceMatch) {
+    try {
+      const formula = diceMatch[1].replace(/\s+/g, "");
+      const roll = new Roll(formula);
+      roll.evaluate({ async: false });
+      return roll.total;
+    } catch (err) {
+      console.warn(`Failed to parse level roll from: "${level}"`);
+      return level;
+    }
+  }
+
+  // Extract first number found, e.g. "7th to 10th"
+  const numMatch = level.match(/\d+/);
+  if (numMatch) {
+    return parseInt(numMatch[0]);
+  }
+
+  return level;
+}
+
+function parseCount(value) {
+  if (typeof value === "string" && /\d+d\d+/.test(value)) {
+    try {
+      const roll = new Roll(value);
+      roll.evaluate({ async: false });
+      return roll.total;
+    } catch (err) {
+      return 1;
+    }
+  }
+  return value;
+}
+
+function flattenLeaderData(leaders, totalCount, isLair = false) {
   const specialMembers = [];
 
-  for (const [key, data] of Object.entries(leaders)) {
-    if (key.startsWith("per_")) {
-      const per = parseInt(key.split("_")[1]);
-      const sets = Math.floor(count / per);
+  const rollCount = (value) => {
+    if (typeof value === 'string' && /^[\ddx+\-]+$/.test(value)) {
+      const result = rollNumberFromPattern(value);
+      return result.total;
+    }
+    return parseInt(value) || 1;
+  };
 
-      for (let i = 0; i < sets; i++) {
-        // Simple case: a single leader object
-        if (data.leader) {
+  const rollChance = (formula) => {
+    const match = formula.match(/^(\d+)%\s+per\s+(\d+)\s*(.*)$/i);
+    if (match) {
+      const [_, percent, per, units] = match;
+      const occurrences = Math.floor(totalCount / parseInt(per));
+      let results = 0;
+      for (let i = 0; i < occurrences; i++) {
+        const d100 = Math.floor(Math.random() * 100) + 1;
+        if (d100 <= parseInt(percent)) results++;
+      }
+      return results;
+    }
+    return 0;
+  };
+
+  for (const [key, value] of Object.entries(leaders)) {
+    if (key.startsWith('per_')) {
+      const per = parseInt(key.split('_')[1]);
+      const slots = Math.floor(totalCount / per);
+      if (value.level && value.class) {
+        for (let i = 0; i < (slots * (value.count || 1)); i++) {
           specialMembers.push({
-            role: "Leader",
-            ...data.leader
+            role: key,
+            level: parseLevel(value.level),
+            type: value.class
           });
         }
+      }
+    }
 
-        // Compound case: multiple additions
-        if (Array.isArray(data.additions)) {
-          for (const entry of data.additions) {
-            for (const [role, details] of Object.entries(entry)) {
+    // Commander-type scaling roles
+    else if (['commander', 'war_chief', 'captain'].includes(key)) {
+      for (const [rangeKey, data] of Object.entries(value)) {
+        const pass =
+          (rangeKey === 'under_100' && totalCount < 100) ||
+          (rangeKey === '100_to_150' && totalCount >= 100 && totalCount <= 150) ||
+          (rangeKey === 'over_150' && totalCount > 150) ||
+          (rangeKey === 'less_than_60' && totalCount < 60) ||
+          (rangeKey === 'more_than_60' && totalCount >= 60) ||
+          (rangeKey === 'less_than_200' && totalCount < 200) ||
+          (rangeKey === 'more_than_200' && totalCount >= 200);
+        if (pass) {
+          const c = rollCount(data.count || 1);
+          for (let i = 0; i < c; i++) {
+            specialMembers.push({
+              role: key,
+              level: parseLevel(data.level),
+              type: data.class
+            });
+          }
+        }
+      }
+    }
+
+    // Compound leader groups (fighters, clerics, magic_users, etc.)
+    else if (typeof value === 'object' && !Array.isArray(value)) {
+      // Check if it's a percent chance trigger group
+      if (value.chance) {
+        const rollsPassed = rollChance(value.chance);
+        for (let i = 0; i < rollsPassed; i++) {
+          if (value.main) {
+            const mainCount = rollCount(value.main.count || 1);
+            for (let j = 0; j < mainCount; j++) {
               specialMembers.push({
-                role: role.replace(/([a-z])([A-Z])/g, '$1 $2'), // e.g., subChief → sub Chief
-                ...details
+                role: `${key} (main)`,
+                level: parseLevel(value.main.level),
+                type: value.main.class || 'unknown'
+              });
+            }
+          }
+
+          if (value.assistants) {
+            const assistants = Array.isArray(value.assistants) ? value.assistants : [value.assistants];
+            for (const assistant of assistants) {
+              const aCount = rollCount(assistant.count || 1);
+              for (let j = 0; j < aCount; j++) {
+                specialMembers.push({
+                  role: `${key} (assistant)`,
+                  level: parseLevel(assistant.level),
+                  type: assistant.class
+                });
+              }
+            }
+          }
+
+          if (value.permanent) {
+            const pCount = rollCount(value.permanent.count || 1);
+            for (let j = 0; j < pCount; j++) {
+              specialMembers.push({
+                role: `${key} (permanent)`,
+                level: parseLevel(value.permanent.level),
+                type: value.permanent.class
+              });
+            }
+          }
+        }
+      }
+
+      // Handle other compound keys like 'fighters', 'clerics' with sub-tables
+      else {
+        for (const [subKey, subData] of Object.entries(value)) {
+          if (subKey === 'assistants') {
+            const assistants = Array.isArray(subData) ? subData : [subData];
+            for (const assistant of assistants) {
+              const aCount = rollCount(assistant.count || 1);
+              for (let j = 0; j < aCount; j++) {
+                specialMembers.push({
+                  role: `${key} Assistant`,
+                  level: assistant.level,
+                  type: assistant.class
+                });
+              }
+            }
+          } else if (subData?.level && subData?.class) {
+            const count = rollCount(subData.count || 1);
+            for (let i = 0; i < count; i++) {
+              specialMembers.push({
+                role: `${key} ${subKey}`,
+                level: parseLevel(subData.level),
+                type: subData.class
               });
             }
           }
@@ -89,29 +260,16 @@ function flattenLeaderData(leaders, count, isLair = false) {
       }
     }
 
-    // Optional: lair notes
-    if (key === "lair" && isLair) {
-      if (data.leadership) {
-        specialMembers.push({
-          role: "Lair Leadership",
-          notes: data.leadership
-        });
-      }
-      if (data.females) {
-        specialMembers.push({
-          role: "Females",
-          notes: data.females
-        });
-      }
-      if (data.young) {
-        specialMembers.push({
-          role: "Young",
-          notes: data.young
-        });
-      }
+    // Notes or summaries
+    else if (typeof value === 'string') {
+      specialMembers.push({
+        role: key,
+        notes: value
+      });
     }
   }
 
+  console.log(`🧠 flattenLeaderData: total=${totalCount}`, leaders);
   return specialMembers;
 }
 
@@ -695,13 +853,22 @@ export class GreyhawkEncounters {
           ? `${numberAppearing} ${entry.encounter}`
           : entry.encounter;
 
-        // Try to find full monster data from Monster Manual
-        let monsterData = findMonsterByName(entry.encounter);
+        // Normalize and attempt to find full monster data from Monster Manual
+        const rawName = entry.encounter;
+        const normalizedName = normalizeEncounterName(rawName);
 
-        if (!monsterData && entry.encounter.includes(",")) {
-          const alt = entry.encounter.split(",")[1].trim();
+        let monsterData = findMonsterByName(normalizedName);
+
+        // Fallback: try second part of comma name if not found
+        if (!monsterData && normalizedName.includes(",")) {
+          const alt = normalizedName.split(",")[1].trim();
           monsterData = findMonsterByName(alt);
         }
+
+        // If a variant matched, merge it into the main entry
+        const fullMonster = monsterData?._variant
+          ? { ...monsterData, ...monsterData._variant }
+          : monsterData;
 
         // 🛡️ Try to extract leader/special member info if applicable
         const specialMembers = monsterData?.leaders && numberAppearing
@@ -709,12 +876,26 @@ export class GreyhawkEncounters {
           : [];
     
         const flavor = `📍 <strong>Greyhawk Encounter</strong>`;
+        let leaderBlock = "";
+        if (specialMembers?.length) {
+          leaderBlock = `<br><strong>Leaders & Special Members:</strong><ul style="margin-top: 0.25em;">`;
+          for (const leader of specialMembers) {
+            if (leader.notes) {
+              leaderBlock += `<li><em>${leader.role}</em>: ${leader.notes}</li>`;
+            } else {
+              leaderBlock += `<li><em>${leader.role}</em> — Level ${leader.level} ${leader.type}</li>`;
+            }
+          }
+          leaderBlock += `</ul>`;
+        }
+
         const content = `
           <strong>Region:</strong> ${region}<br>
           <strong>Roll:</strong> ${tableRollValue}<br>
           <strong>Encounter:</strong> ${encounterText}
           ${breakdown ? `<br><em>Number Appearing:</em> ${numberAppearing} 
             <em>(Dice: ${diceResults.join(', ')})</em>` : ""}
+          ${leaderBlock}
         `;
 
         await ChatMessage.create({
@@ -733,7 +914,7 @@ export class GreyhawkEncounters {
           alignment: monsterData?.alignment,
           treasure: monsterData?.treasure,
           description: monsterData?.description,
-          specialMembers: monsterData?.leaders ? flattenLeaderData(monsterData.leaders, numberAppearing) : [],
+          specialMembers // ← use the variable you already built!
         };
         
       }

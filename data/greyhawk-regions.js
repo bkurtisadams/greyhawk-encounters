@@ -6,7 +6,7 @@ export const GREYHAWK_REGIONAL_TABLES = {
   "BanditKingdoms_HornedSociety_Iuz_Rovers": [
   { min: 1, max: 2, encounter: "Bugbears", number: "6d6" },
   { min: 3, max: 6, encounter: "Centaurs", number: "4d4" },
-  { min: 7, max: 8, encounter: "Giants", number: "1d8" },
+  { min: 7, max: 8, encounter: "Giant, Hill", number: "1d8" },
   { min: 9, max: 10, encounter: "Gnolls", number: "20d10" },
   { min: 11, max: 12, encounter: "Gnolls and Flinds", number: "20d10 + 2d6" },
   { min: 13, max: 15, encounter: "Goblins", number: "40d10" },
