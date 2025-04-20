@@ -63,7 +63,6 @@ function findMonsterByName(name) {
   });
 }
 
-
 function normalizeEncounterName(name) {
   return name
     .replace(/^Men,\s*/, "Men, ") // Consistent prefix
@@ -780,6 +779,21 @@ export class GreyhawkEncounters {
           // Default case
           content += `<p>Result: ${result.result || 'Unknown'}</p>`;
         }
+
+                  // Equipment loadout breakdown (if any)
+                  if (result.equipmentAssigned?.length) {
+                    const loadoutSummary = result.equipmentAssigned.reduce((acc, unit) => {
+                      acc[unit.equipment] = (acc[unit.equipment] || 0) + 1;
+                      return acc;
+                    }, {});
+        
+                    content += `<hr><h4>Troop Equipment Loadout</h4><ul style="margin-top: 0.25em;">`;
+                    for (const [equip, count] of Object.entries(loadoutSummary)) {
+                      const label = equip.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+                      content += `<li>${label}: ${count}</li>`;
+                    }
+                    content += `</ul>`;
+                  }
         break;
       }
       case 'dungeon': {
@@ -1159,10 +1173,11 @@ export class GreyhawkEncounters {
           console.log(`🏰 Rolled ${lairRoll} for % in Lair (needed ≤ ${lairChance}) → ${isLairEncounter ? "LAIR" : "not lair"}`);
         }
 
-        // 🛡️ Leaders & Special Members
+        // 🛡️ Leaders, Special Members, Equipment
         const specialMembers = monsterData?.leaders && numberAppearing
           ? flattenLeaderData(monsterData.leaders, numberAppearing, isLairEncounter)
           : [];
+        const equipmentAssigned = GreyhawkEncounters.assignEquipment(monsterData, numberAppearing, options.terrain || "");
 
         const flavor = `📍 <strong>Greyhawk Encounter</strong>`;
 
@@ -1206,7 +1221,8 @@ export class GreyhawkEncounters {
           treasure: monsterData?.treasure,
           description: monsterData?.description,
           isLair: isLairEncounter,
-          specialMembers
+          specialMembers,
+          equipmentAssigned 
         };
       }
     }
@@ -3197,5 +3213,52 @@ export class GreyhawkEncounters {
     return GREYHAWK_REGIONAL_TABLES[key];
   }
 
-
+  static assignEquipment(monsterData, totalCount, terrain = "") {
+    const assigned = [];
+    const equipmentTable = monsterData?.equipment?.mounts_armor_weapons || monsterData?.equipment?.armor_weapons;
+    if (!equipmentTable) return assigned;
+  
+    // Normalize equipment entries
+    const entries = Object.entries(equipmentTable).flatMap(([label, percent]) => {
+      const pct = typeof percent === "string" ? parseInt(percent) : percent;
+      return isNaN(pct) ? [] : { label, chance: pct };
+    });
+  
+    // Adjust for mounted % if specified
+    const mountedLimit = (() => {
+      const mounted = monsterData?.equipment?.mounted_percentage;
+      if (terrain.includes("hill") || terrain.includes("mountain")) return 0.1;
+      if (terrain.includes("plain") || terrain.includes("open")) return 0.9;
+      return null;
+    })();
+  
+    let mountedAssigned = 0;
+    const maxMounted = mountedLimit !== null ? Math.floor(totalCount * mountedLimit) : totalCount;
+  
+    // Roll for each unit
+    for (let i = 0; i < totalCount; i++) {
+      let rolled = Math.floor(Math.random() * 100) + 1;
+      let sum = 0;
+      let selected = entries.find(e => {
+        sum += e.chance;
+        return rolled <= sum;
+      });
+  
+      let isMounted = /horse/.test(selected?.label || "");
+      if (mountedLimit !== null && isMounted && mountedAssigned >= maxMounted) {
+        // Force reroll for non-mounted gear
+        selected = entries.find(e => !/horse/.test(e.label));
+      }
+  
+      if (/horse/.test(selected?.label)) mountedAssigned++;
+  
+      assigned.push({
+        equipment: selected?.label || "Unknown",
+        mounted: isMounted
+      });
+    }
+  
+    return assigned;
+  }
+  
 }
