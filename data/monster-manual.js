@@ -2820,29 +2820,222 @@ export const MONSTER_MANUAL = {
       "lairProbability": "25%",
       "intelligence": "Average",
       "alignment": "Lawful evil",
-      "levelXP": "2/20+2/hp",
-      "description": "Larger cousins of goblins. Skilled miners, competitive, hate elves. Typically underground. Keep carnivorous apes.",
+      "levelXP": "2/20 + 2/hp",
+      "description": "Larger cousins of goblins, hobgoblins are militaristic, competitive, and organized into hostile tribes with infamous names like Skull Smashers and Marrow Suckers. They hate elves above all else, and are often found bullying goblins and orcs or leading them in battle. Hobgoblins thrive underground or in fortified surface lairs and keep carnivorous apes as guards.",
       "leaders": {
-        "raiding_party": "Sergeant + 2 assistants (9 hp)",
-        "war_party": "Captain (AC 3, 16 hp, 3 HD, 1d8+2)",
-        "lair": {
-          "chief": "AC 2, 22 hp, 4 HD, 1d10+1",
-          "guards": "5d4, AC 3, 16 hp, 3 HD, 1d8+2"
+        "per_20": {
+          "level": 1,
+          "class": "fighter",
+          "count": 3,
+          "hp": 9,
+          "note": "1 sergeant + 2 assistants"
+        },
+        "commander": {
+          "under_100": {
+            "level": 3,
+            "class": "fighter",
+            "count": 1,
+            "hp": 16,
+            "damage": "1d8+2",
+            "armorClass": 3,
+            "note": "Sub-chief, fights as 3 HD"
+          },
+          "over_100": {
+            "chief": {
+              "level": 4,
+              "class": "fighter",
+              "count": 1,
+              "hp": 22,
+              "damage": "2d6",
+              "armorClass": 2,
+              "note": "Fights as 4 HD"
+            },
+            "guards": {
+              "level": 3,
+              "class": "fighter",
+              "count": "5d4",
+              "hp": 16,
+              "damage": "1d8+2",
+              "armorClass": 3
+            }
+          }
+        },
+        "psionic_abilities": "None"
+      },
+      "lair": {
+        "types": {
+          "underground": "80%",
+          "fortified_village": "20%"
+        },
+        "features": {
+          "underground": {
+            "guards": {
+              "carnivorous_apes": {
+                "chance": "60%",
+                "number": "2d12",
+                "note": "Used as brutish guards"
+              }
+            }
+          },
+          "fortified_village": {
+            "defenses": "Ditch, rampart, palisade, 2 gates, 3–6 guard towers",
+            "artillery": {
+              "heavy_catapults": "2 per 50 warriors",
+              "light_catapults": "2 per 50 warriors",
+              "ballista": "1 per 50 warriors"
+            }
+          }
+        },
+        "occupants": {
+          "females": "150% of males",
+          "young": "300% of males"
         }
+      },
+      "equipment": {
+        "weapons_distribution": {
+          "sword_composite_bow": "20%",
+          "sword_spear": "10%",
+          "sword_morning_star": "5%",
+          "sword_whip": "5%",
+          "polearm": "30%",
+          "spear": "10%",
+          "morning_star": "20%"
+        },
+        "leaders": {
+          "note": "Always carry two weapons"
+        },
+        "standard": {
+          "presence": {
+            "subchief": "20%",
+            "chief": "Always"
+          },
+          "effect": "+1 to attack and morale for all hobgoblins within 6\""
+        }
+      },
+      "senses_languages": {
+        "infravision": "60 ft",
+        "mining_detection": "40% chance to detect sloping passages, shifting walls, and new construction",
+        "languages": [
+          "Hobgoblin",
+          "Goblin",
+          "Orcish",
+          "Carnivorous Ape (rudimentary)",
+          "Alignment tongue (Lawful Evil)",
+          "Common (20%)"
+        ]
       },
       "treasure": {
         "individual": "3d12 cp, 2d8 gp",
         "lair": {
-          "cp": {"amount": "1d8×1,000", "chance": "75%"},
-          "sp": {"amount": "1d12×1,000", "chance": "60%"},
-          "ep": {"amount": "1d8×1,000", "chance": "35%"},
-          "gp": {"amount": "1d6×1,000", "chance": "50%"},
-          "gems": {"amount": "5d4", "chance": "50%"},
-          "jewellery": {"amount": "1d6", "chance": "25%"},
-          "potions": {"amount": "1", "chance": "15%"}
+          "cp": { "amount": "1d8×1,000", "chance": "75%" },
+          "sp": { "amount": "1d12×1,000", "chance": "60%" },
+          "ep": { "amount": "1d8×1,000", "chance": "35%" },
+          "gp": { "amount": "1d6×1,000", "chance": "50%" },
+          "gems": { "amount": "5d4", "chance": "50%" },
+          "jewellery": { "amount": "1d6", "chance": "25%" },
+          "potions": { "amount": "1", "chance": "15%" }
         }
       }
     },
+    {
+      "name": "Koalinth",
+      "category": "Humanoid",
+      "frequency": "Rare",
+      "numberAppearing": "20d10",
+      "size": "Man-sized (6 ft tall)",
+      "move": "90 ft, 120 ft swim",
+      "armorClass": 5,
+      "hitDice": "1+1",
+      "attacks": 1,
+      "damage": "By weapon (typically spear or polearm)",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "25%",
+      "intelligence": "Average",
+      "alignment": "Lawful evil",
+      "levelXP": "2/20 + 2/hp",
+      "description": "Koalinth are aquatic hobgoblins with gills and webbed limbs, dwelling in shallow water caverns and sea caves. They are aggressive, territorial, and prey on all other creatures. While similar to land hobgoblins in most respects, Koalinth use aquatic versions of polearms and spears. Their coloration is lighter, with green faces, and they do not speak Common.",
+      "leaders": {
+        "per_20": {
+          "level": 1,
+          "class": "fighter",
+          "count": 3,
+          "hp": 9,
+          "note": "1 sergeant + 2 assistants"
+        },
+        "commander": {
+          "under_100": {
+            "level": 3,
+            "class": "fighter",
+            "count": 1,
+            "hp": 16,
+            "damage": "1d8+2",
+            "armorClass": 3,
+            "note": "Sub-chief, fights as 3 HD"
+          },
+          "over_100": {
+            "chief": {
+              "level": 4,
+              "class": "fighter",
+              "count": 1,
+              "hp": 22,
+              "damage": "2d6",
+              "armorClass": 2,
+              "note": "Fights as 4 HD"
+            },
+            "guards": {
+              "level": 3,
+              "class": "fighter",
+              "count": "5d4",
+              "hp": 16,
+              "damage": "1d8+2",
+              "armorClass": 3
+            }
+          }
+        },
+        "psionic_abilities": "None"
+      },
+      "lair": {
+        "types": {
+          "underwater_cavern": "100%"
+        },
+        "features": {
+          "environment": "Typically located in shallow saltwater sea caves or ruins"
+        },
+        "occupants": {
+          "females": "150% of males",
+          "young": "300% of males"
+        }
+      },
+      "equipment": {
+        "weapons_distribution": {
+          "spear": "50%",
+          "polearm": "50%"
+        },
+        "note": "Weapons adapted for underwater use"
+      },
+      "senses_languages": {
+        "infravision": "60 ft",
+        "languages": [
+          "Koalinth (hobgoblin dialect)",
+          "Alignment tongue (Lawful Evil)"
+        ]
+      },
+      "treasure": {
+        "individual": "None",
+        "lair": {
+          "cp": { "amount": "1d6×1,000", "chance": "50%" },
+          "sp": { "amount": "1d8×1,000", "chance": "40%" },
+          "ep": { "amount": "1d4×1,000", "chance": "25%" },
+          "gp": { "amount": "1d4×1,000", "chance": "40%" },
+          "gems": { "amount": "2d6", "chance": "35%" },
+          "jewellery": { "amount": "1d4", "chance": "20%" },
+          "magic_items": { "amount": 1, "chance": "10%" }
+        }
+      }
+    },
+    
     {
       "name": "Horse",
       "category": "Animal",
@@ -3625,7 +3818,7 @@ export const MONSTER_MANUAL = {
       "specialAttacks": "See below",
       "specialDefenses": "See below",
       "magicResistance": "Standard",
-      "lairProbability": "Nil",
+      "lairProbability": "0%",
       "intelligence": "Mean (very to high)",
       "alignment": "Neutral",
       "levelXP": "Variable",
@@ -4503,6 +4696,66 @@ export const MONSTER_MANUAL = {
         "magic_items": {"amount": "any 2 + 1 potion", "chance": "15%"}
       },
       "description": "Mummies exist on both the normal and negative material planes. Their touch causes a rotting disease that kills within 1d6 months and prevents magical healing. All creatures within 60 ft must save vs magic or be paralyzed with fear for 1d4 rounds. Mummies can only be harmed by fire, holy water, or magic weapons (which do half damage). Immunity to sleep, charm, cold, poison, and paralysis."
+    },
+    {
+      "name": "Norker",
+      "category": "Humanoid",
+      "frequency": "Rare",
+      "numberAppearing": "3d10",
+      "size": "Small (4' tall)",
+      "move": "90 ft",
+      "armorClass": 3,
+      "hitDice": "1+2",
+      "attacks": 2,
+      "damage": "1d3 bite / 1d6 club",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "20%",
+      "intelligence": "Average",
+      "alignment": "Chaotic evil",
+      "levelXP": "1/20 + 2/hp",
+      "description": "Relatives of hobgoblins, norkers possess 3-inch fangs and club their enemies in melee. Their hardened skin functions as natural armor (AC 3). They lack claw attacks and rely solely on weapon and bite. Norkers are tribal and often found in similar lairs as hobgoblins, though usually more savage and insular.",
+      "leaders": {
+        "per_20": { "level": 2, "class": "fighter", "count": 1 },
+        "commander": {
+          "under_100": { "level": 3, "class": "fighter", "count": 1, "hp": 16, "damage": "1d8+2", "armorClass": 3 },
+          "chief": { "level": 4, "class": "fighter", "count": 1, "hp": 22, "damage": "2d6", "armorClass": 2 },
+          "guards": { "level": 3, "class": "fighter", "count": "5d4", "hp": 16, "damage": "1d8+2", "armorClass": 3 }
+        },
+        "psionic_abilities": "None"
+      },
+      "lair": {
+        "types": {
+          "underground": "80%",
+          "fortified_camp": "20%"
+        },
+        "features": {
+          "carnivorous_apes": {
+            "chance": "60%",
+            "number": "2d6",
+            "notes": "Used as guards, similar to hobgoblins"
+          }
+        },
+        "occupants": {
+          "females": "150% of males",
+          "young": "300% of males"
+        }
+      },
+      "equipment": {
+        "weapons": {
+          "club_and_bite": "100%"
+        },
+        "armor": {
+          "natural_exoskeleton": "AC 3 (no worn armor)"
+        }
+      },
+      "treasure": {
+        "individual": "None",
+        "lair": {
+          "type": "E"
+        }
+      }
     },
     {
       "name": "Ogre",
