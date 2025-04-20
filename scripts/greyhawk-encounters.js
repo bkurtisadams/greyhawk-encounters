@@ -16,31 +16,6 @@ import { rollPlanarEncounter } from '../data/dmg-planar-tables.js';
 import { MONSTER_MANUAL } from '../data/monster-manual.js';
 
 
-/* const REGION_TABLE_MAP = {
-  "bandit_kingdoms": "BanditKingdoms_Encounters",
-  "horned_society": "HornedSociety_Encounters",
-  "iuz": "Iuz_Encounters",
-  "rovers_of_the_barrens": "RoversOfTheBarrens_Encounters",
-  "bissel_gran_march_keoland": "Bissel_GranMarch_Keoland",
-  "bone_march": "bone_march",
-  "county_duchy_urnst": "CountyDuchyUrnst",
-  "county_duchy_principality_ulek": "CountyDuchyPrincipalityUlek",
-  "pomarj": "pomarj",
-  "celene": "Celene",
-  "geoff_sterich_yeomanry": "Geoff_Sterich_Yeomanry",
-  "great_kingdom_medegia_north_province_south_province": "GreatKingdom_Medegia_NorthProvince_SouthProvince",
-  "greyhawk": "greyhawk",
-  "highfolk": "Highfolk",
-  "furyondy_shield_lands_veluna": "Furyondy_ShieldLands_Veluna",
-  "idee_irongate_onnwal": "Idee_Irongate_Onnwal",
-  "ket_perrenland": "Ket_Perrenland",
-  "pale_ratik_tenh": "Pale_Ratik_Tenh",
-  "scarlet_brotherhood_sunndi": "ScarletBrotherhood_Sunndi",
-  "sea_princes": "SeaPrinces",
-  "wild_coast": "WildCoast"
-}; */
-
-
 const TERRAIN_CHECK_TIMES = {
   plain:       ['morning', 'evening', 'midnight'],
   scrub:       ['morning', 'evening', 'night', 'pre-dawn'],
@@ -299,8 +274,6 @@ function flattenLeaderData(leaders, totalCount, isLair = false) {
   return specialMembers;
 }
 
-// Men, Characters Generator - AD&D Wilderness Encounter Rules
-// Extends Appendix C: Character generation for wilderness encounters
 // Men, Characters Generator - AD&D Wilderness Encounter Rules
 // Extends Appendix C: Character generation for wilderness encounters
 function generateCharacterParty() {
@@ -791,8 +764,15 @@ export class GreyhawkEncounters {
             content += `<p>Specific Type: ${result.specialResult}</p>`;
           }
          
-          content += `<p>Number: ${result.number || '1'}</p>`;
-         
+          if (typeof result.number === 'object') {
+            content += `<p>Number: ${result.number.total}</p>`;
+            if (Array.isArray(result.number.rolls)) {
+              content += `<p><em>(Rolled: ${result.number.rolls.join(', ')})</em></p>`;
+            }
+          } else {
+            content += `<p>Number: ${result.number || '1'}</p>`;
+          }
+                   
           if (result.notes) {
             content += `<p>Notes: ${result.notes}</p>`;
           }
@@ -1760,29 +1740,34 @@ export class GreyhawkEncounters {
     if (subtableNeeded) {
       console.log(`Rolling on subtable: ${subtableNeeded}`);
       const subtableRoll = Math.floor(Math.random() * 100) + 1;
-      
+    
+      // ✅ Select subtable set FIRST so it's available to both branches
+      let subtableSet;
+      if (climate === 'tropical') {
+        subtableSet = { ...DMG_TABLES.TEMPERATE_SUBTABLES, ...DMG_TABLES.TROPICAL_SUBTABLES };
+      } else {
+        subtableSet = DMG_TABLES.TEMPERATE_SUBTABLES;
+      }
+    
       // Special handling for "men" subtable - check for character encounter
       if (subtableNeeded === "men") {
         console.log(`Rolling on men subtable with roll ${subtableRoll}`);
-        
+    
         // 10% chance of character encounter from Men subtable
         if (subtableRoll >= 11 && subtableRoll <= 20) {
           console.log("Men subtable resulted in Character encounter");
           const isWilderness = (options.population === 'uninhabited');
           return this._generateCharacterEncounter(1, isWilderness);
         }
-        
+    
         // Process the regular men subtable result
         const subtableResult = this._rollOnSubtable(subtableNeeded, subtableRoll, subtableSet, terrain);
-        
-        // Check if we should use Monster Manual statistics
+    
         const useMMStats = game.settings.get('greyhawk-encounters', 'useMonsterManualStats');
-        
         if (useMMStats && ["Bandit", "Berserker", "Brigand", "Dervish", "Merchant", "Nomad", "Pilgrim", "Tribesman"].includes(subtableResult.creature)) {
           console.log(`Using MM stats for ${subtableResult.creature}`);
           return this._generateMMHumanEncounter(subtableResult.creature.toLowerCase(), options);
         } else {
-          // Use the basic DMG approach - calculate number from the pattern
           let number;
           try {
             number = rollNumberFromPattern(subtableResult.number || "1d6");
@@ -1790,7 +1775,7 @@ export class GreyhawkEncounters {
             console.error("Error rolling number pattern:", error);
             number = 1;
           }
-          
+    
           return {
             result: "Encounter",
             encounter: subtableResult.creature,
@@ -1802,22 +1787,12 @@ export class GreyhawkEncounters {
           };
         }
       }
-      
-      // Select the appropriate subtable
-      let subtableSet;
-      if (climate === 'tropical') {
-        subtableSet = {...DMG_TABLES.TEMPERATE_SUBTABLES, ...DMG_TABLES.TROPICAL_SUBTABLES};
-      } else {
-        subtableSet = DMG_TABLES.TEMPERATE_SUBTABLES;
-      }
-      
-      // Handle terrain-specific subtables
+    
+      // ✅ Generic subtable fallback (for dragons, giants, etc.)
       const subtableResult = this._rollOnSubtable(subtableNeeded, subtableRoll, subtableSet, dmgTerrain);
-      
-      // Apply the subtable result
       encounter = subtableResult.creature;
       numberPattern = subtableResult.number || numberPattern;
-      
+    
       const result = {
         result: "Encounter",
         typeRoll: roll,
@@ -1827,20 +1802,44 @@ export class GreyhawkEncounters {
         climate: climate,
         terrain: dmgTerrain
       };
-      
-      // Roll for number of creatures
-      try {
-        result.number = rollNumberFromPattern(numberPattern);
-      } catch (error) {
-        console.error("Error rolling for creature number:", error);
-        result.number = 1;
+    
+      const monsterData = findMonsterByName(subtableResult.creature);
+      if (monsterData) {
+        result.monsterData = monsterData;
+    
+        if (monsterData.numberAppearing) {
+          try {
+            result.number = rollNumberFromPattern(monsterData.numberAppearing);
+          } catch (error) {
+            console.error("Error rolling Monster Manual number appearing:", error);
+            result.number = 1;
+          }
+        }
+    
+        if (monsterData.ageCategories?.length) {
+          const ageRoll = Math.floor(Math.random() * monsterData.ageCategories.length);
+          const age = monsterData.ageCategories[ageRoll];
+          result.age = age.name;
+          result.hitDice = age.hitDice;
+          result.hpPerDie = age.hpPerDie;
+          result.saveBonus = age.saveBonus;
+          result.spellcasting = age.spellcasting;
+        }
       }
-      
-      // Add notes if present
+    
+      if (!result.number) {
+        try {
+          result.number = rollNumberFromPattern(numberPattern);
+        } catch (error) {
+          console.error("Error rolling for creature number:", error);
+          result.number = 1;
+        }
+      }
+    
       if (subtableResult.notes) {
         result.notes = subtableResult.notes;
       }
-      
+    
       return result;
     }
     

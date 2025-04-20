@@ -184,89 +184,96 @@ export const DMG_SUBTABLES = {
     },
   
     men: {
-      plain: ["Bandit", "Berserker", "Brigand", "Dervish", "Merchant", "Nomad", "Pilgrim", "Tribesman"],
-      scrub: ["Bandit", "Berserker", "Brigand", "Dervish", "Merchant", "Nomad", "Pilgrim", "Tribesman"],
-      forest: ["Bandit", "Brigand", "Merchant", "Pilgrim", "Tribesman"],
-      rough: ["Bandit", "Berserker", "Brigand", "Dervish", "Merchant", "Nomad", "Pilgrim", "Tribesman"],
-      desert: ["Bandit", "Brigand", "Dervish", "Merchant", "Nomad", "Pilgrim"],
-      hills: ["Bandit", "Berserker", "Brigand", "Dervish", "Merchant", "Nomad", "Pilgrim", "Tribesman"],
-      mountains: ["Bandit", "Berserker", "Brigand", "Merchant", "Nomad", "Pilgrim", "Tribesman"],
-      marsh: ["Bandit", "Brigand", "Merchant", "Pilgrim", "Tribesman"],
-      // Number ranges for each creature type by terrain (with character type handled separately - 10% in all cases)
-      ranges: {
-        plain: {
-          "Bandit": "01-05",
-          "Berserker": "06-07",
-          "Brigand": "08-10",
-          "Dervish": "21-22",
-          "Merchant": "23-60",
-          "Nomad": "61-90",
-          "Pilgrim": "91-95",
-          "Tribesman": "96-00"
-        },
-        scrub: {
-          "Bandit": "01-10",
-          "Berserker": "11-12",
-          "Brigand": "13-15",
-          "Dervish": "26-27",
-          "Merchant": "28-60",
-          "Nomad": "61-80",
-          "Pilgrim": "81-85",
-          "Tribesman": "86-00"
-        },
-        forest: {
-          "Bandit": "01-10",
-          "Brigand": "11-15",
-          "Merchant": "26-40",
-          "Pilgrim": "41-45",
-          "Tribesman": "46-00"
-        },
-        rough: {
-          "Bandit": "01-10",
-          "Berserker": "11-12",
-          "Brigand": "13-15",
-          "Dervish": "26-27",
-          "Merchant": "28-50",
-          "Nomad": "51-60",
-          "Pilgrim": "61-80",
-          "Tribesman": "81-00"
-        },
-        desert: {
-          "Bandit": "01-05",
-          "Brigand": "06-10",
-          "Dervish": "21-50",
-          "Merchant": "51-75",
-          "Nomad": "76-95",
-          "Pilgrim": "96-00"
-        },
-        hills: {
-          "Bandit": "01-10",
-          "Berserker": "11-12",
-          "Brigand": "13-20",
-          "Dervish": "31-40",
-          "Merchant": "41-65",
-          "Nomad": "66-80",
-          "Pilgrim": "81-90",
-          "Tribesman": "91-00"
-        },
-        mountains: {
-          "Bandit": "01-05",
-          "Berserker": "06-10",
-          "Brigand": "11-20",
-          "Dervish": "31-35",
-          "Merchant": "36-50",
-          "Pilgrim": "51-65",
-          "Tribesman": "66-00"
-        },
-        marsh: {
-          "Bandit": "01-05",
-          "Brigand": "06-10",
-          "Merchant": "21-35",
-          "Pilgrim": "36-30", // Note: This range seems off in the original (36-30)
-          "Tribesman": "31-00"
+        plain: ["Bandit", "Berserker", "Brigand", "Dervish", "Merchant", "Nomad", "Pilgrim", "Tribesman", "Character"],
+        scrub: ["Bandit", "Berserker", "Brigand", "Dervish", "Merchant", "Nomad", "Pilgrim", "Tribesman", "Character"],
+        forest: ["Bandit", "Brigand", "Merchant", "Pilgrim", "Tribesman", "Character"],
+        rough: ["Bandit", "Berserker", "Brigand", "Dervish", "Merchant", "Nomad", "Pilgrim", "Tribesman", "Character"],
+        desert: ["Bandit", "Brigand", "Dervish", "Merchant", "Nomad", "Pilgrim", "Character"],
+        hills: ["Bandit", "Berserker", "Brigand", "Dervish", "Merchant", "Nomad", "Pilgrim", "Tribesman", "Character"],
+        mountains: ["Bandit", "Berserker", "Brigand", "Dervish", "Merchant", "Pilgrim", "Tribesman", "Character"],
+        marsh: ["Bandit", "Brigand", "Merchant", "Pilgrim", "Tribesman", "Character"],
+        ranges: {
+          plain: {
+            "Bandit": "01-05",
+            "Berserker": "06-07",
+            "Brigand": "08-10",
+            "Character": "11-20",
+            "Dervish": "21-22",
+            "Merchant": "23-60",
+            "Nomad": "61-90",
+            "Pilgrim": "91-95",
+            "Tribesman": "96-00"
+          },
+          scrub: {
+            "Bandit": "01-10",
+            "Berserker": "11-12",
+            "Brigand": "13-15",
+            "Character": "16-25",
+            "Dervish": "26-27",
+            "Merchant": "28-60",
+            "Nomad": "61-80",
+            "Pilgrim": "81-85",
+            "Tribesman": "86-00"
+          },
+          forest: {
+            "Bandit": "01-10",
+            "Brigand": "11-15",
+            "Character": "16-25",
+            "Merchant": "26-40",
+            "Pilgrim": "41-45",
+            "Tribesman": "46-00"
+          },
+          rough: {
+            "Bandit": "01-10",
+            "Berserker": "11-12",
+            "Brigand": "13-15",
+            "Character": "16-25",
+            "Dervish": "26-27",
+            "Merchant": "28-50",
+            "Nomad": "51-60",
+            "Pilgrim": "61-80",
+            "Tribesman": "81-00"
+          },
+          desert: {
+            "Bandit": "01-05",
+            "Brigand": "06-10",
+            "Character": "11-20",
+            "Dervish": "21-50",
+            "Merchant": "51-75",
+            "Nomad": "76-95",
+            "Pilgrim": "96-00"
+          },
+          hills: {
+            "Bandit": "01-10",
+            "Berserker": "11-12",
+            "Brigand": "13-20",
+            "Character": "21-30",
+            "Dervish": "31-40",
+            "Merchant": "41-65",
+            "Nomad": "66-80",
+            "Pilgrim": "81-90",
+            "Tribesman": "91-00"
+          },
+          mountains: {
+            "Bandit": "01-05",
+            "Berserker": "06-10",
+            "Brigand": "11-20",
+            "Character": "21-30",
+            "Dervish": "31-35",
+            "Merchant": "36-50",
+            "Pilgrim": "51-65",
+            "Tribesman": "66-00"
+          },
+          marsh: {
+            "Bandit": "01-05",
+            "Brigand": "06-10",
+            "Character": "11-20",
+            "Merchant": "21-35",
+            "Pilgrim": "36-60",
+            "Tribesman": "61-00"
+          }
         }
-      }
-    },
+      },
   
     undead: {
       forest: ["Ghast", "Ghost", "Ghoul", "Lich", "Shadow", "Spectre", "Vampire", "Wight", "Wraith"],
