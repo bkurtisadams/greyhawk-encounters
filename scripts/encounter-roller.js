@@ -251,14 +251,22 @@ export class GreyhawkEncounterRoller extends Application {
     // System selection (DMG vs WoG)
     html.find('select[name="encounterSystem"]').change(ev => {
       const system = ev.currentTarget.value;
-      html.find('.dmg-system-container').toggle(system === 'dmg');
-      html.find('.wog-system-container, .wog-regional-options').toggle(system === 'wog');
-      
-      // Update appropriate encounter type options
+      this._resetEncounterFormSections(html);
+    
       if (system === 'dmg') {
-        this._updateDmgOptions(html.find('select[name="dmgEncounterType"]').val(), html);
+        html.find('.dmg-system-container').show();
+        const dmgType = html.find('select[name="dmgEncounterType"]').val() || 'outdoor';
+        this._updateDmgOptions(dmgType, html);
       } else {
-        this._updateWogOptions(html.find('select[name="wogEncounterType"]').val(), html);
+        html.find('.wog-system-container').show();
+        const wogType = html.find('select[name="wogEncounterType"]').val() || 'regional';
+        this._updateWogOptions(wogType, html);
+    
+        if (wogType === 'regional') {
+          const regionType = html.find('select[name="regionType"]').val() || 'political';
+          this._updateRegionList(regionType, html);
+          html.find('.wog-regional-options').show(); // ⬅️ Force show
+        }
       }
     });
     
@@ -354,6 +362,7 @@ export class GreyhawkEncounterRoller extends Application {
     }
     
     // Trigger change events for key dropdowns to update form visibility
+    this._resetEncounterFormSections(html);
     html.find('select[name="encounterSystem"]').trigger('change');
     
     // Get the currently shown system and trigger its encounter type change
@@ -415,10 +424,13 @@ export class GreyhawkEncounterRoller extends Application {
     
     // Show the appropriate options based on encounter type
     switch (encounterType) {
-      case 'regional':
+      case 'regional': {
         html.find('.wog-regional-options').show();
-        this._updateRegionList('political', html);
+        const saved = game.settings.get('greyhawk-encounters', 'lastUsedSettings');
+        const regionType = saved?.regionType || html.find('select[name="regionType"]').val() || 'political';
+        this._updateRegionList(regionType, html);
         break;
+      }
       case 'patrol':
         html.find('.wog-patrol-options').show();
         break;
@@ -496,11 +508,14 @@ export class GreyhawkEncounterRoller extends Application {
           try {
             const system = html.find('select[name="encounterSystem"]').val();
         
+            // ─────────────────────────────────────────────────────────────
+            // DMG System Encounter Logic
+            // ─────────────────────────────────────────────────────────────
             if (system === 'dmg') {
               const encounterType = html.find('select[name="dmgEncounterType"]').val();
               let options = { encounterType };
         
-              // Handle Dungeon separately because it has a pre-roll
+              // Handle dungeon pre-roll separately
               if (encounterType === 'dungeon') {
                 const dungeonLevel = parseInt(html.find('input[name="dungeonLevel"]').val()) || 1;
                 options = { ...options, dungeonLevel };
@@ -519,25 +534,23 @@ export class GreyhawkEncounterRoller extends Application {
                       <p>Dungeon Level: ${dungeonLevel}</p>
                       <p>Roll: ${periodicRoll} on 1d${periodicDieSize}</p>
                       <p>Result: ${encounterOccurs ? "Encounter occurs!" : "No encounter"}</p>
-                      <p><em>Check: ${periodicSuccessValue} or less on 1d${periodicDieSize} (${(periodicSuccessValue/periodicDieSize*100).toFixed(1)}%)</em></p>
+                      <p><em>Check: ${periodicSuccessValue} or less on 1d${periodicDieSize} (${(periodicSuccessValue / periodicDieSize * 100).toFixed(1)}%)</em></p>
                       <p><em>Standard check: every 3 turns (30 minutes)</em></p>
                     </div>`
                 });
         
                 if (!encounterOccurs) return;
         
-                console.log("Dungeon encounter occurs, rolling monster...");
                 const result = await (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')
                   ? GreyhawkEncounters.rollTimeAwareEncounter(options)
                   : GreyhawkEncounters.rollEncounter(options));
         
                 if (result) {
-                  console.log("Dungeon result:", result);
                   GreyhawkEncounters._displayEncounterResult(result, options);
                 } else {
-                  console.error("Dungeon encounter roll failed.");
                   ui.notifications.error("Error generating dungeon encounter.");
                 }
+        
                 return;
               }
         
@@ -549,13 +562,14 @@ export class GreyhawkEncounterRoller extends Application {
                   const climate = html.find('select[name="climate"]').val() || 'temperate';
                   let timeOfDay = html.find('select[name="timeOfDay"]').val() || 'noon';
                   const forceEncounter = html.find('input[name="forceEncounter"]').is(':checked');
-
+                  const isWarZone = html.find('input[name="isWarZone"]').is(':checked');
+        
                   if (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
                     const timeInfo = GreyhawkEncounters.getCurrentTimeInfo();
                     if (timeInfo?.timeOfDay) timeOfDay = timeInfo.timeOfDay;
                   }
-                  const isWarZone = html.find('input[name="isWarZone"]').is(':checked');
-                  options = { ...options, terrain, population, timeOfDay, climate, isWarZone, forceEncounter };
+        
+                  options = { ...options, terrain, population, climate, timeOfDay, isWarZone, forceEncounter };
                   break;
                 }
         
@@ -588,7 +602,7 @@ export class GreyhawkEncounterRoller extends Application {
         
                 case 'astral':
                 case 'ethereal': {
-                  // No options needed
+                  // No extra options needed
                   break;
                 }
               }
@@ -603,49 +617,54 @@ export class GreyhawkEncounterRoller extends Application {
                 ui.notifications.warn("No DMG encounter generated.");
               }
         
-            } else {
-              // World of Greyhawk Region
-              const regionType = html.find('select[name="regionType"]').val();
+            }
+        
+            // ─────────────────────────────────────────────────────────────
+            // WoG System Encounter Logic
+            // ─────────────────────────────────────────────────────────────
+            else if (system === 'wog') {
+              const wogType = html.find('select[name="wogEncounterType"]').val() || 'regional';
+              this._updateWogOptions(wogType, html); // Ensure UI is synced
+        
+              const regionType = html.find('select[name="regionType"]').val() || 'political';
               const region = html.find('select[name="region"]').val();
               const isWarZone = html.find('input[name="isWarZone"]').is(':checked');
               const forceEncounter = html.find('input[name="forceEncounter"]').is(':checked');
-
+        
               if (!region) {
                 ui.notifications.warn("Please select a specific region");
                 return;
               }
-
-              console.log(`🛡️ WoG Encounter Roll: region=${region}, war=${isWarZone}`);
-
+        
               try {
                 const result = await GreyhawkEncounters._rollRegionalEncounter({
                   specificRegion: region,
-                  isWarZone: isWarZone,
+                  regionType,
+                  isWarZone,
                   forceEncounter
                 });
-
+        
                 if (result) {
                   await GreyhawkEncounters._displayEncounterResult(result, {
                     encounterType: 'regional',
                     specificRegion: region,
-                    isWarZone: isWarZone
+                    regionType,
+                    isWarZone
                   });
                 } else {
-                  console.warn("⚠️ _rollRegionalEncounter returned no result");
                   ui.notifications.warn(`No encounter generated for ${region}`);
                 }
               } catch (error) {
                 console.error("Error rolling WoG regional encounter:", error);
                 ui.notifications.error(`Error generating encounter for ${region}`);
               }
-
             }
+        
           } catch (error) {
             console.error("❌ Error in _rollEncounter:", error);
             ui.notifications.error("Encounter generation failed.");
           }
         }
-        
     
         async _checkLost(html) {
           const terrain = html.find('select[name="terrain"]').val();
@@ -670,4 +689,14 @@ export class GreyhawkEncounterRoller extends Application {
           
           ChatMessage.create(chatData);
         }
+
+        _resetEncounterFormSections(html) {
+          html.find('.dmg-system-container').hide();
+          html.find('.wog-system-container').hide();
+          html.find('.dmg-dungeon-options, .dmg-outdoor-options, .dmg-underwater-options, .dmg-planar-options, .dmg-waterborne-options, .dmg-airborne-options, .dmg-city-options').hide();
+          html.find('.wog-regional-options, .wog-patrol-options').hide();
+          html.find('.region-options, .outdoor-options, .dungeon-options, .underwater-options, .planar-options').hide();
+          html.find('.time-of-day-group').hide();
+        }
+        
 }
