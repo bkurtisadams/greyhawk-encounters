@@ -748,7 +748,7 @@ export class GreyhawkEncounters {
             }
           }
         } else if (result.result === "Encounter") {
-          // Your existing standard encounter handling
+          // existing standard encounter handling
           content += `<p>Time of Day: ${options.timeOfDay || 'Unknown'}</p>
                       <p>Table Roll: ${result.typeRoll || 'N/A'}</p>`;
 
@@ -780,21 +780,25 @@ export class GreyhawkEncounters {
           content += `<p>Result: ${result.result || 'Unknown'}</p>`;
         }
 
-                  // Equipment loadout breakdown (if any)
-                  if (result.equipmentAssigned?.length) {
-                    const loadoutSummary = result.equipmentAssigned.reduce((acc, unit) => {
-                      acc[unit.equipment] = (acc[unit.equipment] || 0) + 1;
-                      return acc;
-                    }, {});
-        
-                    content += `<hr><h4>Troop Equipment Loadout</h4><ul style="margin-top: 0.25em;">`;
-                    for (const [equip, count] of Object.entries(loadoutSummary)) {
-                      const label = equip.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase());
-                      content += `<li>${label}: ${count}</li>`;
-                    }
-                    content += `</ul>`;
-                  }
-        break;
+        console.log("🧪 Equipment length in display result:", result.equipmentAssigned?.length);
+        console.log("📦 Equipment preview:", result.equipmentAssigned?.slice(0, 5));
+
+        // Equipment loadout breakdown (if any)
+        if (result.equipmentAssigned?.length) {
+          const loadoutSummary = result.equipmentAssigned.reduce((acc, unit) => {
+            acc[unit.equipment] = (acc[unit.equipment] || 0) + 1;
+            return acc;
+          }, {});
+
+          content += `<hr><h4>Troop Equipment Loadout</h4><ul style="margin-top: 0.25em;">`;
+          for (const [equip, count] of Object.entries(loadoutSummary)) {
+            const label = equip.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+            content += `<li>${label}: ${count}</li>`;
+          }
+          content += `</ul>`;
+        }
+
+        break;  // end of case 'outdoor'
       }
       case 'dungeon': {
         // Display the dungeon level and monster name
@@ -898,6 +902,22 @@ export class GreyhawkEncounters {
       content += `<hr><p><em>📍 Encounter redirected from <strong>${regionName}</strong> regional table.</em></p>`;
     }
 
+    // Unconditional equipment display (outside of encounter type branches)
+    console.log("🧪 Equipment length check (end of function):", result.equipmentAssigned?.length);
+    if (result.equipmentAssigned && result.equipmentAssigned.length > 0) {
+      const loadoutSummary = result.equipmentAssigned.reduce((acc, unit) => {
+        acc[unit.equipment] = (acc[unit.equipment] || 0) + 1;
+        return acc;
+      }, {});
+
+      content += `<hr><h4>Troop Equipment Loadout</h4><ul style="margin-top: 0.25em;">`;
+      for (const [equip, count] of Object.entries(loadoutSummary)) {
+        const label = equip.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+        content += `<li>${label}: ${count}</li>`;
+      }
+      content += `</ul>`;
+    }
+    
     content += `</div>`;
 
     const chatData = {
@@ -3214,15 +3234,28 @@ export class GreyhawkEncounters {
   }
 
   static assignEquipment(monsterData, totalCount, terrain = "") {
+    console.log("🧰 assignEquipment: START");
+    console.log("📦 monsterData.name:", monsterData?.name);
+    console.log("📦 totalCount:", totalCount);
+    console.log("🌍 terrain:", terrain);
+  
     const assigned = [];
+  
     const equipmentTable = monsterData?.equipment?.mounts_armor_weapons || monsterData?.equipment?.armor_weapons;
-    if (!equipmentTable) return assigned;
+    console.log("📊 Equipment table:", equipmentTable);
+  
+    if (!equipmentTable) {
+      console.warn("⚠️ No equipment table found for monster.");
+      return assigned;
+    }
   
     // Normalize equipment entries
     const entries = Object.entries(equipmentTable).flatMap(([label, percent]) => {
       const pct = typeof percent === "string" ? parseInt(percent) : percent;
       return isNaN(pct) ? [] : { label, chance: pct };
     });
+  
+    console.log("📋 Normalized equipment entries:", entries);
   
     // Adjust for mounted % if specified
     const mountedLimit = (() => {
@@ -3232,12 +3265,14 @@ export class GreyhawkEncounters {
       return null;
     })();
   
-    let mountedAssigned = 0;
     const maxMounted = mountedLimit !== null ? Math.floor(totalCount * mountedLimit) : totalCount;
+    console.log(`🐎 Mounted limit: ${maxMounted} (from mountedLimit=${mountedLimit})`);
+  
+    let mountedAssigned = 0;
   
     // Roll for each unit
     for (let i = 0; i < totalCount; i++) {
-      let rolled = Math.floor(Math.random() * 100) + 1;
+      const rolled = Math.floor(Math.random() * 100) + 1;
       let sum = 0;
       let selected = entries.find(e => {
         sum += e.chance;
@@ -3245,20 +3280,28 @@ export class GreyhawkEncounters {
       });
   
       let isMounted = /horse/.test(selected?.label || "");
+  
+      // Enforce mount limit
       if (mountedLimit !== null && isMounted && mountedAssigned >= maxMounted) {
-        // Force reroll for non-mounted gear
+        console.log(`⚠️ Mounted limit reached (${mountedAssigned}/${maxMounted}), rerolling non-mounted for unit ${i + 1}`);
         selected = entries.find(e => !/horse/.test(e.label));
+        isMounted = /horse/.test(selected?.label || "");
       }
   
-      if (/horse/.test(selected?.label)) mountedAssigned++;
+      if (isMounted) mountedAssigned++;
   
-      assigned.push({
+      const assignedUnit = {
         equipment: selected?.label || "Unknown",
         mounted: isMounted
-      });
+      };
+  
+      assigned.push(assignedUnit);
+      console.log(`🎲 Unit ${i + 1} ➜ rolled ${rolled}, assigned:`, assignedUnit);
     }
   
+    console.log("✅ assignEquipment: COMPLETE", assigned);
     return assigned;
   }
+  
   
 }
