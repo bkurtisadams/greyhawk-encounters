@@ -894,6 +894,12 @@ export class GreyhawkEncounters {
       }
     }
     
+    // Show a note if this was a fallback from a WoG regional table
+    if (options.regionFallback && options.fromRegion) {
+      const regionName = options.fromRegion.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      content += `<hr><p><em>📍 Encounter redirected from <strong>${regionName}</strong> regional table.</em></p>`;
+    }
+
     content += `</div>`;
     
     const chatData = {
@@ -930,8 +936,13 @@ export class GreyhawkEncounters {
               options: options 
             };
           }
-          result = await this.rollOutdoorEncounter(options.terrain, options.population, options.timeOfDay);
-          break;
+          result = await this.rollOutdoorEncounter(
+            options.terrain,
+            options.population,
+            options.timeOfDay,
+            { forceEncounter: options.forceEncounter === true }
+          );
+                    break;
         case 'dungeon':
           result = await this._rollDungeonEncounter(options);
           break;
@@ -1067,9 +1078,22 @@ export class GreyhawkEncounters {
     for (const entry of table) {
       if (entry.max === 0 && tableRollValue >= entry.min) {
         console.log(`📌 Matched special range ${entry.min}+ → ${entry.encounter}`);
+        console.log("✅ Entry:", entry);
         if (entry.useStandard) {
           console.log(`↪️ Redirecting to standard encounter handler`);
-          return this._rollStandardEncounter(options);
+          console.log(`🌐 Fallback to DMG logic using terrain=${options.terrain}, timeOfDay=${options.timeOfDay}`);
+
+          return await this.rollEncounter({
+            encounterType: 'outdoor',
+            terrain: options.terrain || 'plain',
+            population: options.population || 'moderate',
+            timeOfDay: options.timeOfDay || 'noon',
+            climate: options.climate || 'temperate',
+            forceEncounter: true,
+            regionFallback: true,
+            fromRegion: region
+          });
+          
         } else {
           return { roll: tableRollValue, encounter: entry.encounter };
         }
@@ -1079,6 +1103,26 @@ export class GreyhawkEncounters {
         let numberAppearing = null;
         let breakdown = null;
         let diceResults = [];
+
+        // 🧠 Dynamic fallback if entry text says to use standard tables
+        const fallbackText = entry.encounter?.toLowerCase();
+        if (!entry.useStandard && fallbackText && (
+            fallbackText.includes("use standard") ||
+            fallbackText.includes("standard encounter") ||
+            fallbackText.includes("as per standard")
+        )) {
+          console.log(`↪️ Interpreting encounter text as standard redirect`);
+          return await this.rollEncounter({
+            encounterType: 'outdoor',
+            terrain: options.terrain,
+            population: options.population,
+            timeOfDay: options.timeOfDay,
+            climate: options.climate,
+            forceEncounter: true,
+            regionFallback: true,
+            fromRegion: region
+          });
+        }
     
         // Normalize and attempt to find full monster data from Monster Manual
         const rawName = entry.encounter;
@@ -1309,7 +1353,8 @@ export class GreyhawkEncounters {
     }
     
     // Roll for encounter
-    const roll = await new Roll(`1d${dieSize}`).roll({ async: true });
+    const roll = await (new Roll(`1d${dieSize}`)).evaluate(); // ✅ correct
+
     await roll.toMessage({
       flavor: `🌲 Encounter Check (${population} area)`,
       speaker: ChatMessage.getSpeaker(),

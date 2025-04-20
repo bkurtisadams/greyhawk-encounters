@@ -508,6 +508,17 @@ export class GreyhawkEncounterRoller extends Application {
           try {
             const system = html.find('select[name="encounterSystem"]').val();
         
+            // 🧭 Shared values used by both DMG and WoG
+            const terrain = html.find('select[name="terrain"]').val() || 'plain';
+            const population = html.find('select[name="population"]').val() || 'moderate';
+            const climate = html.find('select[name="climate"]').val() || 'temperate';
+            let timeOfDay = html.find('select[name="timeOfDay"]').val() || 'noon';
+        
+            if (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
+              const timeInfo = GreyhawkEncounters.getCurrentTimeInfo();
+              if (timeInfo?.timeOfDay) timeOfDay = timeInfo.timeOfDay;
+            }
+        
             // ─────────────────────────────────────────────────────────────
             // DMG System Encounter Logic
             // ─────────────────────────────────────────────────────────────
@@ -641,7 +652,11 @@ export class GreyhawkEncounterRoller extends Application {
                   specificRegion: region,
                   regionType,
                   isWarZone,
-                  forceEncounter
+                  forceEncounter,
+                  terrain,
+                  population,
+                  timeOfDay,
+                  climate
                 });
         
                 if (result) {
