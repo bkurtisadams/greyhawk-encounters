@@ -16,13 +16,30 @@ import { rollPlanarEncounter } from '../data/dmg-planar-tables.js';
 import { MONSTER_MANUAL } from '../data/monster-manual.js';
 
 
-const REGION_TABLE_MAP = {
-  "Bandit Kingdoms": "BanditKingdoms_HornedSociety_Iuz_Rovers",
-  "Horned Society": "BanditKingdoms_HornedSociety_Iuz_Rovers",
-  "Iuz": "BanditKingdoms_HornedSociety_Iuz_Rovers",
-  "Rovers of the Barrens": "BanditKingdoms_HornedSociety_Iuz_Rovers",
-  // Add other mappings...
-};
+/* const REGION_TABLE_MAP = {
+  "bandit_kingdoms": "BanditKingdoms_Encounters",
+  "horned_society": "HornedSociety_Encounters",
+  "iuz": "Iuz_Encounters",
+  "rovers_of_the_barrens": "RoversOfTheBarrens_Encounters",
+  "bissel_gran_march_keoland": "Bissel_GranMarch_Keoland",
+  "bone_march": "bone_march",
+  "county_duchy_urnst": "CountyDuchyUrnst",
+  "county_duchy_principality_ulek": "CountyDuchyPrincipalityUlek",
+  "pomarj": "pomarj",
+  "celene": "Celene",
+  "geoff_sterich_yeomanry": "Geoff_Sterich_Yeomanry",
+  "great_kingdom_medegia_north_province_south_province": "GreatKingdom_Medegia_NorthProvince_SouthProvince",
+  "greyhawk": "greyhawk",
+  "highfolk": "Highfolk",
+  "furyondy_shield_lands_veluna": "Furyondy_ShieldLands_Veluna",
+  "idee_irongate_onnwal": "Idee_Irongate_Onnwal",
+  "ket_perrenland": "Ket_Perrenland",
+  "pale_ratik_tenh": "Pale_Ratik_Tenh",
+  "scarlet_brotherhood_sunndi": "ScarletBrotherhood_Sunndi",
+  "sea_princes": "SeaPrinces",
+  "wild_coast": "WildCoast"
+}; */
+
 
 const TERRAIN_CHECK_TIMES = {
   plain:       ['morning', 'evening', 'midnight'],
@@ -38,30 +55,39 @@ function findMonsterByName(name) {
   const normalized = name.toLowerCase().trim();
 
   return MONSTER_MANUAL.monsters.find(mon => {
-    // Handle primary name
+    // Step 1: Exact name match
     if (mon.name?.toLowerCase() === normalized) return true;
 
-    // Handle name variants
-    if (mon.name_variants && typeof mon.name_variants === 'string') {
-      return mon.name_variants.toLowerCase().includes(normalized);
+    // Step 2: Match against name_variants (comma-separated or array)
+    if (mon.name_variants) {
+      const variants = Array.isArray(mon.name_variants)
+        ? mon.name_variants
+        : mon.name_variants.split(",").map(v => v.trim().toLowerCase());
+
+      if (variants.includes(normalized)) return true;
     }
 
-    // Handle variants (e.g., for "Bat, Mobat" under "Bat")
+    // Step 3: Match against embedded structured variant types
     if (Array.isArray(mon.variants)) {
       for (const variant of mon.variants) {
         const fullVariant = `${mon.name}, ${variant.type}`.toLowerCase();
         if (fullVariant === normalized) {
-          // Instead of returning the merged object here...
-          mon._variant = variant; // Attach the matched variant
-          return true;            // Let .find return the monster
+          mon._variant = variant; // Attach matched variant
+          return true;
         }
-        
       }
+    }
+
+    // Step 4: Singular fallback (strip trailing 's' if needed)
+    if (normalized.endsWith("s")) {
+      const singular = normalized.slice(0, -1);
+      return findMonsterByName(singular);
     }
 
     return false;
   });
 }
+
 
 function normalizeEncounterName(name) {
   return name
@@ -273,7 +299,214 @@ function flattenLeaderData(leaders, totalCount, isLair = false) {
   return specialMembers;
 }
 
+// Men, Characters Generator - AD&D Wilderness Encounter Rules
+// Extends Appendix C: Character generation for wilderness encounters
+// Men, Characters Generator - AD&D Wilderness Encounter Rules
+// Extends Appendix C: Character generation for wilderness encounters
+function generateCharacterParty() {
+  const CHARACTER_TABLE = [
+    { range: [1, 17], type: 'cleric', max: 3 },
+    { range: [18, 20], type: 'druid', max: 2 },
+    { range: [21, 60], type: 'fighter', max: 5 },
+    { range: [61, 62], type: 'paladin', max: 2 },
+    { range: [63, 65], type: 'ranger', max: 2 },
+    { range: [66, 86], type: 'magic_user', max: 3 },
+    { range: [87, 88], type: 'illusionist', max: 1 },
+    { range: [89, 98], type: 'thief', max: 4 },
+    { range: [99, 99], type: 'assassin', max: 2 },
+    { range: [100, 100], type: 'monk_or_bard', max: 1 }
+  ];
+
+  const RACE_TABLE = [
+    { range: [1, 25], race: 'dwarf', multiclass: 0.15 },
+    { range: [26, 50], race: 'elf', multiclass: 0.85 },
+    { range: [51, 60], race: 'gnome', multiclass: 0.25 },
+    { range: [61, 85], race: 'half_elf', multiclass: 0.85 },
+    { range: [86, 95], race: 'halfling', multiclass: 0.10 },
+    { range: [96, 100], race: 'half_orc', multiclass: 0.50 }
+  ];
+
+  const ALIGNMENT_TABLE = [
+    { range: [1, 10], alignment: 'lawful_good' },
+    { range: [11, 20], alignment: 'neutral_good' },
+    { range: [21, 50], alignment: 'chaotic_good' },
+    { range: [51, 80], alignment: 'chaotic_neutral' },
+    { range: [81, 90], alignment: 'neutral' },
+    { range: [91, 95], alignment: 'chaotic_evil' },
+    { range: [96, 98], alignment: 'neutral_evil' },
+    { range: [99, 100], alignment: 'lawful_evil' }
+  ];
+
+  const getClass = (roll) => CHARACTER_TABLE.find(c => roll >= c.range[0] && roll <= c.range[1])?.type;
+  const getRace = (roll) => RACE_TABLE.find(r => roll >= r.range[0] && roll <= r.range[1]);
+  const getAlignment = (roll) => ALIGNMENT_TABLE.find(a => roll >= a.range[0] && roll <= a.range[1])?.alignment;
+
+  const rollLevel = () => Math.floor(Math.random() * 4) + 7; // 7–10
+
+  const party = [];
+  const typeCount = {};
+  const partySize = Math.floor(Math.random() * 4) + 2; // 2–5 characters
+
+  while (party.length < partySize) {
+    const roll = Math.floor(Math.random() * 100) + 1;
+    const charClass = getClass(roll);
+    if (!charClass) continue;
+
+    const max = CHARACTER_TABLE.find(c => c.type === charClass)?.max || 1;
+    const current = typeCount[charClass] || 0;
+
+    if (current < max) {
+      const raceRoll = Math.floor(Math.random() * 100) + 1;
+      const raceInfo = getRace(raceRoll);
+      const alignRoll = Math.floor(Math.random() * 100) + 1;
+      const alignment = getAlignment(alignRoll);
+      let classes = [charClass];
+
+      let isMounted = Math.random() < 0.9;
+      let weapon = charClass === 'fighter' ? (isMounted ? 'lance' : 'spear') : 'standard';
+
+      const level = rollLevel();
+
+      if (raceInfo && Math.random() < raceInfo.multiclass) {
+        const secondRoll = Math.floor(Math.random() * 100) + 1;
+        let secondaryClass = getClass(secondRoll);
+
+        if (secondaryClass && secondaryClass !== charClass) {
+          let totalLevel = Math.min(10, level);
+
+          if (Math.random() < 0.25) {
+            let thirdClass = getClass(Math.floor(Math.random() * 100) + 1);
+            if (thirdClass && !classes.includes(thirdClass)) {
+              classes.push(secondaryClass, thirdClass);
+              const each = Math.floor((totalLevel + 3) / 3);
+              party.push({ class: classes, race: raceInfo.race, levels: [each, each, each], alignment, mounted: isMounted, weapon });
+            }
+          } else {
+            classes.push(secondaryClass);
+            const each = Math.floor((totalLevel + 2) / 2);
+            party.push({ class: classes, race: raceInfo.race, levels: [each, each], alignment, mounted: isMounted, weapon });
+          }
+        } else {
+          party.push({ class: classes, race: raceInfo.race, level, alignment, mounted: isMounted, weapon });
+        }
+      } else {
+        party.push({ class: classes, race: raceInfo?.race || 'human', level, alignment, mounted: isMounted, weapon });
+      }
+
+      typeCount[charClass] = current + 1;
+    }
+  }
+
+  const henchmenCount = 7 + Math.floor(Math.random() * 3) - party.length;
+  for (let i = 0; i < henchmenCount; i++) {
+    const roll = Math.floor(Math.random() * 100) + 1;
+    const henchClass = getClass(roll);
+    const alignRoll = Math.floor(Math.random() * 100) + 1;
+    const alignment = getAlignment(alignRoll);
+    const raceRoll = Math.floor(Math.random() * 100) + 1;
+    const raceInfo = getRace(raceRoll);
+    const master = party[i % party.length];
+    const masterLevel = master.level ?? Math.max(...(master.levels || [1]));
+    let level = Math.max(1, Math.floor(masterLevel / 3) + Math.floor(masterLevel / 3));
+
+    party.push({ class: [henchClass], race: raceInfo?.race || 'human', level, alignment, isHenchman: true });
+  }
+
+  return party;
+}
+
+function rollLevel(base = 7) {
+  const raw = 6 + Math.floor(Math.random() * 6) + 1; // d6+6
+  return Math.min(12, Math.max(7, raw));
+}
+
+function assignLevels(party) {
+  return party.map((member, i) => {
+    if (!member.isHenchman) {
+      if (member.levels) return member; // already assigned in multiclass
+      const level = rollLevel();
+      return { ...member, level };
+    } else {
+      const paired = party[i % (party.length - 1)]; // link henchman to someone
+      const masterLevel = paired.level ?? Math.max(...(paired.levels || [1]));
+      const base = Math.floor(masterLevel / 3);
+      const bonus = Math.floor(masterLevel / 3); // +1 per 3 levels >8
+      return { ...member, level: base + bonus };
+    }
+  });
+}
+
+function assignGear(party) {
+  return party.map(member => {
+    const level = member.level ?? Math.max(...(member.levels || [1]));
+    let tableI = 0, tableII = 0, tableIII = 0, tableIV = 0;
+
+    if (level >= 12) {
+      tableI = 3; tableII = 2; tableIII = 1; tableIV = Math.random() < 0.20 ? 1 : 0;
+    } else if (level === 11) {
+      tableI = 3; tableII = 2; tableIII = 1; tableIV = Math.random() < 0.10 ? 1 : 0;
+    } else if (level === 10) {
+      tableI = 3; tableII = Math.random() < 0.80 ? 2 : 1; tableIII = Math.random() < 0.40 ? 1 : 0;
+    } else if (level === 9) {
+      tableI = 3; tableII = Math.random() < 0.70 ? 2 : 1; tableIII = Math.random() < 0.30 ? 1 : 0;
+    } else if (level === 8) {
+      tableI = 3; tableII = Math.random() < 0.60 ? 2 : 1; tableIII = Math.random() < 0.20 ? 1 : 0;
+    } else if (level === 7) {
+      tableI = 3; tableII = Math.random() < 0.50 ? 2 : 1; tableIII = Math.random() < 0.10 ? 1 : 0;
+    } else if (level === 6) {
+      tableI = 3; tableII = Math.random() < 0.40 ? 2 : 1;
+    } else if (level === 5) {
+      tableI = 2; tableII = Math.random() < 0.30 ? 1 : 0;
+    } else if (level === 4) {
+      tableI = 2; tableII = Math.random() < 0.20 ? 1 : 0;
+    } else if (level === 3) {
+      tableI = 2; tableII = Math.random() < 0.10 ? 1 : 0;
+    } else if (level === 2) {
+      tableI = 2;
+    } else if (level === 1) {
+      tableI = 1;
+    }
+
+    return { ...member, gear: { tableI, tableII, tableIII, tableIV } };
+  });
+}
+
+function displayGeneratedCharacterParty(party) {
+  let content = `<h3>Encounter: Men, Characters</h3><hr>`;
+  content += `<p>This is a party of adventurers encountered in the wilderness per DMG Appendix C rules. They are cautious, fully equipped, and may be hostile.</p>`;
+  content += `<ul>`;
+
+  for (const member of party) {
+    const levelInfo = member.levels
+      ? member.levels.map((lvl, idx) => `${lvl} ${member.class[idx]}`).join(' / ')
+      : member.level ? `${member.level} ${member.class[0]}` : member.class.join(' / ');
+
+    const role = member.isHenchman ? 'Henchman' : 'Character';
+    const mountText = member.mounted ? ' (mounted)' : '';
+
+    content += `<li><strong>${role}</strong>: ${levelInfo} — ${member.race}${mountText}, <em>${member.alignment.replace(/_/g, ' ')}</em></li>`;
+  }
+
+  content += `</ul>`;
+  
+  ChatMessage.create({
+    user: game.user.id,
+    speaker: ChatMessage.getSpeaker(),
+    content
+  });
+}
+
+// Example usage:
+const baseParty = generateCharacterParty();
+const leveledParty = assignLevels(baseParty);
+const gearedParty = assignGear(leveledParty);
+console.log("🎲 Men, Characters Wilderness Encounter:", gearedParty);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Main module class
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export class GreyhawkEncounters {
   static ID = 'greyhawk-encounters';
   
@@ -431,7 +664,17 @@ export class GreyhawkEncounters {
   }
   
   // Display the encounter result in chat
-  static _displayEncounterResult(result, options) {
+  static async _displayEncounterResult(result, options) {
+    const generator = result?.generator ?? result?.monsterData?.generator;
+  
+    if (generator === "generateCharacterParty") {
+      const baseParty = generateCharacterParty();
+      const leveledParty = assignLevels(baseParty);
+      const gearedParty = assignGear(leveledParty);
+      //return this._displayGeneratedCharacterParty(gearedParty);
+      return displayGeneratedCharacterParty(gearedParty);
+    }
+    
     result = result || {};
     options = options || {};
     let content = `<div><h3>Greyhawk Encounter</h3>`;
@@ -749,7 +992,9 @@ export class GreyhawkEncounters {
    * Roll a regional encounter specific to Greyhawk.
    */
   static async _rollRegionalEncounter(options) {
-    const region = options.specificRegion || 'greyhawk';
+    const region = options.specificRegion?.trim().toLowerCase().replace(/[\s\-]/g, "_") || "greyhawk";
+    const table = GREYHAWK_REGIONAL_TABLES[region];
+
     const isWarZone = options.isWarZone ?? false;
     const population = options.population || 'moderate';
     const forceEncounter = options.forceEncounter === true;
@@ -795,7 +1040,7 @@ export class GreyhawkEncounters {
     }
   
     // 🔹 Step 2: Resolve the proper encounter table
-    let table = GreyhawkEncounters.resolveRegionalTable(region);
+    //let table = GreyhawkEncounters.resolveRegionalTable(region);
     console.log(`📦 Table resolved via REGION_TABLE_MAP: ${!!table}`);
   
     if (!table) {
@@ -835,42 +1080,48 @@ export class GreyhawkEncounters {
         let breakdown = null;
         let diceResults = [];
     
-        if (entry.number) {
-          // Use the existing rollNumberFromPattern but track individual dice results
-          const result = rollNumberFromPattern(entry.number);
+        // Normalize and attempt to find full monster data from Monster Manual
+        const rawName = entry.encounter;
+        const normalizedName = normalizeEncounterName(rawName);
+        let monsterData = findMonsterByName(normalizedName);
+        console.log(`🔍 Looking up encounter: "${rawName}" → normalized: "${normalizedName}"`);
+        console.log(`📖 Monster data found?`, !!monsterData);
+    
+        // Fallback: try second part of comma-separated name
+        if (!monsterData && normalizedName.includes(",")) {
+          const alt = normalizedName.split(",")[1].trim();
+          monsterData = findMonsterByName(alt);
+        }
+    
+        // Fallback: composite encounters like "Orcs and Ogrillons"
+        if (!monsterData && normalizedName.includes(" and ")) {
+          const parts = normalizedName.split(" and ").map(s => s.trim());
+          const found = parts.map(findMonsterByName).filter(Boolean);
+          if (found.length) monsterData = found[0]; // Use first match for now
+        }
+    
+        // Merge in variant if defined
+        if (monsterData?._variant) {
+          monsterData = { ...monsterData, ...monsterData._variant };
+        }
+    
+        // 🎲 Number Appearing
+        if (monsterData?.numberAppearing) {
+          const result = rollNumberFromPattern(monsterData.numberAppearing);
           numberAppearing = result.total;
           breakdown = result.rolls;
-          
-          // If rolls is an array of numbers, those are our individual dice results
+    
           if (Array.isArray(result.rolls) && result.rolls.every(item => typeof item === 'number' || item.startsWith('+'))) {
             diceResults = [...result.rolls];
           }
-          
-          console.log(`🎯 Number Appearing: ${numberAppearing} [${breakdown.join(', ')}]`);
+    
+          console.log(`🎯 Number Appearing (from monster manual): ${numberAppearing} [${breakdown.join(', ')}]`);
         }
     
         const encounterText = numberAppearing
           ? `${numberAppearing} ${entry.encounter}`
           : entry.encounter;
-
-        // Normalize and attempt to find full monster data from Monster Manual
-        const rawName = entry.encounter;
-        const normalizedName = normalizeEncounterName(rawName);
-
-        let monsterData = findMonsterByName(normalizedName);
-
-        // Fallback: try second part of comma name if not found
-        if (!monsterData && normalizedName.includes(",")) {
-          const alt = normalizedName.split(",")[1].trim();
-          monsterData = findMonsterByName(alt);
-        }
-
-        // If a variant matched, merge it into the main entry
-        const fullMonster = monsterData?._variant
-          ? { ...monsterData, ...monsterData._variant }
-          : monsterData;
-
-        // 🛡️ Try to extract leader/special member info if applicable
+    
         // 🧭 Roll for % in Lair
         let isLairEncounter = false;
         const lairChance = parseInt(monsterData?.lairProbability || "0");
@@ -879,14 +1130,14 @@ export class GreyhawkEncounters {
           isLairEncounter = lairRoll <= lairChance;
           console.log(`🏰 Rolled ${lairRoll} for % in Lair (needed ≤ ${lairChance}) → ${isLairEncounter ? "LAIR" : "not lair"}`);
         }
-
-        // 🛡️ Try to extract leader/special member info
+    
+        // 🛡️ Leaders & Special Members
         const specialMembers = monsterData?.leaders && numberAppearing
           ? flattenLeaderData(monsterData.leaders, numberAppearing, isLairEncounter)
           : [];
     
         const flavor = `📍 <strong>Greyhawk Encounter</strong>`;
-
+    
         let leaderBlock = "";
         if (specialMembers?.length) {
           leaderBlock = `<br><strong>Leaders & Special Members:</strong><ul style="margin-top: 0.25em;">`;
@@ -899,7 +1150,7 @@ export class GreyhawkEncounters {
           }
           leaderBlock += `</ul>`;
         }
-        
+    
         const content = `
           <strong>Region:</strong> ${region}<br>
           <strong>Roll:</strong> ${tableRollValue}<br>
@@ -908,8 +1159,8 @@ export class GreyhawkEncounters {
             <em>(Dice: ${diceResults.join(', ')})</em>` : ""}
           <br><strong>% In Lair:</strong> ${lairChance}% → <em>${isLairEncounter ? "Yes (lair encounter)" : "No"}</em>
           ${leaderBlock}
-          `;
-
+        `;
+    
         await ChatMessage.create({
           speaker: ChatMessage.getSpeaker(),
           flavor,
@@ -927,11 +1178,11 @@ export class GreyhawkEncounters {
           treasure: monsterData?.treasure,
           description: monsterData?.description,
           isLair: isLairEncounter,
-          specialMembers // ← use the variable you already built!
+          specialMembers
         };
-        
       }
     }
+    
   }
 
   // Add a new method for handling standard encounters from DMG Appendix C

@@ -1844,6 +1844,176 @@ export const MONSTER_MANUAL = {
         "lair": "G, S, T"
       }
     },
+    {
+      "name": "Elves, Patrol (Foot)",
+      "category": "Elves",
+      "frequency": "Rare",
+      "numberAppearing": "13d6+5",
+      "size": "Man-sized",
+      "move": "120 ft",
+      "armorClass": "5 (varies by role)",
+      "hitDice": "1 (base elves); variable for leaders",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "Magic and ranged attacks",
+      "specialDefenses": "Resistance to charm and sleep (as elves); spells",
+      "magicResistance": "Standard",
+      "lairProbability": "5%",
+      "intelligence": "Very to high",
+      "alignment": "Neutral good or chaotic good",
+      "levelXP": "Variable",
+      "description": "Elven Patrols consist of elves and half-elves performing reconnaissance or defensive sweeps through their territory. While often mounted, some operate afoot depending on terrain. All carry bows and long swords, and are trained in stealth and woodland tactics. Leaders include fighter/magic-users and ranger-clerics. Patrols may ambush enemies and withdraw before engaging heavily.",
+      "leaders": {
+        "captain": {
+          "level": "F/M-U, 4-6 / 5-7",
+          "class": "fighter/magic-user",
+          "count": 1
+        },
+        "lieutenants": {
+          "level": "F/M-U, 3-5 / 4-6",
+          "class": "fighter/magic-user",
+          "count": 2
+        },
+        "serjeants": {
+          "level": "3-5",
+          "class": "fighter",
+          "count": 4
+        },
+        "scout_half_elf": {
+          "level": "C/R, 5 / 5-7",
+          "class": "cleric/ranger",
+          "count": 1
+        },
+        "scouts": {
+          "level": "1-2",
+          "class": "ranger",
+          "count": 4
+        }
+      },
+      "equipment": {
+        "weapons": "All carry bows and long swords",
+        "armor": "Standard elven chain (AC 5); leaders may have enchanted items",
+        "magic_items": "5% per highest level for armor, shield, sword, potion, scroll"
+      },
+      "treasure": {
+        "individual": "1d6 sp, 1d4 arrows (1 per level is magical)",
+        "lair": {
+          "gems": {"amount": "2d4", "chance": "50%"},
+          "jewellery": {"amount": "1d6", "chance": "30%"},
+          "magic_items": {"amount": 1, "chance": "20%"}
+        }
+      }
+    },
+    {
+      "name": "Elves, Patrol (Mounted)",
+      "category": "Elves",
+      "name_variants": "Elven Patrol, Mounted Elves",
+      "frequency": "Uncommon",
+      "numberAppearing": "25d6", 
+      "size": "Man-sized",
+      "move": "120 ft",
+      "armorClass": "4–5",
+      "hitDice": "Varies by type",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "Surprise on 4-in-6 if in forested terrain",
+      "specialDefenses": "Standard elven resistances; see Elves",
+      "magicResistance": "Standard",
+      "lairProbability": "5%",
+      "intelligence": "High",
+      "alignment": "Chaotic Good or Neutral Good",
+      "levelXP": "Variable",
+      "description": "Mounted Elven Patrols consist of elite warrior-spellcasters and scouts from elven realms, traveling on light and medium warhorses. They patrol wilderness borders, often with bows and swords, and rely on stealth, magic, and ambush tactics.",
+      "leaders": {
+        "captain": { "level": "4-6 / 5-7", "class": "fighter/magic-user", "count": 1 },
+        "lieutenants": { "level": "3-5 / 4-6", "class": "fighter/magic-user", "count": 2 },
+        "serjeants": { "level": "3-5", "class": "fighter", "count": 4 },
+        "scout_leader": { "level": "5 / 5-7", "class": "cleric/ranger", "count": 1 },
+        "scouts": { "level": "1-2", "class": "ranger", "count": 4 },
+        "troopers": { "level": 1, "class": "fighter", "count": "13-18" }
+      },
+      "equipment": {
+        "armor_and_weapons": {
+          "captain": "AC 4; bow, long sword, spells",
+          "lieutenants": "AC 5; bow, long sword, spells",
+          "serjeants": "AC 4; bow, long sword, mace",
+          "scouts": "AC 5; bow, long sword",
+          "troopers": "AC 5; bow, long sword"
+        },
+        "mounts": {
+          "captain": "Medium warhorse",
+          "lieutenants": "Medium warhorse",
+          "serjeants": "Light warhorse",
+          "scouts": "Light warhorse",
+          "troopers": "Mix of light/medium warhorses"
+        }
+      },
+      "treasure": {
+        "individual": "1d6 gp",
+        "group": {
+          "gems": { "amount": "2d10", "chance": "30%" },
+          "magic_items": { "chance": "5% per level of leader" }
+        }
+      }
+    },
+    
+    {
+      "name": "Elves, Knights",
+      "category": "Elves",
+      "name_variants": "Elven Knights, Knights of the Hart",
+      "frequency": "Rare",
+      "numberAppearing": "15d6+1d6",
+      "size": "Man-sized",
+      "move": "120 ft",
+      "armorClass": "3 (Knights), 4 (Esquires), 5 (Serjeants)",
+      "hitDice": "2 (all knights are Level 2 fighters at minimum)",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "Magic-users may cast spells",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "15%",
+      "intelligence": "High",
+      "alignment": "Chaotic Good",
+      "levelXP": "Variable by class and level",
+      "description": "Elven Knights are mounted warriors of the Knights of the Hart. Parties include knights, esquires, serjeants, and elven fighter/magic-users. Knights ride medium, barded warhorses; esquires ride medium warhorses; serjeants ride light warhorses. Units are well-equipped and may possess magical items based on level.",
+      "leaders": {
+        "commander": { "level": "7/7", "class": "fighter/cleric", "count": 1 },
+        "lieutenant": { "level": "6/6", "class": "fighter/cleric", "count": 1 },
+        "knights": { "level": "5/5", "class": "fighter/cleric", "count": "5d4" },
+        "magic_user": {
+          "main": { "level": "4-6/8-11", "class": "fighter/magic-user", "count": 1 },
+          "assistants": { "level": "3-5/4-7", "class": "fighter/magic-user", "count": "1d3" }
+        },
+          "serjeant": {
+            "level": 2,
+            "class": "fighter",
+            "count": "3-12 per knight"
+          },
+        "entourage": {
+          "esquire": { "level": "3-4/3-4", "class": "fighter/cleric", "count": "1d4 per knight" },
+          "serjeants": { "level": 2, "class": "fighter", "count": "3d4 per knight" }
+        }
+      },
+      "equipment": {
+        "mounts_armor_weapons": {
+          "knights": "Medium barded horse, shield, lance, long sword, mace",
+          "esquires": "Medium horse, shield, lance, long sword, mace",
+          "serjeants": "Light horse, bow, long sword, mace",
+          "magic_users": "Same armor as esquires; bow, long sword"
+        },
+        "magic_item_chance": "5% per level of highest class (armor, shield, sword, potion, scroll, ring, rod)",
+        "magic_arrow_count": "1 per highest level for bow-armed elves"
+      },
+      "treasure": {
+        "individual": "1d8 gp",
+        "lair": {
+          "gems": { "amount": "2d6", "chance": "40%" },
+          "magic_items": { "amount": 1, "chance": "25%" }
+        }
+      }
+    },
+    
 
     {
       "name": "Ettin",
@@ -3284,6 +3454,12 @@ export const MONSTER_MANUAL = {
       }
     },
     {
+      "name": "Men, Characters",
+      "category": "Men",
+      "generator": "generateCharacterParty",
+      "description": "This encounter generates a full adventuring party per DMG Appendix C rules. Includes 2–5 characters with henchmen to make a total of 7–9 members. Most will be mounted, level 7–10, and equipped with appropriate gear and magic items."
+    },
+    {
       "name": "Men, Dervish",
       "category": "Men",
       "name_variants": "Nomad",
@@ -3480,6 +3656,556 @@ export const MONSTER_MANUAL = {
       }
     },
     {
+      "name": "Men, Patrol (Heavy)",
+      "category": "Men",
+      "name_variants": "Heavy Patrol, State Patrol (Heavy)",
+      "frequency": "Uncommon",
+      "numberAppearing": "d20+20",
+      "size": "Man-sized",
+      "move": "120 ft (mounted) or 90 ft (afoot)",
+      "armorClass": "2 (officers), 3 (NCOs and veterans)",
+      "hitDice": "F 0–6",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "5%",
+      "intelligence": "Average to High",
+      "alignment": "Any (typically Lawful Neutral or Lawful Evil)",
+      "levelXP": "Variable by class and level",
+      "description": "Heavy patrols are organized military units of 21–40 men, typically mounted on medium or heavy warhorses unless terrain demands marching. They are trained for close-order combat and usually heavily armored. Patrol nationality determines specific weapons and heraldry. Encounters may include a spellcaster.",
+      "leaders": {
+        "officer": { "level": "5-6", "class": "fighter", "count": 1 },
+        "subalterns": { "level": "3-4", "class": "fighter", "count": 2 },
+        "serjeants": { "level": "2-3", "class": "fighter", "count": 6 },
+        "veterans": { "level": 1, "class": "fighter", "hp": "7-12", "count": "7-10" },
+        "regulars": { "level": 0, "class": "fighter", "hp": "4-7", "count": "9-24" },
+        "spellcaster": {
+          "options": [
+            { "class": "cleric", "level": "5-6", "armorClass": 2 },
+            { "class": "druid", "level": "5-6", "armorClass": 8 },
+            { "class": "magic-user", "level": "4-5", "armorClass": 10 }
+          ],
+          "chance": "100%",
+          "count": 1
+        }
+      },
+      "equipment": {
+        "mounts_armor_weapons": {
+          "officer": "Heavy/medium horse, plate or banded mail, shield, broad or long sword",
+          "subalterns": "As officer",
+          "serjeants": "Chain or scale mail, shield, broad or long sword, appropriate national arms",
+          "veterans": "Chain or scale mail, shield, melee weapon",
+          "regulars": "Chain or leather armor, shield, melee weapon",
+          "spellcaster": "Varies by class (e.g., clerics with chain, M-Us unarmored)"
+        },
+        "magic_item_chance": "5% per level of highest class (armor, shield, sword, potion, scroll, ring, rod)",
+        "magic_item_types": {
+          "fighter": ["armor", "shield", "sword", "misc weapon", "potion", "scroll"],
+          "cleric": ["armor", "shield", "misc weapon", "misc magic", "potion", "scroll"],
+          "magic_user": ["potion", "scroll", "ring", "rod", "misc magic"]
+        }
+      },
+      "treasure": {
+        "individual": "1d8 gp",
+        "lair": {
+          "gems": { "amount": "1d6", "chance": "25%" },
+          "magic_items": { "amount": 1, "chance": "15%" }
+        }
+      }
+    },
+    {
+      "name": "Men, Patrol (False)",
+      "category": "Men",
+      "name_variants": "False Patrol, Disguised Raiders, Impostor Soldiers",
+      "frequency": "Rare",
+      "numberAppearing": "15-60",
+      "size": "Man-sized",
+      "move": "120 ft (mounted) or 90 ft (afoot)",
+      "armorClass": "Varies by role (see below)",
+      "hitDice": "F 0–6",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "Surprise (disguise), Ambush tactics",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "10%",
+      "intelligence": "Average to High",
+      "alignment": "Neutral Evil or Chaotic Evil (usually)",
+      "levelXP": "Variable by class and level",
+      "description": "False patrols are raiding or scouting groups disguised as state soldiery. They use forged heraldry and mimic patrol formations to pass for legitimate forces. Small groups (under 42) act as scouts. Larger groups (42+) are raiders who deliberately conceal their full strength to appear as a typical patrol of 25–30 men. 30% of false patrols are raider types, often including hidden reserves.",
+      "leaders": {
+        "officer": { "level": "5-6", "class": "fighter", "count": 1 },
+        "subalterns": { "level": "3-4", "class": "fighter", "count": 2 },
+        "serjeants": { "level": "2-3", "class": "fighter", "count": 6 },
+        "veterans": { "level": 1, "class": "fighter", "hp": "7-12", "count": "7-10" },
+        "regulars": { "level": 0, "class": "fighter", "hp": "4-7", "count": "9-24" },
+        "spellcaster": {
+          "options": [
+            { "class": "cleric", "level": "5-6", "armorClass": 2 },
+            { "class": "druid", "level": "5-6", "armorClass": 8 },
+            { "class": "magic-user", "level": "4-5", "armorClass": 10 }
+          ],
+          "chance": "30%",
+          "count": 1
+        }
+      },
+      "equipment": {
+        "mounts_armor_weapons": {
+          "officer": "Heavy/medium horse, plate or banded mail, shield, forged insignia, broad or long sword",
+          "subalterns": "As officer",
+          "serjeants": "Chain or scale mail, shield, forged insignia, broad or long sword",
+          "veterans": "Chain or scale mail, melee weapon",
+          "regulars": "Leather or chain armor, melee weapon",
+          "spellcaster": "As appropriate to class (usually disguised as regulars)"
+        },
+        "magic_item_chance": "5% per level of highest class (armor, shield, sword, potion, scroll, ring, rod)",
+        "magic_item_types": {
+          "fighter": ["armor", "shield", "sword", "misc weapon", "potion", "scroll"],
+          "cleric": ["armor", "shield", "misc weapon", "misc magic", "potion", "scroll"],
+          "magic_user": ["potion", "scroll", "ring", "rod", "misc magic"]
+        }
+      },
+      "treasure": {
+        "individual": "1d8 gp",
+        "lair": {
+          "gems": { "amount": "2d6", "chance": "40%" },
+          "magic_items": { "amount": 1, "chance": "20%" }
+        }
+      }
+    },
+    {
+      "name": "Men, Patrol (Knight)",
+      "category": "Men",
+      "name_variants": "Knightly Patrol, Cavalry Patrol",
+      "frequency": "Rare",
+      "numberAppearing": "11-14 knights plus retainers",
+      "size": "Man-sized",
+      "move": "120 ft (mounted)",
+      "armorClass": "2 (Knights, Clerics), 3 (Esquires), 4 (Serjeants)",
+      "hitDice": "F 0–10",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "10%",
+      "intelligence": "High",
+      "alignment": "Lawful Good or Lawful Neutral",
+      "levelXP": "Variable by class and level",
+      "description": "Knightly patrols are elite units of mounted warriors supported by retainers and clergy. They are mounted on heavy horses with full equipment and engage in military and ceremonial duties. Knights are well-armored and well-trained; their entourage includes esquires and serjeants, while chaplains offer divine aid.",
+      "leaders": {
+        "commander": { "level": "8-9", "class": "paladin or fighter", "count": 1 },
+        "lieutenant": { "level": "6-7", "class": "paladin or fighter", "count": 1 },
+        "knights": { "level": "4-6", "class": "fighter", "count": "9-12" },
+        "chaplain": { "level": "7-9", "class": "cleric", "count": 1 },
+        "assistant_clerics": { "level": "3-5", "class": "cleric", "count": "1d3" },
+        "entourage": {
+          "esquire": { "level": "2-3", "class": "fighter", "count": "1 per knight" },
+          "serjeants": { "level": 1, "class": "fighter", "count": "5-8 per knight" }
+        }
+      },
+      "equipment": {
+        "mounts_armor_weapons": {
+          "knights": "Heavy warhorse, plate or banded mail, lance, bastard sword, mace",
+          "esquires": "Medium warhorse, chain or scale mail, lance, long sword, mace",
+          "serjeants": "Light horse (optional), studded or leather armor, short sword; 50% with light crossbow or spear",
+          "clerics": "Medium warhorse, plate or banded mail, flail, hammer, or mace"
+        },
+        "magic_item_chance": "5% per level of highest class (armor, shield, sword, potion, scroll, ring, rod)",
+        "magic_item_types": {
+          "fighter": ["armor", "shield", "sword", "misc weapon", "potion", "scroll"],
+          "cleric": ["armor", "shield", "misc weapon", "misc magic", "potion", "scroll"]
+        }
+      },
+      "treasure": {
+        "individual": "2d6 gp",
+        "lair": {
+          "gems": { "amount": "1d4", "chance": "30%" },
+          "magic_items": { "amount": 1, "chance": "20%" }
+        }
+      }
+    },
+
+    {
+      "name": "Men, Patrol (Levies)",
+      "category": "Men",
+      "name_variants": "Levy Patrol, Militia Patrol",
+      "frequency": "Common",
+      "numberAppearing": "50–70",
+      "size": "Man-sized",
+      "move": "90 ft (afoot), officers on light horses",
+      "armorClass": "4 (Captains), 5 (Lieutenants, Serjeants, Veterans), 6-7 (Levies)",
+      "hitDice": "F 0–8",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "5%",
+      "intelligence": "Average",
+      "alignment": "Lawful Neutral or Neutral",
+      "levelXP": "Variable by class and level",
+      "description": "Levies are hastily-raised militia footmen, drawn from the local populace in times of threat. They are commanded by trained officers and equipped with weapons typical of their region. In dangerous zones, they may be accompanied by scouts or spellcasters for added support. Non-human levies may be used in some areas.",
+      "leaders": {
+        "captain": { "level": "6-8", "class": "fighter or ranger", "count": 1 },
+        "lieutenants": { "level": "4-5", "class": "fighter", "count": 2 },
+        "serjeants": { "level": 3, "class": "fighter", "count": 4 },
+        "veterans": { "level": "1-2", "class": "fighter", "count": 8 },
+        "levies": { "level": 0, "class": "fighter", "hp": "3-6", "count": "41-50" },
+        "spellcaster": {
+          "options": [
+            { "class": "cleric", "level": "4-5", "armorClass": 4 },
+            { "class": "druid", "level": "4-6", "armorClass": 8 },
+            { "class": "magic-user", "level": "3-5", "armorClass": 10 },
+            { "class": "illusionist", "level": "3-5", "armorClass": 10 }
+          ],
+          "chance": "50% (1-2 may be present)",
+          "count": "1–2"
+        },
+        "scouts": {
+          "level": "3-5",
+          "class": "ranger or thief",
+          "armorClass": 5,
+          "count": "1-4",
+          "chance": "50% in troubled regions"
+        }
+      },
+      "equipment": {
+        "mounts_armor_weapons": {
+          "captain": "Light horse, chain or banded mail, shield, regional sword or pole arm",
+          "lieutenants": "Light horse, chain mail, melee weapon",
+          "serjeants": "Chain mail or studded leather, pole arm or sword",
+          "veterans": "Leather or chain armor, typical regional weapons",
+          "levies": "Leather or padded armor, pikes, long spears, or pole arms; up to 50% with missile weapons (e.g., shortbows, slings)",
+          "spellcasters": "Varies by class; often disguised or cloaked"
+        },
+        "magic_item_chance": "5% per level of highest class (armor, shield, sword, potion, scroll, ring, rod)",
+        "magic_item_types": {
+          "fighter": ["armor", "shield", "sword", "misc weapon", "potion", "scroll"],
+          "cleric": ["armor", "shield", "misc weapon", "misc magic", "potion", "scroll"],
+          "magic_user": ["potion", "scroll", "ring", "rod", "misc magic"]
+        }
+      },
+      "treasure": {
+        "individual": "1d4 gp",
+        "lair": {
+          "gems": { "amount": "1d4", "chance": "20%" },
+          "magic_items": { "amount": 1, "chance": "10%" }
+        }
+      }
+    },
+    
+    {
+      "name": "Men, Patrol (Light)",
+      "category": "Men",
+      "name_variants": "Light Patrol, Skirmisher Patrol",
+      "frequency": "Uncommon",
+      "numberAppearing": "21-40",
+      "size": "Man-sized",
+      "move": "120 ft (mounted)",
+      "armorClass": "4 (officers), 5 (NCOs and veterans), 6 (regulars)",
+      "hitDice": "F 0–6",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "5%",
+      "intelligence": "Average to High",
+      "alignment": "Any (usually Lawful Neutral or Chaotic Neutral)",
+      "levelXP": "Variable by class and level",
+      "description": "Light patrols are mobile reconnaissance units mounted on light warhorses. They are structured similarly to heavy patrols but have lighter armor, emphasize missile combat, and typically include 17–24 regulars. They are suited to skirmishes, screening operations, or pursuit.",
+      "leaders": {
+        "officer": { "level": "5-6", "class": "fighter", "count": 1 },
+        "subalterns": { "level": "3-4", "class": "fighter", "count": 2 },
+        "serjeants": { "level": "2-3", "class": "fighter", "count": 6 },
+        "veterans": { "level": 1, "class": "fighter", "hp": "7-12", "count": "7-10" },
+        "regulars": { "level": 0, "class": "fighter", "hp": "4-7", "count": "17-24" },
+        "spellcaster": {
+          "options": [
+            { "class": "cleric", "level": "5-6", "armorClass": 4 },
+            { "class": "druid", "level": "5-6", "armorClass": 10 },
+            { "class": "magic-user", "level": "4-5", "armorClass": 12 }
+          ],
+          "chance": "100%",
+          "count": 1
+        }
+      },
+      "equipment": {
+        "mounts_armor_weapons": {
+          "officer": "Light warhorse, chain mail or equivalent, shield, sword or lance",
+          "subalterns": "Light warhorse, chain or studded leather, sword or bow",
+          "serjeants": "Light warhorse, studded leather, shortbow or spear",
+          "veterans": "Light warhorse, studded or padded armor, shortbow or melee weapon",
+          "regulars": "Light warhorse, padded or leather armor, shortbow or sling",
+          "spellcaster": "As appropriate to class; likely unarmored if a magic-user"
+        },
+        "magic_item_chance": "5% per level of highest class (armor, shield, sword, potion, scroll, ring, rod)",
+        "magic_item_types": {
+          "fighter": ["armor", "shield", "sword", "misc weapon", "potion", "scroll"],
+          "cleric": ["armor", "shield", "misc weapon", "misc magic", "potion", "scroll"],
+          "magic_user": ["potion", "scroll", "ring", "rod", "misc magic"]
+        }
+      },
+      "treasure": {
+        "individual": "1d8 gp",
+        "lair": {
+          "gems": { "amount": "1d6", "chance": "25%" },
+          "magic_items": { "amount": 1, "chance": "15%" }
+        }
+      }
+    },
+
+    {
+      "name": "Men, Patrol (Medium)",
+      "category": "Men",
+      "name_variants": "Medium Patrol, Standard Cavalry Patrol",
+      "frequency": "Uncommon",
+      "numberAppearing": "21-40",
+      "size": "Man-sized",
+      "move": "120 ft (mounted)",
+      "armorClass": "3 (officers), 4 (NCOs and veterans), 5 (regulars)",
+      "hitDice": "F 0–6",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "5%",
+      "intelligence": "Average to High",
+      "alignment": "Any (often Lawful Neutral)",
+      "levelXP": "Variable by class and level",
+      "description": "Medium patrols are structured like heavy patrols, but their equipment and armor are lighter. Officers ride medium warhorses while troops ride light horses. These patrols are balanced in speed, defense, and combat ability, often reflecting the culture and tactics of their home nation.",
+      "leaders": {
+        "officer": { "level": "5-6", "class": "fighter", "count": 1 },
+        "subalterns": { "level": "3-4", "class": "fighter", "count": 2 },
+        "serjeants": { "level": "2-3", "class": "fighter", "count": 6 },
+        "veterans": { "level": 1, "class": "fighter", "hp": "7-12", "count": "7-10" },
+        "regulars": { "level": 0, "class": "fighter", "hp": "4-7", "count": "9-24" },
+        "spellcaster": {
+          "options": [
+            { "class": "cleric", "level": "5-6", "armorClass": 3 },
+            { "class": "druid", "level": "5-6", "armorClass": 9 },
+            { "class": "magic-user", "level": "4-5", "armorClass": 11 }
+          ],
+          "chance": "100%",
+          "count": 1
+        }
+      },
+      "equipment": {
+        "mounts_armor_weapons": {
+          "officer": "Medium warhorse, chain or scale mail, shield, national melee weapon",
+          "subalterns": "Medium warhorse, chain or studded leather, weapon typical to homeland",
+          "serjeants": "Light horse, studded leather or leather, national melee weapon",
+          "veterans": "Light horse, leather armor, appropriate arms",
+          "regulars": "Light horse, padded or leather armor, weapon typical of origin",
+          "spellcaster": "Per class; usually unarmored for M-U or lightly armored for clerics"
+        },
+        "magic_item_chance": "5% per level of highest class (armor, shield, sword, potion, scroll, ring, rod)",
+        "magic_item_types": {
+          "fighter": ["armor", "shield", "sword", "misc weapon", "potion", "scroll"],
+          "cleric": ["armor", "shield", "misc weapon", "misc magic", "potion", "scroll"],
+          "magic_user": ["potion", "scroll", "ring", "rod", "misc magic"]
+        }
+      },
+      "treasure": {
+        "individual": "1d8 gp",
+        "lair": {
+          "gems": { "amount": "1d6", "chance": "30%" },
+          "magic_items": { "amount": 1, "chance": "15%" }
+        }
+      }
+    },
+    
+    {
+      "name": "Men, Patrol (Slaver)",
+      "category": "Men",
+      "name_variants": "Slaver Patrol, Slave Train Escort",
+      "frequency": "Rare",
+      "numberAppearing": "20–50 (plus wagons/carts and slaves)",
+      "size": "Man-sized",
+      "move": "90 ft (afoot) or 120 ft (mounted)",
+      "armorClass": "4 (officers), 5 (NCOs), 6 (guards)",
+      "hitDice": "F 0–6",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "10%",
+      "intelligence": "Average",
+      "alignment": "Lawful Evil or Neutral Evil",
+      "levelXP": "Variable by class and level",
+      "description": "Slaver patrols escort and guard slave caravans between strongholds or toward market destinations. They are similar in composition to levy or light patrols, but travel with 3–5 prison wagons or 5–7 carts. Each vehicle is guarded and chained for holding captives. These groups are cruel and well-prepared for dealing with escape attempts or ambushes. Slaves are typically chained in pairs and closely guarded.",
+      "leaders": {
+        "officer": { "level": "5-6", "class": "fighter or slaver", "count": 1 },
+        "lieutenants": { "level": "3-4", "class": "fighter", "count": 2 },
+        "serjeants": { "level": "2-3", "class": "fighter", "count": 4 },
+        "guards": { "level": 0, "class": "fighter", "hp": "4-7", "count": "12-30" },
+        "drivers": { "level": 0, "class": "fighter or teamster", "hp": "3-6", "count": "3-7" }
+      },
+      "equipment": {
+        "mounts_armor_weapons": {
+          "officer": "Medium warhorse, scale or chain mail, whip or sword",
+          "lieutenants": "Light horse, studded leather, sword or crossbow",
+          "serjeants": "Afoot or mounted, studded leather, pole arm, short sword",
+          "guards": "Afoot, leather or padded armor, short sword, whip, 50% with missile weapon",
+          "drivers": "Afoot, leather armor, club or short sword",
+          "vehicles": "3–5 prison wagons or 5–7 carts, each with chains and restraints"
+        },
+        "magic_item_chance": "5% per level of highest class (armor, shield, weapon, potion, scroll)",
+        "magic_item_types": {
+          "fighter": ["armor", "shield", "sword", "misc weapon", "potion", "scroll"]
+        }
+      },
+      "treasure": {
+        "individual": "1d10 gp (officers only)",
+        "lair": {
+          "gems": { "amount": "2d4", "chance": "50%" },
+          "magic_items": { "amount": 1, "chance": "20%" },
+          "trade_goods": "1–100 slaves, 10–100 gp per head if sold"
+        }
+      },
+      "slaves": {
+        "count": "1d100",
+        "status": "Chained in pairs, lightly clothed, poorly fed; 90% are noncombatants"
+      }
+    },
+    
+    {
+      "name": "Men, Patrol (Warband)",
+      "category": "Men",
+      "name_variants": "Nomadic Warband, Raider Warband",
+      "frequency": "Rare",
+      "numberAppearing": "90–120",
+      "size": "Man-sized",
+      "move": "120 ft (mounted)",
+      "armorClass": "Determined by armor worn",
+      "hitDice": "1d6 hp",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "Tactical ambush, feigned retreat",
+      "specialDefenses": "Morale bonuses, surprise in terrain",
+      "magicResistance": "Standard",
+      "lairProbability": "15% (special loot carried if lair result)",
+      "intelligence": "Mean (average to very)",
+      "alignment": "Neutral (often with Chaotic or Evil tendencies)",
+      "levelXP": "Variable",
+      "description": "Warbands are large, fast-moving forces of nomadic warriors, raiders, or militant tribesmen. They operate as mobile forces with flexible tactics, often carrying special loot and surprising enemies using terrain or retreat lures. Their structure follows nomadic patterns, including experienced leaders and specialized mounted troops.",
+      "leaders": {
+        "fighters": {
+          "per_30": { "level": 3, "class": "fighter", "count": 1 },
+          "per_40": { "level": 4, "class": "fighter", "count": 1 },
+          "per_50": { "level": 5, "class": "fighter", "count": 1 },
+          "per_60": { "level": 6, "class": "fighter", "count": 1 },
+          "main_leader": {
+            "under_150": { "level": 8, "class": "fighter", "count": 1 },
+            "150_to_250": { "level": 9, "class": "fighter", "count": 1 },
+            "over_250": { "level": 10, "class": "fighter", "count": 1 }
+          },
+          "subcommander": { "level": "6th to 8th", "class": "fighter", "count": 1 },
+          "guards": { "level": 2, "class": "fighter", "count": 12 }
+        },
+        "clerics": {
+          "chance": "15% per 50 warband members",
+          "level": "4th to 7th",
+          "permanent": { "level": 3, "class": "cleric", "count": 2 }
+        },
+        "magic_users": {
+          "chance": "15% per 50 warband members",
+          "level": "5th to 8th",
+          "permanent": { "level": 4, "class": "magic-user", "count": 1 }
+        },
+        "psionic_abilities": "Normal chances for psionic leadership"
+      },
+      "equipment": {
+        "mounts_armor_weapons": {
+          "medium_warhorse_chainmail_shield_lance_sword": "10%",
+          "medium_warhorse_chainmail_composite_bow_sword": "10%",
+          "light_warhorse_leather_shield_lance_sword": "20%",
+          "light_warhorse_leather_composite_bow_sword": "50%",
+          "light_warhorse_leather_crossbow_sword": "10%"
+        },
+        "leader_armor": "Chainmail or better; magical items if applicable"
+      },
+      "tactics": {
+        "withdrawal": "Withdraw if 25% casualties and resistance continues",
+        "feigned_retreat": "Will feign retreat to lure enemies into ambush",
+        "capture": "75% likely to capture smaller or weaker groups",
+        "parley": "90% chance to parley if opposing force is of similar strength"
+      },
+      "treasure": {
+        "individual": "2d6 ep",
+        "lair": {
+          "cp": { "amount": "1d3×1000", "chance": "20%" },
+          "sp": { "amount": "1d4×1000", "chance": "25%" },
+          "ep": { "amount": "1d4×1000", "chance": "25%" },
+          "gp": { "amount": "1d4×1000", "chance": "30%" },
+          "pp": { "amount": "1d6×100", "chance": "30%" },
+          "gems": { "amount": "1d6×10", "chance": "55%" },
+          "jewellery": { "chance": "50%" },
+          "magic_items": { "amount": 3, "chance": "50%" },
+          "special_loot": "If lair result rolled, this represents loot being carried rather than a fixed site"
+        }
+      }
+    },
+    {
+      "name": "Men, Raider",
+      "category": "Men",
+      "name_variants": "Raiding Party, Human Raiders",
+      "frequency": "Variable (by region)",
+      "numberAppearing": "Base group size of matching type + 5d6",
+      "size": "Man-sized",
+      "move": "Varies (mounted or afoot)",
+      "armorClass": "Varies by source group",
+      "hitDice": "Varies by group type (F 0–10)",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "Ambush, surprise, mounted charge (if applicable)",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "15% (represents spoils from recent raids)",
+      "intelligence": "Average",
+      "alignment": "Typically Chaotic Neutral or Neutral Evil",
+      "levelXP": "Variable by composition",
+      "description": "Raider bands are composed of hostile forces from nearby regions. Their composition mirrors nearby patrol or humanoid types, with an additional 5–30 troops. Raiders may be mounted or afoot depending on terrain, origin, and success—e.g., swamp tribesmen raiding with captured horses. Raider morale and discipline vary greatly. If encountered 'in lair', they carry treasure from recent raids.",
+      "composition": {
+        "base_type": "Derived from adjacent encounter table entry (e.g., Bandits, Knights, Patrol types, Humanoids)",
+        "additional_troops": "5–30 extra members (1d6+4 × 5)",
+        "mount_status": "50% chance of being mounted if terrain and origin allow",
+        "example": "If based on 'Bandits', roll Bandit stats and add 5–30; if based on 'Hool marshmen', use 'Men, Tribesmen' template plus 5–30"
+      },
+      "equipment": {
+        "armor_weapons": "Varies by parent type; raiders often have mixed or scavenged gear",
+        "mounts": "Light or medium horses, possibly stolen",
+        "loot_transport": "Captured carts, beasts of burden, or magical bags if successful"
+      },
+      "tactics": {
+        "alert_in_enemy_territory": true,
+        "relaxed_in_own_territory": true,
+        "ambush_or_hit_and_run": true,
+        "fallback_behavior": "Will retreat if severely outnumbered unless fanatical"
+      },
+      "treasure": {
+        "individual": "1d10 gp or stolen trade goods",
+        "lair": {
+          "type": "Loot from raids or Type A treasure",
+          "details": {
+            "cp": { "amount": "2d10×100", "chance": "20%" },
+            "sp": { "amount": "2d8×100", "chance": "30%" },
+            "ep": { "amount": "1d6×100", "chance": "25%" },
+            "gp": { "amount": "2d6×100", "chance": "50%" },
+            "gems": { "amount": "2d6", "chance": "40%" },
+            "magic_items": { "amount": "1–3", "chance": "25%" }
+          }
+        }
+      },
+      "notes": "This is a template-type encounter. The DM or system should determine the specific base type from nearby regions, then apply raider modifications (size boost, tactics, treasure). Examples include: 'Bandits from Shield Lands', 'Soldiery from Ket', or 'Knights from the Great Kingdom'."
+    },
+    
+    {
       "name": "Men, Pilgrim",
       "category": "Men",
       "frequency": "Uncommon",
@@ -3527,6 +4253,206 @@ export const MONSTER_MANUAL = {
         }
       }
     },
+    {
+      "name": "Men, Rhennee",
+      "category": "Men",
+      "name_variants": "Rhennee, Gypsy Barge Folk, Rhenn-Folk",
+      "frequency": "Uncommon (Rare inland)",
+      "numberAppearing": "7–12 barges (each with 17–31 adults + children)",
+      "size": "Man-sized",
+      "move": "120 ft (mounted or ashore), 90 ft (aboard barge)",
+      "armorClass": "Varies by location and rank (see Equipment)",
+      "hitDice": "Varies by role; average HP by class and level",
+      "attacks": 1,
+      "damage": "By weapon; harpoon special",
+      "specialAttacks": "Harpoon (2d8/2d12, dragging), coordinated ranged attacks",
+      "specialDefenses": "All Rhennee trained in crossbows and daggers",
+      "magicResistance": "Standard",
+      "lairProbability": "10% (15% if at secret camp)",
+      "intelligence": "High (scheming)",
+      "alignment": "Neutral",
+      "levelXP": "Variable by level",
+      "description": "The Rhennee are semi-nomadic barge folk who ply the rivers and lakes of the central Flanaess. Known for their secretive and self-serving culture, they rarely travel inland except in multi-barge flotillas. All Rhennee are trained in dagger and crossbow from youth, and many are skilled thieves or illusionists. Although friendly-seeming, they are deceitful to outsiders. Children, outsiders adopted into the folk, or kidnapped youth may be raised as full Rhennee.",
+      "leaders": {
+        "chief": { "level": "4-6 / 5-7", "class": "fighter/thief", "count": 1 },
+        "guards": { "level": "3-5 / 2-4", "class": "fighter/thief", "count": "2-4" },
+        "folk": { "level": "1-2 / 1-4", "class": "fighter/thief", "count": "13-24" },
+        "wise_woman": { "level": "4-7 / 1-4", "class": "illusionist/thief", "count": 1 },
+        "advisors": { "level": "1-3 / 1-2", "class": "illusionist/thief", "count": "1-2" },
+        "children": { "level": "0 or thief 1 / fighter 0", "count": "7-12", "note": "Children above age 9 fight as 1st-level thieves and 0-level fighters" },
+        "noble": {
+          "chance": "If max barge group (12), 50% chance",
+          "level": "8-9 / 10-13",
+          "class": "fighter/thief",
+          "magic_items": ["magic armor", "misc weapon", "misc magic", "ring"],
+          "note": "One barge will have maximum stats and noble leadership"
+        },
+        "bard": {
+          "chance": "50% if >1 mile inland; automatic if noble is present",
+          "level": "3rd–8th (no noble) or 7th–12th (with noble)",
+          "class": "bard"
+        }
+      },
+      "equipment": {
+        "training": "All Rhennee know dagger, crossbow, sling, harpoon, and one melee weapon by adulthood.",
+        "aboard_barge": {
+          "chief": "Leather & shield, harpoon, battle axe, long sword, sling, daggers",
+          "guards": "Leather & shield, harpoon, battle axe, long sword, sling, dagger",
+          "folk": [
+            "Leather + dagger + 30%: glaive-guisarme, short sword",
+            "30%: trident, sling",
+            "40%: javelins, battle axe"
+          ],
+          "children": "Club, dagger",
+          "weapons": "Each barge carries 2 ballistae (fore & aft), 12 heavy crossbows, harpoons, spears, and javelins"
+        },
+        "ashore": {
+          "chief": "Chain & shield, battle axe, long sword, sling, dagger, 6 darts",
+          "guards": "Scale & shield, spear, battle axe, long sword, sling, dagger, darts",
+          "folk": [
+            "Leather & dagger + 30%: light crossbow, short sword",
+            "30%: trident, sling",
+            "40%: spear, javelins, battle axe"
+          ],
+          "children": "Club, dagger"
+        },
+        "harpoon_rules": {
+          "range": "30 yards (spear)",
+          "damage": "2d8 (S-M), 2d12 (L)",
+          "effects": "On hit, target must save vs poison or take 1 extra damage/round and be subject to dragging"
+        },
+        "magic_item_chance": {
+          "fighter": "5% per fighter level for armor/shield/misc weapon",
+          "highest_level": "5% per highest level for sword, potion, scroll, ring, misc magic",
+          "illusionist": "5% per level for rods, etc."
+        }
+      },
+      "treasure": {
+        "individual": "1d3 of each coin type per level",
+        "barge": {
+          "type": ["O", "P", "Q", "Q (jewelry bonus)"],
+          "jewelry": "2-5 pieces (if Q)",
+          "note": "Each barge stores treasure in concealed compartments; nobles have highest shares"
+        }
+      },
+      "vessel": {
+        "type": "60-ft junk-like barge",
+        "layout": {
+          "forecastle": "Wise women and families",
+          "sterncastle": "Chief, guards, and their families",
+          "lower_deck": "Folk, animals, and cargo",
+          "defense": "Ballistae, crossbows at 4 ft. intervals, sweeps, longboat, and dinghy"
+        },
+        "construction": "10-ft forecastle, 12-ft sterncastle, low draft, chained or cabled to other barges"
+      },
+      "special_notes": {
+        "habitat": "Always near major lakes or rivers; 10% chance of being at inland camp",
+        "behavior": "Seem friendly, actually scheming and cautious; dishonest to outsiders, loyal to folk",
+        "culture": "Strict internal code, raise stolen or adopted children as their own",
+        "appearance": "Short, wiry, dark curly hair, claim extraplanar origin from Rhop",
+        "stat_generation": {
+          "female": {
+            "strength": "3 of 4d6",
+            "intelligence": "3 of 4d6",
+            "wisdom": "3 of 4d6",
+            "dexterity": "2 of 3d6+6",
+            "constitution": "3 of 5d6",
+            "charisma": "3 of 6d6"
+          },
+          "male": {
+            "strength": "3 of 5d6",
+            "intelligence": "3 of 4d6",
+            "wisdom": "3 of 4d6",
+            "dexterity": "2 of 3d6+6",
+            "constitution": "3 of 5d6",
+            "charisma": "3 of 5d6"
+          }
+        }
+      }
+    },
+
+    {
+      "name": "Men, Tribesmen",
+      "category": "Men",
+      "name_variants": "Jungle Tribesmen, Hillmen, Marshmen, Mountaineers",
+      "frequency": "Uncommon (Varies by region)",
+      "numberAppearing": "10d12 plus leaders and spellcasters",
+      "size": "Man-sized",
+      "move": "120 ft (afoot)",
+      "armorClass": "7 (primitive) to 5 (civilized types with better gear)",
+      "hitDice": "1d6 hp (standard tribesmen), variable for leaders",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "Ambush (if terrain allows), spell use by leaders",
+      "specialDefenses": "Terrain camouflage",
+      "magicResistance": "Standard",
+      "lairProbability": "60% (village or camp)",
+      "intelligence": "Low to Average",
+      "alignment": "Neutral or Chaotic Neutral",
+      "levelXP": "Variable by class and role",
+      "description": "Tribesmen are semi-primitive or primitive peoples dwelling in wilderness areas of the Flanaess. Jungle or island tribes are more savage and use shamans and witch doctors (druidic clerics), while hillmen, marshmen, and mountaineers may be refugees with access to more advanced weapons and trained clerics or illusionists. Tribesmen are highly territorial and often keep slaves or captives. Their armament varies by region and culture.",
+      "leaders": {
+        "chieftain": { "level": "1d4+2", "class": "fighter", "count": 1 },
+        "lieutenants": { "level": "1d3+1", "class": "fighter", "count": "1 per 20 tribesmen" },
+        "clerics": {
+          "primitive": [
+            { "level": 4, "class": "druid", "count": "1 per 10 tribesmen" },
+            { "level": 6, "class": "druid", "count": "1 per 30 tribesmen" },
+            { "level": 8, "class": "druid", "title": "head cleric (witchdoctor)", "count": 1 }
+          ],
+          "civilized": {
+            "chance": "Common",
+            "level": "1d4+2",
+            "class": "cleric or druid",
+            "count": "1d3"
+          }
+        },
+        "illusionists": {
+          "chance": "10% per 10 civilized tribesmen",
+          "level": "1d3+3",
+          "class": "illusionist",
+          "count": "1"
+        }
+      },
+      "equipment": {
+        "primitive": [
+          "Shield, spear, and club",
+          "Shield and 2 spears",
+          "Shortbow and club (treat clubs as maces)"
+        ],
+        "civilized": {
+          "hillmen": "Sling and spear",
+          "marshmen": "Shortbow and long spear",
+          "mountaineers": "Crossbow and pole arm",
+          "note": "Armor and arms similar to bandits but modified by terrain and availability"
+        }
+      },
+      "village": {
+        "structure": "Grass, bamboo, or mud huts",
+        "defenses": {
+          "palisade": { "chance": "50%", "type": "log" }
+        },
+        "inhabitants": {
+          "females": "Equal to number of males",
+          "children": "Equal to number of males",
+          "slaves": { "chance": "75%", "count": "20–50" },
+          "captives": { "chance": "50%", "count": "2–12", "note": "Held as food" }
+        }
+      },
+      "magic_item_chance": {
+        "fighters": "5% per level (armor, sword, misc weapon, potion)",
+        "clerics": "5% per level (armor, misc weapon, potion, scroll, misc magic)",
+        "illusionists": "5% per level (potion, scroll, ring, misc magic)"
+      },
+      "treasure": {
+        "individual": "1d6 cp or ep per tribesman",
+        "lair": {
+          "reference": "Same as Cavemen (Types O, P, and Q)",
+          "note": "May include jewelry and basic magic if spellcasters are present"
+        }
+      }
+    },
+    
     {
       "name": "Mule",
       "category": "Animal",
@@ -3973,6 +4899,190 @@ export const MONSTER_MANUAL = {
       "treasure": "None",
       "description": "Animated fleshless remains created by evil magic. They mindlessly obey simple commands. All attacks deal 1d6 damage regardless of weapon. Immune to cold and mind-affecting spells. Take half damage from edged/cutting weapons and minimal damage from piercing weapons. Holy water inflicts 2d4 damage per vial."
     },
+
+    {
+      "name": "Men, Soldiery",
+      "category": "Men",
+      "name_variants": "Mercenary Company, Infantry Company",
+      "frequency": "Uncommon",
+      "numberAppearing": "150d1+50",  // 150–200 total
+      "size": "Man-sized",
+      "move": "120 ft (afoot), 180 ft (mounted leaders)",
+      "armorClass": "2 (commander), 3 (lieutenants), 4 (serjeants), 5–6 (soldiers)",
+      "hitDice": "F 0 to F 8",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "Coordinated formations, spellcaster support",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "10%",
+      "intelligence": "Average",
+      "alignment": "Lawful Neutral or Neutral",
+      "levelXP": "Variable by rank",
+      "description": "A disciplined mercenary infantry company of 150–200 soldiers. Most troops are footmen, while leaders and scouts are mounted. Forces are armed according to their region, with a mix of polearms, sidearms, and missile weapons. In hostile regions, they are often accompanied by a cleric or magic-user. Armor Class values exclude Dexterity or magic bonuses.",
+      "leaders": {
+        "commander": { "level": "6–8", "class": "fighter", "count": 1 },
+        "lieutenants": { "level": "3–5", "class": "fighter", "count": 5 },
+        "serjeants": { "level": 2, "class": "fighter", "count": "2 per 10 soldiers" },
+        "scouts": { "level": 1, "class": "fighter", "count": 10 },
+        "soldiers": { "level": 0, "class": "fighter", "count": "140–190" },
+        "hostile_area_spellcaster": {
+          "options": [
+            { "level": "4–6", "class": "cleric", "count": 1 },
+            { "level": "3–5", "class": "magic-user", "count": 1 }
+          ],
+          "condition": "Only present in hostile regions"
+        }
+      },
+      "equipment": {
+        "weapon_mix": {
+          "polearms": "50%",
+          "sidearms": "30%",
+          "missile_weapons": "20%"
+        },
+        "armor_notes": "Commanders and officers wear superior armor (AC 2–4); troops AC 5–6 depending on gear; AC does not include Dex or magic bonuses",
+        "mounts": "Commanders, serjeants, and scouts are mounted on light warhorses"
+      },
+      "magic_item_chance": {
+        "reference": "Same as Men, Patrol, Levies",
+        "fighters": "5% per level (armor, sword, misc weapon, potion)",
+        "clerics": "5% per level (armor, misc weapon, potion, scroll, misc magic)",
+        "magic_users": "5% per level (potion, scroll, ring, misc magic)"
+      },
+      "treasure": {
+        "individual": "1d6 sp or ep",
+        "lair": {
+          "cp": { "amount": "1d6×100", "chance": "15%" },
+          "sp": { "amount": "1d4×100", "chance": "25%" },
+          "gp": { "amount": "1d3×100", "chance": "25%" },
+          "gems": { "amount": "1d6", "chance": "35%" },
+          "magic_items": { "amount": 1, "chance": "25%" }
+        }
+      }
+    },
+    {
+      "name": "Soldiery, Hobgoblin",
+      "category": "Humanoids",
+      "frequency": "Uncommon",
+      "numberAppearing": "90d8+70",
+      "size": "Man-sized",
+      "move": "90 ft",
+      "armorClass": "5 (Serjeants AC 4, Captain/Officers AC 2–4)",
+      "hitDice": "Hobgoblins: 1+1 (5–8 hp), Serjeants: 9 hp",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "15%",
+      "intelligence": "Average to very",
+      "alignment": "Lawful evil",
+      "levelXP": "Variable",
+      "description": "Hobgoblin soldiery are disciplined, close-order heavy infantry led by human officers. Their morale is excellent as long as leaders remain. Equipment varies but is standardized by unit.",
+      "leaders": {
+        "captain": { "level": "6-8", "class": "fighter", "count": 1 },
+        "lieutenant": { "level": 5, "class": "fighter", "count": 1 },
+        "subalterns": { "level": 3, "class": "fighter", "count": 4 },
+        "serjeants": { "level": 2, "class": "fighter", "count": 8 },
+        "cleric": {
+          "chance": "50%",
+          "level": "4-7",
+          "class": "cleric"
+        },
+        "magic_user": {
+          "chance": "30%",
+          "level": "3-6",
+          "class": "magic-user"
+        },
+        "thief": {
+          "chance": "70%",
+          "level": "5-8",
+          "class": "thief"
+        }
+      },
+      "equipment": {
+        "hobgoblins": {
+          "composite_bow_short_sword": "20%",
+          "fauchard_fork_short_sword": "50%",
+          "morning_star": "30%"
+        },
+        "human_leaders": {
+          "mounts": "Medium warhorses",
+          "weapons": "Lance, whip, long sword, mace"
+        }
+      },
+      "treasure": {
+        "individual": "1d6 ep",
+        "lair": {
+          "gp": { "amount": "2d10×1000", "chance": "50%" },
+          "gems": { "amount": "1d8", "chance": "25%" },
+          "magic_items": { "amount": 1, "chance": "20%" }
+        }
+      }
+    },
+    {
+      "name": "Soldiery, Orcs",
+      "category": "Humanoids",
+      "name_variants": "Orc Soldiery",
+      "frequency": "Uncommon",
+      "numberAppearing": "120–150",
+      "size": "Man-sized",
+      "move": "120 ft",
+      "armorClass": 6,
+      "hitDice": "1d8 (leaders vary)",
+      "attacks": 1,
+      "damage": "By weapon",
+      "specialAttacks": "Organized tactics, potential magic use",
+      "specialDefenses": "Poor morale if leaders flee",
+      "magicResistance": "Standard",
+      "lairProbability": "20%",
+      "intelligence": "Low to Average",
+      "alignment": "Lawful evil",
+      "levelXP": "Variable",
+      "description": "These organized troops of orcs are led by human or half-orc officers, and may include hobgoblins or half-orcs. They fight as well-trained units and have poor morale if their leaders fall. Orcs use standard weapons and armor, while leaders may possess magic.",
+      "leaders": {
+        "captain": {
+          "count": 1,
+          "options": [
+            {"level": "5-6", "class": "fighter"},
+            {"level": "4-5 / 4-5", "class": "fighter/thief", "chance": "20%"},
+            {"level": "4-5 / 4-5", "class": "fighter/assassin", "chance": "20%"}
+          ]
+        },
+        "lieutenants": {
+          "count": "3d3",
+          "options": [
+            {"level": "3-4", "class": "fighter"},
+            {"level": "2-3 / 2-3", "class": "fighter/thief", "chance": "20%"},
+            {"level": "2-3 / 2-3", "class": "fighter/assassin", "chance": "20%"}
+          ]
+        },
+        "cleric": {
+          "chance": "100%",
+          "level": "3-4 / 3-4",
+          "class": "cleric/thief or cleric/assassin",
+          "race": "half-orc"
+        }
+      },
+      "equipment": {
+        "infantry": {
+          "weapon_types": "Standard orc weapons, regional variation",
+          "notes": "Includes some hobgoblins or half-orcs"
+        }
+      },
+      "treasure": {
+        "individual": "As orc standard",
+        "lair": {
+          "cp": {"amount": "2d6×1,000", "chance": "25%"},
+          "sp": {"amount": "2d6×1,000", "chance": "30%"},
+          "gp": {"amount": "2d10×1,000", "chance": "40%"},
+          "gems": {"amount": "2d10", "chance": "30%"},
+          "jewellery": {"amount": "1d10", "chance": "20%"},
+          "magic_items": {"amount": 2, "chance": "20%"}
+        }
+      }
+    },
+    
     {
       "name": "Spectre",
       "category": "Undead",
