@@ -10,7 +10,7 @@ export const MONSTER_MANUAL = {
       "armorClass": 3,
       "hitDice": "16",
       "attacks": 1,
-      "damage": "8-32",
+      "damage": "8d4",
       "specialAttacks": "Surprise on 1-4",
       "specialDefenses": "Can only be hit by magic weapons",
       "magicResistance": "Standard",
@@ -22,16 +22,99 @@ export const MONSTER_MANUAL = {
       "description": "Aerial servants are creatures from the elemental planes that can be summoned by clerics. Nearly invisible, they surprise opponents easily and can only be harmed by magical weapons. They are extraordinarily strong and can strangle opponents."
     },
     {
+      "name": "Amber Creeping Vine",
+      "category": "Plant",
+      "variants": [
+        {
+          "name": "Amber Creeping Vine",
+          "description": "A parasitic plant with intelligence-draining tendrils that feed on victims' brains, transforming some into Amber Zombies.",
+          "specialAbilities": {
+            "attack": "Consumes 1d4 Intelligence per round from a captured victim.",
+            "zombieCreation": "If Intelligence is reduced to 1–2, victim becomes an Amber Zombie.",
+            "killingBlow": "Piercing the buried root (1 ft below) kills the vine instantly.",
+            "zombieControl": "Controls 1 Amber Zombie per 2 blooms it possesses.",
+            "camouflage": "Covers remains and victim gear with foliage and dirt."
+          },
+          "vulnerabilities": {
+            "healing": "Healing magic restores Intelligence, but does not heal HP simultaneously.",
+            "cure": "Killing the vine halts the drain; otherwise, the process continues."
+          },
+          "dwelling": {
+            "location": "Woodlands or caverns with soft earth",
+            "buriedRoot": "1 ft underground"
+          },
+          "treasure": {
+            "individual": "None",
+            "lair": "Victims' items buried beneath vine"
+          },
+          "alignment": "Neutral",
+          "intelligence": "Low",
+          "armorClass": "Varies (typically plant cover)",
+          "hitDice": "Unknown (GM’s discretion)",
+          "attacks": "1+ (Tendrils)",
+          "damage": "Intelligence drain",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "90%",
+          "size": "Large (covers 10–20 ft area)"
+        },
+        {
+          "name": "Amber Zombie",
+          "description": "A mindless humanoid husk controlled by the Amber Creeping Vine. Amber-hued skin and lifeless eyes betray its origin.",
+          "appearance": {
+            "skin": "Amber",
+            "eyes": "Glazed, lifeless"
+          },
+          "combat": {
+            "hitDice": 2,
+            "attacks": 1,
+            "damage": "By weapon",
+            "equipment": "Uses whatever it carried in life",
+            "noSpells": true
+          },
+          "immunities": ["Mind-affecting spells", "Turning"],
+          "behavior": {
+            "guarding": "Defends the vine at all costs",
+            "hunting": "Lures new prey to the vine",
+            "lifespan": "Wanders away after 2 months, dies, and sprouts a new vine"
+          },
+          "cure": {
+            "method": [
+              "Kill the controlling vine",
+              "Cast neutralise poison",
+              "Then cast heal"
+            ],
+            "recoveryTime": "1 week per 4 Int lost"
+          },
+          "alignment": "Neutral",
+          "intelligence": "None",
+          "armorClass": 7,
+          "hitDice": "2",
+          "attacks": 1,
+          "damage": "By weapon type",
+          "specialAttacks": "None",
+          "specialDefenses": "Immune to charm, sleep, mind control",
+          "magicResistance": "Standard",
+          "lairProbability": "As per vine",
+          "size": "Medium (as former race)",
+          "treasure": {
+            "individual": "None",
+            "lair": "Items carried at time of transformation"
+          }
+        }
+      ]
+    },
+    {
       "name": "Anhkheg",
       "category": "Monster",
       "frequency": "Rare",
-      "numberAppearing": "1-6",
+      "numberAppearing": "1d6",
       "size": "Large (10'-20' long)",
       "move": "120 ft (60 ft burrowing)",
       "armorClass": "2 (overall); 4 (underside)",
       "hitDice": "3-8",
       "attacks": 1,
-      "damage": "3-18 (+1-4 acid)",
+      "damage": "3d6 (+1d4 acid)",
       "specialAttacks": "Acid squirt",
       "specialDefenses": "Nil",
       "magicResistance": "Standard",
@@ -43,25 +126,164 @@ export const MONSTER_MANUAL = {
       "description": "Insectoid burrowing predators with chitinous shells and powerful mandibles. They squirt acid and burrow through soil to ambush prey."
     },
     {
+      "name": "Annis",
+      "category": "Giant-kin",
+      "variants": [
+        {
+          "name": "Annis",
+          "description": "Evil hag-like giants, gaunt and ragged, infamous for their hunger and cruelty. Often mistaken for horrid old women at a distance.",
+          "appearance": {
+            "height": "8 ft",
+            "clothing": "Stained and filthy garments",
+            "physique": "Gaunt, lank-haired, giantesses with hideous features"
+          },
+          "abilities": {
+            "strength": "19 (as strong as a hill giant)",
+            "grapple": "If all 3 attacks hit in 1 round, opponent is held and auto-hit each following round"
+          },
+          "magic": {
+            "fogCloud": "3×/day",
+            "changeSelf": "3×/day"
+          },
+          "speech": {
+            "languages": ["Common", "Giantish tongues", "Own language"]
+          },
+          "behavior": {
+            "alignment": "Chaotic evil",
+            "habits": "Anthropophagic; will eat any meat when hungry",
+            "associates": ["Occasionally found with giants or trolls"]
+          },
+          "lair": {
+            "chance": "20%",
+            "treasure": {
+              "cp": "1d20×1,000 (25%)",
+              "sp": "1d8×1,000 (35%)",
+              "ep": "1d6×1,000 (10%)",
+              "gp": "1d6×1,000 (40%)",
+              "gems": "1d8 (30%)",
+              "jewellery": "1d6 (25%)",
+              "magicItems": "Any 2 + 1 potion (15%)"
+            }
+          }
+        }
+      ],
+      "frequency": "Very rare",
+      "numberAppearing": "1d3",
+      "size": "Large (8 ft)",
+      "move": "150 ft",
+      "armorClass": 0,
+      "hitDice": 9,
+      "attacks": 3,
+      "damage": "1d8+8 / 1d8+8 / 1d8+1",
+      "specialAttacks": {
+        "grapple": "Hold opponent if all 3 attacks hit, automatic hits thereafter"
+      },
+      "specialDefenses": "Immune to illusions",
+      "magicResistance": "Standard",
+      "lairProbability": "20%",
+      "intelligence": "Average to exceptional",
+      "alignment": "Chaotic evil",
+      "psionicAbility": "Nil",
+      "levelXP": "7/1,200+10/hp",
+      "specialAbilities": {
+        "spellcasting": {
+          "fogCloud": "3/day",
+          "changeSelf": "3/day"
+        },
+        "grappling": "Opponent is automatically hit once grappled"
+      },
+      "treasure": {
+        "individual": "None",
+        "lair": "cp, sp, ep, gp, gems, jewellery, 2 magic items and 1 potion (see percentages)"
+      }
+    },    
+    {
       "name": "Ant, Giant",
       "category": "Insect",
-      "frequency": "Rare",
-      "numberAppearing": "1-100",
-      "size": "Small (2' long)",
-      "move": "180 ft",
-      "armorClass": 3,
-      "hitDice": 2,
-      "attacks": 1,
-      "damage": "1-6",
-      "specialAttacks": "Warrior ants have poison sting",
-      "specialDefenses": "Nil",
-      "magicResistance": "Standard",
-      "lairProbability": "10%",
-      "intelligence": "Animal",
-      "alignment": "Neutral",
-      "levelXP": "2/20+2/hp",
-      "treasure": "Q×3, S",
-      "description": "Giant ants are industrious insectoids that build vast underground colonies. Worker ants forage while warrior ants defend the colony with poisonous stings. Their colonies may contain valuable treasures from unfortunate victims."
+      "variants": [
+        {
+          "name": "Worker",
+          "description": "The most numerous caste in a giant ant colony. Responsible for foraging, construction, and tending to eggs and larvae.",
+          "frequency": "Rare",
+          "numberAppearing": "1d100",
+          "size": "Small",
+          "move": "180 ft",
+          "armorClass": 3,
+          "hitDice": 2,
+          "attacks": 1,
+          "damage": "1d6",
+          "specialAttacks": "None",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "10%",
+          "intelligence": "Animal",
+          "alignment": "Neutral",
+          "levelXP": "2/30+1/hp",
+          "behavior": {
+            "role": "Foraging and colony maintenance",
+            "colonyNote": "Presence of soldiers: 1 per 5 workers"
+          }
+        },
+        {
+          "name": "Soldier",
+          "description": "Larger, more aggressive ants bred for defense. Appear with colonies or patrolling near the queen’s chamber.",
+          "frequency": "Very rare",
+          "numberAppearing": "1 per 5 workers",
+          "size": "Small",
+          "move": "180 ft",
+          "armorClass": 3,
+          "hitDice": 3,
+          "attacks": 2,
+          "damage": "2d4 / 3d4",
+          "specialAttacks": "Poison",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "10%",
+          "intelligence": "Animal",
+          "alignment": "Neutral",
+          "levelXP": "2/50+2/hp",
+          "behavior": {
+            "role": "Colony defense",
+            "guardQueen": "5+ soldiers protect the queen at all times"
+          }
+        },
+        {
+          "name": "Queen",
+          "description": "The heart of the colony. Immobile and completely dependent on her protectors.",
+          "frequency": "Very rare",
+          "numberAppearing": "1",
+          "size": "Large",
+          "move": "None",
+          "armorClass": 4,
+          "hitDice": 10,
+          "attacks": "None",
+          "damage": "None",
+          "specialAttacks": "None",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "100%",
+          "intelligence": "Low",
+          "alignment": "Neutral",
+          "levelXP": "7/700+13/hp",
+          "behavior": {
+            "role": "Reproduction and colony cohesion",
+            "deathEffect": "Slaying the queen causes colony-wide confusion (as druid spell) for 1d6 rounds; ants scatter thereafter"
+          }
+        }
+      ],
+      "specialAbilities": {
+        "organization": {
+          "nestDefense": "At least 5d10 workers and 5 soldiers defend the queen",
+          "cohesion": "Queen's presence organizes the colony; without her, ants disperse"
+        }
+      },
+      "treasure": {
+        "individual": "None",
+        "lair": {
+          "gems": "3d4 (50%)",
+          "potions": "2d4 (40%)"
+        }
+      }
     },
     {
       "name": "Ape, Carnivorous",
@@ -106,6 +328,64 @@ export const MONSTER_MANUAL = {
       "description": "Normal apes are peaceful primates found in rainforests who fight only when threatened. If they hit with both hands in the same round, they deal an additional 1d6 damage by mangling their opponent."
     },
     {
+      "name": "Aurumvorax",
+      "category": "Beast",
+      "variants": [
+        {
+          "name": "Aurumvorax",
+          "description": "Also known as the 'golden gorger', this dense, burrowing predator has a beautiful golden pelt and the temperament of a furious badger. Though small in size, it is incredibly heavy and strong.",
+          "appearance": {
+            "coat": "Golden fur",
+            "body": "Eight-legged, low-bodied like a weasel or badger"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "habitat": "Plains and woodlands",
+            "diet": "Carnivore—attacks anything it can kill and eat"
+          },
+          "combat": {
+            "bite": {
+              "effect": "Locks jaw like a bulldog; victim takes 2d4 damage per round while attached"
+            },
+            "clawRake": {
+              "effect": "Each round after bite, 1d8 claws rake for 1d6 damage each"
+            },
+            "detachment": "The aurumvorax cannot be dislodged without killing it"
+          },
+          "defenses": {
+            "bluntResistance": "Takes only half damage from blunt weapons",
+            "fireResistance": "Takes only half damage from fire",
+            "immunities": ["Poison", "Gas"]
+          },
+          "rumors": {
+            "origin": "Possibly an extraplanar species, not native to the Prime Material Plane"
+          },
+          "treasure": {
+            "individual": "None",
+            "lair": "GM-determined; may contain treasure from past kills"
+          }
+        }
+      ],
+      "frequency": "Very rare",
+      "numberAppearing": "1",
+      "size": "Small (dense as a bear)",
+      "move": "90 ft; 30 ft burrowing",
+      "armorClass": 0,
+      "hitDice": 12,
+      "attacks": 1,
+      "damage": "2d4 (bite) + claws if attached",
+      "specialAttacks": {
+        "biteAndRake": "On successful bite, victim is raked for 1d6 damage ×1d8 claws each round"
+      },
+      "specialDefenses": "Half damage from fire and blunt; immune to gas and poison",
+      "magicResistance": "Standard",
+      "lairProbability": "25%",
+      "intelligence": "Animal",
+      "alignment": "Neutral",
+      "psionicAbility": "Nil",
+      "levelXP": "8/2,250+16/hp"
+    },    
+    {
       "name": "Axe Beak",
       "category": "Animal",
       "frequency": "Uncommon",
@@ -126,6 +406,67 @@ export const MONSTER_MANUAL = {
       "treasure": "Nil",
       "description": "Axe beaks are large, flightless birds with sharp, axe-shaped beaks. They are aggressive predators that attack with their beaks and talons."
     },
+    {
+      "name": "Babbler",
+      "category": "Humanoid (Mutant)",
+      "variants": [
+        {
+          "name": "Babbler",
+          "description": "Large, reptilian humanoids found in swamps and marshes. They emit incomprehensible speech and have an unsettling resemblance to miniature tyrannosaurs with longer arms. Possibly a mutant strain of lizard men.",
+          "appearance": {
+            "coloration": "Yellow with grey blotches and a grey underbelly",
+            "body": "Mini-tyrannosaur body with humanoid arms",
+            "size": "8 ft tall"
+          },
+          "behavior": {
+            "alignment": "Chaotic evil",
+            "habitat": "Swamps and marshes",
+            "language": "Babbling tongue incomprehensible to humans and demi-humans",
+            "diet": "Carnivorous, particularly fond of human flesh",
+            "associates": "Occasionally found with lizard man raiding parties"
+          },
+          "combat": {
+            "attacks": 3,
+            "attackForms": "Two claws and one bite",
+            "damage": "1d6 / 1d6 / 1d8",
+            "tactics": {
+              "stealth": "May hide like a 5th-level thief when prone in swampy terrain",
+              "mobility": "Uses quadrupedal movement (120 ft) for speed; bipedal when attacking"
+            }
+          },
+          "treasure": {
+            "individual": "None",
+            "lair": {
+              "cp": "1d12×1,000 (20%)",
+              "sp": "1d6×1,000 (35%)",
+              "ep": "1d6×1,000 (10%)",
+              "gp": "1d6×1,000 (40%)",
+              "gems": "1d4 (30%)",
+              "jewellery": "1d3 (25%)",
+              "magicItems": "1 magic item and 1 potion (10%)"
+            }
+          }
+        }
+      ],
+      "frequency": "Very rare",
+      "numberAppearing": "1d4",
+      "size": "Large (8 ft tall)",
+      "move": "60 ft bipedal; 120 ft quadrupedal",
+      "armorClass": 6,
+      "hitDice": 5,
+      "attacks": 3,
+      "damage": "1d6 / 1d6 / 1d8",
+      "specialAttacks": {
+        "stealth": "Hides in swamp like a 5th-level thief"
+      },
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "15%",
+      "intelligence": "Average",
+      "alignment": "Chaotic evil",
+      "psionicAbility": "Nil",
+      "levelXP": "3/100+5/hp"
+    },    
     {
       "name": "Baboon",
       "category": "Animal",
@@ -214,16 +555,95 @@ export const MONSTER_MANUAL = {
       "description": "The legendary banshee is the ghost of an evil elven female that haunts remote natural areas. Its chilling touch deals 1d8 damage, and its wail forces all creatures within 30 ft to save vs magic or die. Merely seeing a banshee causes fear unless the viewer saves vs spells. Immune to many spells and resistant to cold and electrical attacks, a banshee can be slain by exorcism."
     },
     {
+      "name": "Barghest",
+      "category": "Extraplanar",
+      "variants": [
+        {
+          "name": "Barghest (Larval Form)",
+          "description": "Fiendish beings from Gehenna that appear during a larval phase on the Prime Material Plane. Initially resembling large goblins, they can shapeshift into monstrous dogs.",
+          "appearance": {
+            "baseForm": "Large goblin-like humanoid",
+            "alternateForm": "Huge dog with glowing eyes (at will)",
+            "size": "Man-sized"
+          },
+          "behavior": {
+            "origin": "Native to Gehenna, sent to Prime Material Plane during larval stage",
+            "mission": "To grow in power by devouring souls; returns to Gehenna when mature",
+            "diet": "Devours humanoids to grow stronger",
+            "tactics": "Uses illusion and misdirection to isolate and consume victims"
+          },
+          "combat": {
+            "hitDice": "6+6 and increasing",
+            "attacks": 2,
+            "damage": "2d4 + modifiers based on consumed victims",
+            "growth": {
+              "perHumanConsumed": {
+                "HD": "+1+1",
+                "AC": "-1",
+                "MR": "+5%",
+                "damage": "+1"
+              },
+              "maturity": "At 12+12 HD, can plane shift back to Gehenna"
+            },
+            "dogForm": {
+              "speed": "Doubles to 300 ft",
+              "surpriseChance": "50%",
+              "specialMove": "Pass without trace (at will)"
+            }
+          },
+          "spellAbilities": {
+            "atWill": [
+              "change self",
+              "levitate",
+              "misdirection",
+              "projected image"
+            ],
+            "daily": [
+              "charm person (1/day)",
+              "dimension door (1/day)"
+            ]
+          },
+          "vulnerabilities": {
+            "fire": "If takes 15+ fire damage in one hit, must save vs spell or be banished to Gehenna"
+          },
+          "speech": {
+            "intelligence": "High and higher",
+            "languages": ["Goblin", "Infernal", "Common (sometimes)"]
+          },
+          "treasure": {
+            "individual": "None",
+            "lair": "None (wanders Prime Material Plane)"
+          }
+        }
+      ],
+      "frequency": "Very rare",
+      "numberAppearing": "1d2",
+      "size": "Man-sized",
+      "move": "150 ft (double in dog form)",
+      "armorClass": "2 and lower (improves as they grow)",
+      "hitDice": "6+6 and higher",
+      "attacks": 2,
+      "damage": "2d4 + modifiers",
+      "specialAttacks": "Spell-like powers; devouring victims increases power",
+      "specialDefenses": "Can shapeshift; pass without trace; banishment trigger from fire",
+      "magicResistance": "30% and increases with growth",
+      "lairProbability": "Nil",
+      "intelligence": "High and higher",
+      "alignment": "Lawful evil",
+      "psionicAbility": "Nil",
+      "levelXP": "7/1,250+10/hp and higher"
+    },    
+    {
       "name": "Barracuda",
       "category": "Animal",
       "frequency": "Uncommon",
-      "numberAppearing": "2-12",
+      "numberAppearing": "2d6",
       "size": "Small to Large",
       "move": "300 ft swimming",
       "armorClass": 6,
       "hitDice": "1-3",
       "attacks": 1,
-      "damage": "2-8",
+      "damage": "2d4",
       "specialAttacks": "None",
       "specialDefenses": "None",
       "magicResistance": "Standard",
@@ -238,13 +658,13 @@ export const MONSTER_MANUAL = {
       "name": "Basilisk",
       "category": "Monster",
       "frequency": "Uncommon",
-      "numberAppearing": "1-4",
+      "numberAppearing": "1d4",
       "size": "Medium (7' long)",
       "move": "60 ft",
       "armorClass": 4,
       "hitDice": "6+1",
       "attacks": 1,
-      "damage": "1-10",
+      "damage": "1d10",
       "specialAttacks": "Petrifying gaze",
       "specialDefenses": "None",
       "magicResistance": "Standard",
@@ -404,6 +824,351 @@ export const MONSTER_MANUAL = {
       "description": "Black bears are the least aggressive bear type but will defend themselves and cubs. Paw hits of 18+ cause additional hug damage. Brown bears (including grizzlies) are more aggressive, with good hearing and smell but weak vision. If reduced to 0 hp, brown bears continue fighting for 1d4 rounds or until reaching -9 hp."
     },
     {
+      "name": "Bee, Giant",
+      "category": "Insect",
+      "variants": [
+        {
+          "name": "Worker Honeybee",
+          "description": "Diligent gatherers and hive tenders. Will defend the hive if threatened but usually flee from smoke or fire.",
+          "frequency": "Rare",
+          "numberAppearing": "1d10 (20d10 in lair)",
+          "size": "Medium",
+          "move": "90 ft; 300 ft flying (AA: IV)",
+          "armorClass": 6,
+          "hitDice": "3+1",
+          "attacks": 1,
+          "damage": "1d3",
+          "specialAttacks": "Poisonous sting (once per encounter)",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "20%",
+          "intelligence": "Semi-",
+          "alignment": "Neutral",
+          "levelXP": "3/100+4/hp",
+          "behavior": {
+            "stingLimit": "Stings once per encounter; 25% chance of dying after stinging",
+            "smokeAversion": "Flees from fire and smoke unless hive is threatened"
+          }
+        },
+        {
+          "name": "Soldier Honeybee",
+          "description": "Larger and more aggressive than workers, tasked with defending the hive. Deadly poison in stinger.",
+          "frequency": "Very rare",
+          "numberAppearing": "1 (3d6 in lair)",
+          "size": "Medium",
+          "move": "120 ft; 300 ft flying (AA: III)",
+          "armorClass": 5,
+          "hitDice": "4+2",
+          "attacks": 1,
+          "damage": "1d4",
+          "specialAttacks": "Poisonous sting (once per encounter)",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "90%",
+          "intelligence": "Semi-",
+          "alignment": "Neutral",
+          "levelXP": "3/150+5/hp",
+          "behavior": {
+            "defenseRole": "Primary defenders of the hive",
+            "stingLimit": "Stings once per encounter; 25% chance of dying after"
+          }
+        },
+        {
+          "name": "Bumblebee",
+          "description": "Aggressive nest defenders with powerful venom. Found in burrows or wild nests. Deadlier than honeybee types.",
+          "frequency": "Rare",
+          "numberAppearing": "1 (1d6+6 in lair)",
+          "size": "Medium",
+          "move": "60 ft; 240 ft flying (AA: II)",
+          "armorClass": 5,
+          "hitDice": "6+4",
+          "attacks": 1,
+          "damage": "1d6",
+          "specialAttacks": "Poisonous sting (once per encounter)",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "10%",
+          "intelligence": "Semi-",
+          "alignment": "Neutral",
+          "levelXP": "4/300+8/hp",
+          "behavior": {
+            "aggression": "Very defensive if nest is disturbed",
+            "stingLimit": "Same sting mechanic as others"
+          }
+        }
+      ],
+      "specialAbilities": {
+        "stingDeath": "25% chance of dying after stinging; otherwise regrows slowly",
+        "pupae": "Hives contain non-combatant queens (10 HD, no attack) and 2d3 drones (2 HD, no attack)",
+        "royalJelly": {
+          "chance": "15%",
+          "effects": [
+            "2d3 potions of extra healing (7th+ level caster)",
+            "Unguent of youth (12th+ level caster): Makes user appear 2d3 years younger",
+            "Market value: 3d6×1,000 gp"
+          ]
+        }
+      },
+      "treasure": {
+        "individual": "None",
+        "lair": "Honey worth 10d10 gp; 15% chance of royal jelly"
+      }
+    },    
+    {
+      "name": "Behir",
+      "category": "Monster (Serpentine)",
+      "variants": [
+        {
+          "name": "Behir",
+          "description": "Massive serpentine creature with a crocodilian head and twelve clawed legs. It dwells in deep underground lairs or caves and is a deadly, fast-moving predator that can climb and constrict prey.",
+          "appearance": {
+            "body": "40 ft long snake-like torso",
+            "legs": "12 clawed legs",
+            "head": "Crocodilian with large, jagged teeth",
+            "coloration": "Dark, earthy tones, scales often streaked with lightning patterns"
+          },
+          "behavior": {
+            "alignment": "Neutral evil",
+            "habitat": "Subterranean regions, caves, mountains",
+            "temperament": "Aggressive, solitary predator"
+          },
+          "combat": {
+            "attacks": "2 (bite + constriction) or 7 (bite + 6 claws)",
+            "damage": {
+              "constriction": "2d4 (bite) + 1d4 (wrap)",
+              "clawSequence": "2d4 + 1d6×6 if wrapping victim",
+              "lightning": "4d6+24 (breath weapon, 20 ft bolt every 10 rounds)"
+            },
+            "constriction": {
+              "effect": "Wraps victim and claws them for 6 attacks in subsequent rounds"
+            },
+            "breathWeapon": {
+              "type": "Lightning bolt",
+              "range": "20 ft line",
+              "damage": "4d6+24 (save vs breath for half)",
+              "cooldown": "Once per 10 rounds"
+            },
+            "swallow": {
+              "chance": "On attack roll of 20",
+              "effect": "Victim is swallowed whole"
+            }
+          },
+          "movement": {
+            "speed": "150 ft",
+            "climbing": "Vertical climb at half speed"
+          },
+          "defenses": {
+            "immunities": ["Electricity", "Poison"]
+          },
+          "treasure": {
+            "individual": "None",
+            "lair": {
+              "gems": "10d4 (60%)",
+              "jewellery": "1d8 (30%)",
+              "magicItem": "1 miscellaneous item (10%)"
+            },
+            "location": "Inside the creature’s stomach"
+          }
+        }
+      ],
+      "frequency": "Rare",
+      "numberAppearing": "1d2",
+      "size": "Large",
+      "move": "150 ft",
+      "armorClass": 4,
+      "hitDice": 12,
+      "attacks": "2 or 7",
+      "damage": "2d4/1d4 or 2d4/1d6/1d6/1d6/1d6/1d6/1d6",
+      "specialAttacks": {
+        "lightning": "4d6+24, 20 ft bolt every 10 rounds",
+        "constriction": "Wraps and claws if bite hits",
+        "swallow": "On natural 20, swallows target"
+      },
+      "specialDefenses": "Immune to electricity and poison",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Low",
+      "alignment": "Neutral evil",
+      "psionicAbility": "Nil",
+      "levelXP": "7/2,750+16/hp"
+    },
+    {
+      "name": "Beetle, Giant",
+      "category": "Insect",
+      "variants": [
+        {
+          "name": "Bombardier Beetle",
+          "description": "Found in forested areas, scavenges for rotting matter. When threatened, it releases a caustic and stunning chemical cloud.",
+          "frequency": "Common",
+          "numberAppearing": "3d4",
+          "size": "Medium",
+          "move": "90 ft",
+          "armorClass": 4,
+          "hitDice": "2+2",
+          "attacks": 1,
+          "damage": "2d6",
+          "specialAttacks": {
+            "acidCloud": {
+              "range": "8 ft cube",
+              "damage": "3d4",
+              "effects": ["20% chance to stun (2d4 rounds)", "20% chance to deafen (2d6 rounds)"],
+              "uses": "Every 3 rounds, max 2 uses per 8 hours"
+            }
+          },
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "Nil",
+          "intelligence": "Non-",
+          "alignment": "Neutral",
+          "levelXP": "3/65+2/hp",
+          "treasure": "None"
+        },
+        {
+          "name": "Boring Beetle",
+          "description": "Tunnel-dwelling beetle that consumes wood and fungus. May display emergent hive-like intelligence if colony is threatened.",
+          "frequency": "Common",
+          "numberAppearing": "3d6",
+          "size": "Large",
+          "move": "60 ft",
+          "armorClass": 3,
+          "hitDice": 5,
+          "attacks": 1,
+          "damage": "5d4",
+          "specialAttacks": "None",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "40%",
+          "intelligence": "Non-",
+          "alignment": "Neutral",
+          "levelXP": "3/110+4/hp",
+          "treasure": {
+            "cp": "1d12×1,000 (20%)",
+            "sp": "1d6×1,000 (30%)",
+            "ep": "1d4×1,000 (10%)",
+            "gp": "2d4×100 (40%)",
+            "pp": "1d6×10 (50%)",
+            "gems": "3d8 (55%)",
+            "jewellery": "1d12 (45%)",
+            "potions": "2d4 (40%)",
+            "scrolls": "1d4 (50%)",
+            "magicItems": "Any 2 (10%)"
+          }
+        },
+        {
+          "name": "Death Watch Beetle",
+          "description": "Camouflages with debris and attacks with deadly bass vibrations. Feared for its droning death call.",
+          "frequency": "Very rare",
+          "numberAppearing": "1",
+          "size": "Large",
+          "move": "120 ft",
+          "armorClass": 3,
+          "hitDice": "9+1",
+          "attacks": 1,
+          "damage": "2d6",
+          "specialAttacks": {
+            "deathDrone": {
+              "area": "30 ft radius",
+              "save": "Save vs death or die",
+              "failSave": "Take 4d6 damage",
+              "cooldown": "Once every 12 turns"
+            }
+          },
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "10%",
+          "intelligence": "Non-",
+          "alignment": "Neutral",
+          "levelXP": "7/1,100+12/hp",
+          "treasure": "None"
+        },
+        {
+          "name": "Fire Beetle",
+          "description": "Nocturnal beetles with glowing red glands. Often harvested for light sources by adventurers.",
+          "frequency": "Common",
+          "numberAppearing": "3d4",
+          "size": "Small",
+          "move": "120 ft",
+          "armorClass": 4,
+          "hitDice": "1+2",
+          "attacks": 1,
+          "damage": "2d4",
+          "specialAttacks": "None",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "Nil",
+          "intelligence": "Non-",
+          "alignment": "Neutral",
+          "levelXP": "1/30+1/hp",
+          "specialAbilities": {
+            "glowingGlands": {
+              "effect": "Illuminates 10 ft radius for 1d6 days after death"
+            }
+          },
+          "treasure": "None"
+        },
+        {
+          "name": "Rhinoceros Beetle",
+          "description": "Massive beetles that roam the tropics, crushing fruit and vegetation in their path.",
+          "frequency": "Uncommon",
+          "numberAppearing": "1d6",
+          "size": "Large",
+          "move": "60 ft",
+          "armorClass": 2,
+          "hitDice": 12,
+          "attacks": 2,
+          "damage": "3d8 / 2d8",
+          "specialAttacks": "None",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "Nil",
+          "intelligence": "Non-",
+          "alignment": "Neutral",
+          "levelXP": "7/1,300+6/hp",
+          "treasure": "None"
+        },
+        {
+          "name": "Stag Beetle",
+          "description": "Often destructive to farmland, devouring cultivated grains. Found near woodlands and fields.",
+          "frequency": "Common",
+          "numberAppearing": "2d6",
+          "size": "Large",
+          "move": "60 ft",
+          "armorClass": 3,
+          "hitDice": 7,
+          "attacks": 3,
+          "damage": "4d4 / 1d10 / 1d10",
+          "specialAttacks": "None",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "Nil",
+          "intelligence": "Non-",
+          "alignment": "Neutral",
+          "levelXP": "4/225+8/hp",
+          "treasure": "None"
+        },
+        {
+          "name": "Water Beetle",
+          "description": "Dwelling in freshwater depths, this predatory beetle hunts anything it detects by vibration or scent.",
+          "frequency": "Common",
+          "numberAppearing": "1d12",
+          "size": "Medium",
+          "move": "30 ft; 120 ft swimming",
+          "armorClass": 3,
+          "hitDice": 4,
+          "attacks": 1,
+          "damage": "3d6",
+          "specialAttacks": "None",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "Nil",
+          "intelligence": "Non-",
+          "alignment": "Neutral",
+          "levelXP": "3/75+3/hp",
+          "treasure": "None"
+        }
+      ]
+    },
+    {
       "name": "Bird",
       "category": "Animal",
       "variants": [
@@ -457,6 +1222,160 @@ export const MONSTER_MANUAL = {
       "treasure": "None",
       "description": "Birds of prey (eagles, hawks, falcons) can perform dive attacks from 120+ ft, gaining +2 to hit and double talon damage. Giant birds (likely magical in origin) can dive from 60 ft with +4 to hit and double talon damage. Some giant birds are rumored to possess intelligence and speech capability."
     },
+    {
+      "name": "Blindheim",
+      "category": "Humanoid (Subterranean)",
+      "variants": [
+        {
+          "name": "Blindheim",
+          "description": "A strange subterranean frog-like creature with eyes that emit beams of intense, blinding light. Highly territorial and aggressive, they dwell in the depths of the underworld.",
+          "appearance": {
+            "form": "Humanoid frog",
+            "color": "Yellowish skin",
+            "eyes": "Large, luminescent — project blinding beams"
+          },
+          "behavior": {
+            "alignment": "Chaotic evil",
+            "habitat": "Deep underground caverns and tunnels",
+            "aggression": "Attack intruders on sight, especially in groups"
+          },
+          "combat": {
+            "attacks": 1,
+            "damage": "1d8",
+            "special": {
+              "blindingLight": {
+                "range": "30 ft",
+                "effect": "Save vs aimed magic item or be blinded for 1d8+12 turns",
+                "penalty": "-3 to save if victim has infravision"
+              },
+              "fightingBlind": {
+                "options": {
+                  "attackPenalty": "-2 if avoiding gaze",
+                  "normalAttack": "If immune to light"
+                }
+              }
+            }
+          },
+          "defenses": {
+            "specialDefenses": "None"
+          },
+          "speech": {
+            "intelligence": "Animal",
+            "language": "None"
+          },
+          "treasure": {
+            "individual": "None",
+            "lair": {
+              "cp": "2d6×1,000 (20%)",
+              "sp": "1d6×1,000 (35%)",
+              "ep": "1d6×1,000 (20%)",
+              "gems": "1d4 (20%)",
+              "jewellery": "1d4 (25%)",
+              "magicItems": "Random weapon or magic item (15%)"
+            }
+          }
+        }
+      ],
+      "frequency": "Very rare",
+      "numberAppearing": "1d4",
+      "size": "Small",
+      "move": "90 ft",
+      "armorClass": 3,
+      "hitDice": "4+2",
+      "attacks": 1,
+      "damage": "1d8",
+      "specialAttacks": {
+        "blinding": "Twin beams of bright light from eyes; save or be blinded"
+      },
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "5%",
+      "intelligence": "Animal",
+      "alignment": "Chaotic evil",
+      "psionicAbility": "Nil",
+      "levelXP": "3/110+5/hp"
+    },
+    {
+      "name": "Blink Dog",
+      "category": "Magical Beast",
+      "variants": [
+        {
+          "name": "Blink Dog",
+          "description": "Intelligent, teleporting canines known for their loyalty, tactical cunning, and unerring ability to blink unpredictably in and out of combat. Natural enemies of coeurls.",
+          "appearance": {
+            "size": "Medium (3 ft at shoulder)",
+            "coloration": "Dark brown with white highlights"
+          },
+          "behavior": {
+            "alignment": "Lawful good",
+            "habitat": "Forests, plains, or magical glades",
+            "intelligence": "Comparable to average human",
+            "communication": "High-pitched barks and low growls",
+            "packTactics": "Fight in coordinated groups, blinking to flank or harass enemies",
+            "blinkTriggers": "If pack suffers >25% losses, all remaining dogs blink away and flee"
+          },
+          "combat": {
+            "attacks": 1,
+            "damage": "1d6",
+            "specialAttacks": {
+              "rearAttack": "75% chance to blink into rear or flank position, bypassing shield and Dex bonuses",
+              "blink": {
+                "triggerRoll": "Blink occurs on roll of 12+ on 1d20 each round",
+                "targetRoll": "01–15: behind, 16–18: right flank, 19: left flank, 20: front",
+                "limitations": "Never teleports into solid objects or occupied space"
+              }
+            },
+            "defensiveTactics": "Uses blinking defensively to avoid danger or withdraw"
+          },
+          "specialAbilities": {
+            "teleportation": "Short-range blink-style teleportation as natural ability"
+          },
+          "lair": {
+            "probability": "20%",
+            "pups": {
+              "chance": "60%",
+              "number": "3d4",
+              "combatStats": {
+                "hitDice": "1",
+                "damage": "1d2",
+                "tactics": "More likely to flee than fight"
+              },
+              "value": "Loyal companion to good-aligned humans; can be sold for 1,500 gp (±100–600 gp)"
+            },
+            "treasure": {
+              "cp": "2d6×1,000 (20%)",
+              "sp": "1d6×1,000 (30%)",
+              "ep": "1d6×1,000 (15%)",
+              "gems": "1d6 (20%)",
+              "jewellery": "1d4 (25%)",
+              "magicItems": "2 random magic items or weapons (15%)"
+            }
+          },
+          "relationships": {
+            "enemies": ["Coeurls (attack on sight)"],
+            "companions": ["Good-aligned humanoids (if tamed young)"]
+          }
+        }
+      ],
+      "frequency": "Rare",
+      "numberAppearing": "4d4",
+      "size": "Medium (3 ft at shoulder)",
+      "move": "120 ft",
+      "armorClass": 5,
+      "hitDice": 4,
+      "attacks": 1,
+      "damage": "1d6",
+      "specialAttacks": {
+        "rearAttack": "75% chance to attack from rear or flank due to blinking"
+      },
+      "specialDefenses": "Teleportation (blink)",
+      "magicResistance": "Standard",
+      "lairProbability": "20%",
+      "intelligence": "Average",
+      "alignment": "Lawful good",
+      "psionicAbility": "Nil",
+      "levelXP": "4/175 + 5/hp"
+    },    
     {
       "name": "Boar",
       "category": "Animal",
@@ -605,7 +1524,76 @@ export const MONSTER_MANUAL = {
         }
       }
     },
-
+    {
+      "name": "Bulette",
+      "category": "Monster (Magical Beast)",
+      "variants": [
+        {
+          "name": "Bulette",
+          "description": "Feared apex predators known as 'land sharks' for their burrowing ambushes. Engineered monstrosities with armored plates, a massive maw, and an insatiable hunger—especially for horses. Elves and dwarves are generally avoided as prey.",
+          "appearance": {
+            "body": "Heavily armored, plated like a turtle or armadillo",
+            "head": "Large, shark-like jaw filled with gnashing teeth",
+            "size": "Large, ~9 ft tall at hump"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "habitat": "Hills, plains, and open terrain",
+            "temperament": "Aggressively territorial",
+            "diet": "Carnivore—especially fond of horses",
+            "reproduction": "Unknown; believed to be artificially created",
+            "tactics": "Burrows just below the surface, ambushing prey from below"
+          },
+          "combat": {
+            "attacks": 3,
+            "damage": "3d6 / 3d6 / 4d12 (bite)",
+            "movement": {
+              "surface": "140 ft",
+              "burrowing": "30 ft"
+            },
+            "armorClass": {
+              "body": -2,
+              "eyes": 4,
+              "underbelly": 6
+            },
+            "specialAttacks": {
+              "leap": {
+                "range": "8 ft vertical",
+                "effect": "Attempts to land on victim and attack with all four limbs"
+              }
+            }
+          },
+          "defenses": {
+            "armor": "Heavily plated back and flanks; underbelly and eyes are vulnerable"
+          },
+          "treasure": {
+            "individual": "None",
+            "lair": "None—nomadic and never lairs",
+            "special": {
+              "armorPlates": "Highly prized by armorers; can be used to craft +1 or +2 shields"
+            }
+          }
+        }
+      ],
+      "frequency": "Very rare",
+      "numberAppearing": "1d2",
+      "size": "Large",
+      "move": "140 ft; 30 ft burrowing",
+      "armorClass": "-2 (back) / 4 (eyes) / 6 (underbelly)",
+      "hitDice": 9,
+      "attacks": 3,
+      "damage": "3d6 / 3d6 / 4d12",
+      "specialAttacks": {
+        "leap": "Can leap 8 ft and land atop a target, attacking with all four feet"
+      },
+      "specialDefenses": "Heavily armored body; weak points at eyes and underbelly",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Animal",
+      "alignment": "Neutral",
+      "psionicAbility": "Nil",
+      "levelXP": "8/2,000+12/hp"
+    },
     {
       "name": "Camel",
       "category": "Animal",
@@ -627,6 +1615,150 @@ export const MONSTER_MANUAL = {
       "treasure": "None",
       "description": "Ornery beasts of burden in two varieties: single-humped dromedaries (warmer climates) and two-humped bactrians (more adaptable, 30 ft slower). Both can carry up to 6,000 gp weight (halving movement) or 4,000-5,000 gp (reducing speed to 60 ft). They bite to attack and can spit (50% chance, with 25% chance to blind for 1d3 rounds)."
     },
+    {
+      "name": "Carbuncle",
+      "category": "Magical Beast",
+      "variants": [
+        {
+          "name": "Carbuncle",
+          "description": "Small armadillo-like creatures with a magical ruby embedded in their forehead. Agents of chaos, they spread discord through lies and betrayal.",
+          "appearance": {
+            "size": "Small",
+            "feature": "Large ruby set above its eyes"
+          },
+          "behavior": {
+            "alignment": "Chaotic neutral",
+            "intelligence": "Average (empathic)",
+            "habitat": "Woodlands or ruins",
+            "diet": "Leaves and small insects",
+            "telepathy": "Minor empathic communication",
+            "motive": "Joins adventuring parties to spread mischief"
+          },
+          "specialAbilities": {
+            "gem": {
+              "value": "At least 500 gp (randomized)",
+              "regeneration": "Regrows over several months if given willingly",
+              "shatter": "Destroyed if carbuncle dies"
+            },
+            "enchantment": "Can be persuaded to give gem only via charm or magic"
+          },
+          "treasure": "Gemstone (see behavior)",
+          "lairProbability": "10%"
+        }
+      ],
+      "frequency": "Rare",
+      "numberAppearing": "1",
+      "size": "Small",
+      "move": "30 ft",
+      "armorClass": 2,
+      "hitDice": 1,
+      "attacks": "None",
+      "damage": "None",
+      "specialAttacks": "None",
+      "specialDefenses": "See gem behavior",
+      "magicResistance": "Standard",
+      "intelligence": "Average",
+      "alignment": "Chaotic neutral",
+      "levelXP": "1/5+1/hp"
+    },
+    {
+      "name": "Carcass Creeper",
+      "category": "Aberration",
+      "variants": [
+        {
+          "name": "Carcass Creeper",
+          "description": "A grotesque blend of cutworm and squid, the carcass creeper is a fast, paralytic horror that dwells underground and feeds on corpses.",
+          "appearance": {
+            "form": "Segmented worm with many tentacles",
+            "feature": "Armored head, soft body"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "intelligence": "Non-",
+            "habitat": "Subterranean lairs",
+            "instinct": "Lays eggs in fresh corpses"
+          },
+          "combat": {
+            "attacks": 8,
+            "damage": "Paralysis (no damage)",
+            "reach": "2 ft per tentacle"
+          },
+          "armorClass": {
+            "head": 3,
+            "body": 7
+          },
+          "treasure": {
+            "cp": "1d8×1,000 (50%)",
+            "sp": "1d6×1,000 (25%)",
+            "ep": "1d4×1,000 (25%)",
+            "gp": "1d3×1,000 (25%)",
+            "gems": "1d8 (30%)",
+            "jewellery": "1d4 (20%)",
+            "magicItem": "1 weapon, armor, or miscellaneous (20%)"
+          }
+        }
+      ],
+      "frequency": "Uncommon",
+      "numberAppearing": "1d6",
+      "size": "Large",
+      "move": "120 ft",
+      "armorClass": "3/7",
+      "hitDice": "3+1",
+      "attacks": 8,
+      "damage": "Paralysis",
+      "specialAttacks": "Paralysis",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "50%",
+      "intelligence": "Non-",
+      "alignment": "Neutral",
+      "levelXP": "3/105+3/hp"
+    },
+    {
+      "name": "Caryatid Column",
+      "category": "Construct",
+      "variants": [
+        {
+          "name": "Caryatid Column",
+          "description": "Magical guardian statues carved in humanoid form. They animate to defend treasures or locations, then return to statue form.",
+          "appearance": {
+            "form": "Intricately carved humanoid statue (usually a maiden)",
+            "pose": "Holds faintly outlined sword"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "intelligence": "Non-",
+            "activation": "Triggers when someone opens a door, lifts an item, or enters room",
+            "combat": "Returns to statue form after defending"
+          },
+          "combat": {
+            "attacks": 1,
+            "damage": "2d4 (sword)",
+            "weaponBreak": "25% chance to break weapon on hit, reduced by 5% per +1"
+          },
+          "specialDefenses": {
+            "damageReduction": "Normal weapons half damage",
+            "magicImmunity": "Immune to magical weapon effects",
+            "savingThrows": "+4 to all saves"
+          }
+        }
+      ],
+      "frequency": "Very rare",
+      "numberAppearing": "1d12",
+      "size": "Medium",
+      "move": "60 ft",
+      "armorClass": 5,
+      "hitDice": 5,
+      "attacks": 1,
+      "damage": "2d4",
+      "specialAttacks": "None",
+      "specialDefenses": "See weapon break and immunity",
+      "magicResistance": "All saves at +4",
+      "lairProbability": "Nil",
+      "intelligence": "Non-",
+      "alignment": "Neutral",
+      "levelXP": "5/110 + 3/hp"
+    },    
     {
       "name": "Cat",
       "category": "Animal",
@@ -682,6 +1814,65 @@ export const MONSTER_MANUAL = {
       "description": "Cats are agile and rarely surprised (only on 1 on d6), while able to surprise others on 1-3 on d6. Cats exceeding their needed 'to hit' score by 4+ can rake with rear claws (roll damage twice). Black cats serving as mage familiars grant excellent hearing and night vision. Giant lynxes are magical beings dwelling in icy wastes, possessing thief skills (90% Hide/Move Silently/Climb Walls, 75% Find/Remove Traps) and their own language."
     },
     {
+      "name": "Caterwaul",
+      "category": "Magical Beast",
+      "variants": [
+        {
+          "name": "Caterwaul",
+          "description": "Upright-walking feline predators that haunt dark caves, known for their eerie screech and deadly agility. Fierce and territorial.",
+          "appearance": {
+            "form": "Black panther-like, walks upright or on all fours",
+            "movement": "180 ft upright, 240 ft sprint on all fours"
+          },
+          "behavior": {
+            "alignment": "Chaotic evil",
+            "intelligence": "Low",
+            "habitat": "Caves and shadowy terrain",
+            "instinct": "Ambush predators attracted to shiny objects"
+          },
+          "combat": {
+            "attacks": "3 (claw, claw, bite)",
+            "damage": "1d4 / 1d4 / 1d6",
+            "screech": {
+              "effect": "All within 60 ft take 1d8 damage",
+              "trigger": "When pouncing"
+            },
+            "dexterityEffects": {
+              "acBonus": "Varies from 0 to -7",
+              "attacksPerRound": "Varies from 1/1 to 5/2",
+              "table": "Roll d%; reference table for AC/attacks"
+            }
+          },
+          "specialDefenses": {
+            "stealth": "75% hide in shadows, 75% move silently",
+            "climbing": "Scales walls with 5% failure chance",
+            "surprise": "Can only be surprised on 1 in 10"
+          },
+          "treasure": {
+            "gp": "1d6×1,000 (50%)",
+            "gems": "1d8 (40%)",
+            "jewellery": "5d6 (40%)",
+            "magicItems": "2d4 potions + 1 item (40%)"
+          }
+        }
+      ],
+      "frequency": "Rare",
+      "numberAppearing": "1",
+      "size": "Medium",
+      "move": "180 ft (upright), 240 ft (sprint)",
+      "armorClass": 6,
+      "hitDice": "4+2",
+      "attacks": 3,
+      "damage": "1d4 / 1d4 / 1d6",
+      "specialAttacks": "Screech (1d8 in 60 ft)",
+      "specialDefenses": "See stealth, climbing, surprise",
+      "magicResistance": "Standard",
+      "lairProbability": "20%",
+      "intelligence": "Low",
+      "alignment": "Chaotic evil",
+      "levelXP": "5/400+5/hp"
+    },    
+    {
       "name": "Cattle",
       "category": "Animal",
       "variants": [
@@ -736,6 +1927,244 @@ export const MONSTER_MANUAL = {
       "description": "Buffalo attack if approached within 60 ft, potentially causing the whole herd to charge. Charges (minimum 40 ft) deal 3d6 impact plus 1d4 trampling damage. 50% are non-aggressive. Bulls are very aggressive (75% chance to charge if approached within 80 ft), dealing 3d4 impact plus 1d4 trampling damage over minimum 30 ft. Wild cattle are skittish herd animals; stampedes cause characters to be trampled by 2d4 animals for 1d4 damage each."
     },
     {
+      "name": "Centipede",
+      "category": "Vermin",
+      "variants": [
+        {
+          "name": "Large Centipede",
+          "frequency": "Uncommon",
+          "numberAppearing": "5d6",
+          "size": "Small",
+          "move": "210 ft",
+          "armorClass": 9,
+          "hitDice": "1 hp",
+          "attacks": 1,
+          "damage": "None",
+          "specialAttacks": "Poison (save at +4, 4d4 damage)",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "15%",
+          "intelligence": "Non-",
+          "alignment": "Neutral",
+          "levelXP": "2/31"
+        },
+        {
+          "name": "Huge Centipede",
+          "frequency": "Common",
+          "numberAppearing": "2d12",
+          "size": "Small",
+          "move": "150 ft",
+          "armorClass": 9,
+          "hitDice": "1 to 2 hp",
+          "attacks": 1,
+          "damage": "None",
+          "specialAttacks": "Poison (save at +4, lethal)",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "15%",
+          "intelligence": "Non-",
+          "alignment": "Neutral",
+          "levelXP": "2/30+1/hp"
+        },
+        {
+          "name": "Giant Centipede",
+          "frequency": "Very rare",
+          "numberAppearing": "1d4",
+          "size": "Man-sized",
+          "move": "180 ft",
+          "armorClass": 5,
+          "hitDice": 3,
+          "attacks": 1,
+          "damage": "1d3",
+          "specialAttacks": "Poison (save or die, or 1d8 acid dmg on save)",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "15%",
+          "intelligence": "Non-",
+          "alignment": "Neutral",
+          "levelXP": "3/125+3/hp"
+        }
+      ],
+      "treasure": "None"
+    },
+    {
+      "name": "Chimæra",
+      "category": "Magical Beast",
+      "variants": [
+        {
+          "name": "Chimæra",
+          "description": "A three-headed hybrid of lion, goat, and red dragon with wings. Vicious and chaotic, capable of six natural attacks and fiery breath.",
+          "frequency": "Rare",
+          "numberAppearing": "1d4",
+          "size": "Large",
+          "move": "90 ft; 180 ft flying (AA: II)",
+          "armorClass": 4,
+          "hitDice": 9,
+          "attacks": 6,
+          "damage": "1d3 / 1d3 / 1d4 / 2d6 / 3d4",
+          "specialAttacks": {
+            "breath": "60 ft cone of fire (3d8, save for half)"
+          },
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "40%",
+          "intelligence": "Semi-",
+          "alignment": "Chaotic evil",
+          "levelXP": "7/1,300+12/hp",
+          "speech": "Speaks crude red dragon tongue",
+          "treasure": {
+            "sp": "1d20×1,000 (10%)",
+            "ep": "1d12×1,000 (15%)",
+            "gp": "1d10×1,000 (40%)",
+            "pp": "1d8×100 (35%)",
+            "gems": "3d10 (20%)",
+            "jewellery": "1d10 (10%)",
+            "magicItems": "3 items, 1 scroll, 1 potion (30%)"
+          }
+        },
+        {
+          "name": "Gorgimæra",
+          "description": "A variant of the chimæra with a gorgon head replacing the goat’s. Capable of both fire breath and petrifying gas.",
+          "frequency": "Very rare",
+          "numberAppearing": "1",
+          "size": "Large",
+          "move": "120 ft; 150 ft flying (AA: II)",
+          "armorClass": 3,
+          "hitDice": "10+1",
+          "attacks": 5,
+          "damage": "1d3 / 1d3 / 2d4 / 1d4 / 2d4 / 3d4",
+          "specialAttacks": {
+            "fireBreath": "Same as chimæra",
+            "gorgonBreath": "30 ft cone of petrifying gas"
+          },
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "30%",
+          "intelligence": "Semi-",
+          "alignment": "Chaotic evil",
+          "levelXP": "8/2,250+14/hp",
+          "speech": "Same language as chimæra",
+          "treasure": {
+            "sp": "1d20×1,000 (20%)",
+            "ep": "1d12×1,000 (25%)",
+            "gp": "1d20×1,000 (50%)",
+            "pp": "1d10×100 (40%)",
+            "gems": "4d10 (25%)",
+            "jewellery": "1d12 (15%)",
+            "magicItems": "3 items, 1 scroll, 1 potion (40%)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cockatrice",
+      "category": "Magical Beast",
+      "variants": [
+        {
+          "name": "Cockatrice",
+          "description": "A hybrid of rooster and serpent, capable of turning creatures to stone with a mere touch. Often flies with leathery wings in search of prey to petrify.",
+          "appearance": {
+            "head": "Cock",
+            "body": "Serpentine",
+            "wings": "Functional, allows flight"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "intelligence": "Animal",
+            "habitat": "Caves, ruins, deep forests",
+            "legend": "Said to be born from a cock’s egg hatched by a serpent"
+          },
+          "combat": {
+            "attacks": 1,
+            "damage": "1d3",
+            "specialAttacks": {
+              "petrification": {
+                "trigger": "Touch",
+                "effect": "Save vs petrification or turn to stone",
+                "notes": "Affects astral and æthereal beings"
+              }
+            }
+          },
+          "treasure": {
+            "cp": "1d10×1,000 (5%)",
+            "sp": "1d12×1,000 (25%)",
+            "ep": "1d6×1,000 (25%)",
+            "gp": "1d8×1,000 (25%)",
+            "gems": "1d12 (15%)",
+            "jewellery": "1d8 (10%)",
+            "magicItems": "3 items and 1 scroll (35%)"
+          }
+        }
+      ],
+      "frequency": "Uncommon",
+      "numberAppearing": "1d6",
+      "size": "Small",
+      "move": "60 ft; 180 ft flying (AA: IV)",
+      "armorClass": 6,
+      "hitDice": 5,
+      "attacks": 1,
+      "damage": "1d3",
+      "specialAttacks": "Touch petrifies",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "40%",
+      "intelligence": "Animal",
+      "alignment": "Neutral",
+      "levelXP": "4/170 + 4/hp"
+    },
+    {
+      "name": "Coeurl",
+      "category": "Alien Beast",
+      "variants": [
+        {
+          "name": "Coeurl",
+          "description": "Tentacle-limbed panther-like alien predators that feed on the 'id' or life force. Elusive, intelligent, and deadly. Mortal enemies of blink dogs.",
+          "appearance": {
+            "body": "Feline, black",
+            "tentacles": "Two long, whip-like"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "intelligence": "Average",
+            "habitat": "Remote wilderness",
+            "communication": "Telepathic (seldom used)",
+            "enemy": "Attacks blink dogs on sight"
+          },
+          "combat": {
+            "attacks": 2,
+            "damage": "2d4 / 2d4",
+            "specialDefenses": {
+              "savingThrows": "Save at +6"
+            }
+          },
+          "treasure": {
+            "cp": "1d8×1,000 (15%)",
+            "sp": "2d6×1,000 (20%)",
+            "ep": "1d6×1,000 (5%)",
+            "gp": "1d8×1,000 (35%)",
+            "gems": "2d6 (15%)",
+            "jewellery": "1d8 (10%)",
+            "magicItems": "2 items (25%)"
+          }
+        }
+      ],
+      "frequency": "Very rare",
+      "numberAppearing": "1d4",
+      "size": "Large",
+      "move": "150 ft",
+      "armorClass": 2,
+      "hitDice": "6+6",
+      "attacks": 2,
+      "damage": "2d4 / 2d4",
+      "specialAttacks": "None",
+      "specialDefenses": "Save at +6",
+      "magicResistance": "Standard",
+      "lairProbability": "25%",
+      "intelligence": "Average",
+      "alignment": "Neutral",
+      "levelXP": "6/400+6/hp"
+    },
+    {
       "name": "Coffer Corpse",
       "category": "Undead",
       "turnResistance": 7,
@@ -764,6 +2193,112 @@ export const MONSTER_MANUAL = {
         "magic_items": {"amount": 1, "chance": "10%"}
       },
       "description": "A coffer corpse resembles a zombie but can only be harmed by magic weapons. When hit for 6+ damage by normal weapons, it falls as if dead only to rise again next round, causing all witnesses to save vs. fear. When attacking bare-handed, it grabs victims by the throat (1d6 damage) and continues strangling for 1d6 damage each round without needing additional attack rolls."
+    },
+    {
+      "name": "Couatl",
+      "category": "Celestial Serpent",
+      "variants": [
+        {
+          "name": "Couatl",
+          "description": "Feathered winged serpents of great intelligence and divine purpose. Rarely intervene in mortal affairs. Treated as gods in remote tropical lands.",
+          "appearance": {
+            "form": "Winged serpent",
+            "color": "Brightly feathered"
+          },
+          "behavior": {
+            "alignment": "Lawful good",
+            "intelligence": "Genius",
+            "habitat": "Remote tropical regions",
+            "abilities": ["Polymorph", "Turn æthereal", "Spellcasting"]
+          },
+          "combat": {
+            "attacks": 2,
+            "damage": "1d3 / 2d4",
+            "poison": {
+              "bite": "Save or die"
+            },
+            "constriction": {
+              "effect": "2d4 damage on grab, continues each round"
+            }
+          },
+          "spellcasting": {
+            "types": {
+              "mage5": "45%",
+              "cleric7": "35%",
+              "mage/cleric": "20%"
+            }
+          },
+          "treasure": {
+            "cp": "1d8×1,000 (50%)",
+            "sp": "1d6×1,000 (25%)",
+            "ep": "1d4×1,000 (25%)",
+            "gp": "1d3×1,000 (25%)",
+            "pp": "3d4×100 (30%)",
+            "gems": "2d10 (55%)",
+            "jewellery": "1d12 (50%)",
+            "magicItems": "1 item (15%)"
+          }
+        }
+      ],
+      "frequency": "Very rare",
+      "numberAppearing": "1d4",
+      "size": "Medium",
+      "move": "60 ft; 180 ft flying (AA: VI)",
+      "armorClass": 5,
+      "hitDice": 9,
+      "attacks": 2,
+      "damage": "1d3 / 2d4",
+      "specialAttacks": "Poison, constriction, spell use",
+      "specialDefenses": "Æthereal ability",
+      "magicResistance": "Standard",
+      "lairProbability": "10%",
+      "intelligence": "Genius",
+      "alignment": "Lawful good",
+      "levelXP": "8/2,000+12/hp"
+    },
+    {
+      "name": "Crabman",
+      "category": "Humanoid (Aquatic)",
+      "variants": [
+        {
+          "name": "Crabman",
+          "description": "Amphibious humanoids with pincers and hard shells. Peaceful but prone to frenzied raids inland. Prized silver above all.",
+          "appearance": {
+            "height": "9 ft",
+            "coloration": "Reddish-brown exoskeleton",
+            "hands": "Replaced by pincers"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "intelligence": "Low to average",
+            "habitat": "Coastal caves and shorelines",
+            "frenzy": "Occasionally form raiding parties of 30–40",
+            "silverAttraction": "Will attack on sight if silver is visible"
+          },
+          "combat": {
+            "attacks": 2,
+            "damage": "1d4 / 1d4"
+          },
+          "treasure": {
+            "sp": "3d8 per individual"
+          }
+        }
+      ],
+      "frequency": "Rare",
+      "numberAppearing": "2d6",
+      "size": "Large",
+      "move": "90 ft; 60 ft swimming",
+      "armorClass": 4,
+      "hitDice": 3,
+      "attacks": 2,
+      "damage": "1d4 / 1d4",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "20%",
+      "intelligence": "Low to average",
+      "alignment": "Neutral",
+      "levelXP": "2/40 + 2/hp"
     },
     {
       "name": "Crocodile",
@@ -804,6 +2339,65 @@ export const MONSTER_MANUAL = {
       "alignment": "Neutral",
       "treasure": "None",
       "description": "Crocodiles may be found in shallow fresh or salt water. They surprise on 1-3 on d6, lurking concealed before attacking prey. They eat almost anything within reach. Cold is their weakness, halving their movement speed. Giant crocodiles are typically found in prehistoric or saltwater environments and are even more fearsome opponents."
+    },
+    {
+      "name": "Crypt Thing",
+      "category": "Undead-like (not truly undead)",
+      "variants": [
+        {
+          "name": "Crypt Thing",
+          "description": "Lurking skeletal guardians that teleport attackers to random locations when disturbed. Immune to turning despite their appearance.",
+          "appearance": {
+            "form": "Cloaked skeleton",
+            "note": "Not truly undead"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "intelligence": "Very",
+            "habitat": "Underground lairs",
+            "reaction": "Does not attack unless first attacked",
+            "speech": "Speaks Common"
+          },
+          "combat": {
+            "attacks": 1,
+            "damage": "1d8 (claw)",
+            "teleport": {
+              "trigger": "When attacked",
+              "effect": "Save vs spell or be teleported 100–1,000 ft or 1 dungeon level up/down",
+              "roll": "d% determines direction",
+              "safe": "Never teleports into solid objects"
+            }
+          },
+          "specialDefenses": {
+            "immunity": "Immune to non-magical weapons, cannot be turned"
+          },
+          "treasure": {
+            "cp": "1d3×1,000 (20%)",
+            "sp": "1d4×1,000 (25%)",
+            "ep": "1d4×1,000 (25%)",
+            "gp": "1d4×1,000 (30%)",
+            "pp": "1d6×100 (30%)",
+            "gems": "10d6 (55%)",
+            "jewellery": "5d6 (50%)",
+            "magicItems": "3 items (50%)"
+          }
+        }
+      ],
+      "frequency": "Very rare",
+      "numberAppearing": "1",
+      "size": "Man-sized",
+      "move": "120 ft",
+      "armorClass": 3,
+      "hitDice": 6,
+      "attacks": 1,
+      "damage": "1d8",
+      "specialAttacks": "Teleport attackers (see rules)",
+      "specialDefenses": "Immune to non-magical weapons and turning",
+      "magicResistance": "Standard",
+      "lairProbability": "100%",
+      "intelligence": "Very",
+      "alignment": "Neutral",
+      "levelXP": "4/160 + 4/hp"
     },
     {
       "name": "Crustacean, Giant",
@@ -883,7 +2477,200 @@ export const MONSTER_MANUAL = {
         "scrolls": {"amount": 1, "chance": "40%"}
       }
     },
-
+    {
+      "name": "Dakon",
+      "category": "Humanoid (Ape)",
+      "variants": [
+        {
+          "name": "Dakon",
+          "description": "Intelligent, peaceful ape-like beings resembling gorillas with light brown fur, green eyes, and black hands. Known for their strength, wisdom, and lawful behavior.",
+          "appearance": {
+            "size": "Man-sized",
+            "color": "Light brown with green eyes and black hands"
+          },
+          "behavior": {
+            "alignment": "Lawful neutral",
+            "intelligence": "Average",
+            "habitat": "Forests or hills, avoid water bodies",
+            "language": "Common tongue",
+            "relationships": {
+              "allies": ["Lawful humans", "Demi-humans"],
+              "enemies": ["Humanoids (distrusted)"]
+            },
+            "combatTactics": "Avoids combat unless defending or recovering stolen treasure",
+            "toHitBonus": "+2 due to strength and sharp claws"
+          },
+          "combat": {
+            "attacks": 2,
+            "damage": "1d10 / 1d10"
+          },
+          "treasure": {
+            "cp": "2d6×1,000 (5%)",
+            "sp": "2d6×1,000 (30%)",
+            "ep": "1d4×1,000 (20%)",
+            "gp": "1d10×1,000 (45%)",
+            "pp": "1d10×100 (40%)",
+            "gems": "3d12 (25%)",
+            "jewellery": "1d10 (10%)",
+            "magicItems": "Any 3 maps or magic items + 1 scroll (35%)"
+          }
+        }
+      ],
+      "frequency": "Uncommon",
+      "numberAppearing": "6d10",
+      "size": "Man-sized",
+      "move": "60 ft",
+      "armorClass": 5,
+      "hitDice": "1+1",
+      "attacks": 2,
+      "damage": "1d10 / 1d10",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "50%",
+      "intelligence": "Average",
+      "alignment": "Lawful neutral",
+      "levelXP": "2/25 + 2/hp"
+    },
+    {
+      "name": "Dark Creeper",
+      "category": "Humanoid (Shadow Folk)",
+      "variants": [
+        {
+          "name": "Dark Creeper",
+          "description": "Short, pale humanoids wrapped in dark robes. They despise light and hoard magic items, using stealth and magical darkness to ambush and steal.",
+          "appearance": {
+            "height": "4 ft",
+            "clothing": "Loose, layered dark robes exposing only hands and glowing eyes"
+          },
+          "behavior": {
+            "alignment": "Chaotic neutral",
+            "intelligence": "Average",
+            "skills": "Acts as a 4th-level thief",
+            "abilities": [
+              "Detect magic (3×/day)",
+              "Create darkness (3×/day, 50 ft radius, 1 hour duration)"
+            ],
+            "tactics": "Extinguishes light sources and steals magic items",
+            "deathEffect": "Explodes in green/purple flames (metal items 80% survive)"
+          },
+          "combat": {
+            "attacks": 1,
+            "damage": "1d4 (dagger)",
+            "armorClass": {
+              "inDarkness": 0,
+              "inLight": 8
+            },
+            "equipmentUse": "Will use magic daggers/rings"
+          },
+          "treasure": "See individual and lair table in source text"
+        },
+        {
+          "name": "Dark Stalker",
+          "description": "Leaders of the dark creeper clans, taller and more powerful, with similar darkness-based powers and the ability to cast wall of fog.",
+          "appearance": {
+            "size": "Man-sized",
+            "garb": "Same layered dark robes as creepers"
+          },
+          "behavior": {
+            "alignment": "Chaotic neutral",
+            "intelligence": "Average",
+            "leadership": "Commands dark creeper clans",
+            "abilities": [
+              "All creeper abilities",
+              "Wall of fog (2×/day)",
+              "Fireball death burst (3d8 damage)"
+            ]
+          },
+          "combat": {
+            "attacks": 1,
+            "damage": "1d6 (short sword)",
+            "armorClass": {
+              "inDarkness": 0,
+              "inLight": 8
+            },
+            "equipmentUse": "May carry magic weapons or rings"
+          },
+          "treasure": "See individual treasure table; magic items 75% survival on death"
+        }
+      ],
+      "frequency": {
+        "Dark Creeper": "Rare",
+        "Dark Stalker": "Very rare"
+      },
+      "numberAppearing": {
+        "Dark Creeper": "1 or 20d4",
+        "Dark Stalker": "1"
+      },
+      "size": {
+        "Dark Creeper": "Small",
+        "Dark Stalker": "Man-sized"
+      },
+      "move": "90 ft",
+      "armorClass": "0 (in darkness) / 8 (in light)",
+      "hitDice": {
+        "Dark Creeper": "1+1",
+        "Dark Stalker": "2+1"
+      },
+      "attacks": 1,
+      "specialAttacks": "Darkness, stealth, magical fire death",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "20%",
+      "intelligence": "Average",
+      "alignment": "Chaotic neutral",
+      "levelXP": {
+        "Dark Creeper": "3/50 + 2/hp",
+        "Dark Stalker": "4/200 + 3/hp"
+      }
+    },
+    {
+      "name": "Disenchanter",
+      "category": "Magical Beast",
+      "variants": [
+        {
+          "name": "Disenchanter",
+          "description": "A strange, blue, translucent creature resembling a camel-cow hybrid with a magical snout used to drain enchantments from magical items.",
+          "appearance": {
+            "form": "Electric blue dromedary/cow-like beast",
+            "notableFeature": "Prehensile snout, can extend 5 ft"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "intelligence": "Average",
+            "habitat": "Rarely known, appears only to feed on magic",
+            "ecology": "Feeds exclusively on magic dweomers"
+          },
+          "combat": {
+            "attacks": 1,
+            "damage": "None",
+            "specialEffect": "Disenchants one magic item per hit (except artifacts)",
+            "snout": {
+              "range": "5 ft",
+              "function": "Drains enchantment, renders item inert"
+            }
+          },
+          "specialDefenses": "Can only be hit by magical weapons",
+          "magicResistance": "Standard",
+          "treasure": "None"
+        }
+      ],
+      "frequency": "Very rare",
+      "numberAppearing": "1d2",
+      "size": "Medium (5 ft at shoulder)",
+      "move": "120 ft",
+      "armorClass": 5,
+      "hitDice": 5,
+      "attacks": 1,
+      "damage": "None (see disenchanting effect)",
+      "specialAttacks": "Disenchants magical items",
+      "specialDefenses": "Only hit by magical weapons",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Average",
+      "alignment": "Neutral",
+      "levelXP": "4/225 + 5/hp"
+    },
     {
       "name": "Demon, Babau",
       "category": "Demons",
@@ -1467,7 +3254,183 @@ export const MONSTER_MANUAL = {
       "treasure": "None",
       "description": "War dogs are large, fearsome canines (like mastiffs or pit bulls) trained for combat and typically armored in leather. They remain loyal unto death. Wild dogs roam in packs, competing with wolves and sometimes refugees for food. They avoid conflict when well-fed but attack when hungry. They can be tamed if removed from their pack."
     },
-    
+    {
+      "name": "Doppelgänger",
+      "category": "Shapechanger",
+      "variants": [
+        {
+          "name": "Doppelgänger",
+          "description": "Mimicry specialists capable of perfectly assuming humanoid forms and infiltrating society or adventuring parties with deadly precision. Their natural form is pale, hairless, and alien.",
+          "appearance": {
+            "natural": "Tall, gangly humanoid with bulging yellow eyes and no hair",
+            "mimicry": "Any humanoid form (4–8 ft tall), including clothing and gear"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "intelligence": "Very",
+            "habitat": "Dungeons, ruins, populated areas",
+            "abilities": [
+              "ESP for accurate impersonation",
+              "Immune to charm and sleep",
+              "Disguise fails only 10% of the time"
+            ],
+            "tactics": "Murder and replace a party member to ambush or rob others"
+          },
+          "combat": {
+            "attacks": 1,
+            "damage": "1d12",
+            "special": "Surprises on 1–4 in 6"
+          },
+          "defenses": {
+            "savingThrows": "As 10th level fighter"
+          },
+          "treasure": {
+            "cp": "1d10×1,000 (5%)",
+            "sp": "1d12×1,000 (25%)",
+            "ep": "1d6×1,000 (25%)",
+            "gp": "1d8×1,000 (25%)",
+            "gems": "1d12 (15%)",
+            "jewellery": "1d8 (10%)",
+            "magicItems": "1 scroll and any 3 magic items (25%)"
+          }
+        }
+      ],
+      "frequency": "Very rare",
+      "numberAppearing": "3d4",
+      "size": "Man-sized",
+      "move": "90 ft",
+      "armorClass": 5,
+      "hitDice": 4,
+      "attacks": 1,
+      "damage": "1d12",
+      "specialAttacks": "Stealth (surprise 1-4 in 6)",
+      "specialDefenses": "Immune to charm and sleep; saves as 10th level fighter",
+      "magicResistance": "Standard",
+      "lairProbability": "20%",
+      "intelligence": "Very",
+      "alignment": "Neutral",
+      "levelXP": "4/285 + 3/hp"
+    },
+
+    {
+      "name": "Dracolisk",
+      "category": "Dragon Hybrid",
+      "variants": [
+        {
+          "name": "Dracolisk",
+          "description": "A fusion of black dragon and basilisk, this six-limbed winged terror combines acid breath with petrifying gaze. Rare and fearsome.",
+          "appearance": {
+            "size": "Large (20 ft)",
+            "form": "Black-scaled, dragon-like with basilisk traits and six limbs"
+          },
+          "behavior": {
+            "alignment": "Chaotic evil",
+            "intelligence": "Low to average",
+            "language": "Usually Draconic"
+          },
+          "combat": {
+            "attacks": 3,
+            "damage": "1d6 / 1d6 / 3d4",
+            "breathWeapon": {
+              "type": "Acid stream",
+              "range": "30 ft long, 5 ft wide",
+              "damage": "4d6 (save for half)",
+              "usesPerDay": 3
+            },
+            "gazeAttack": {
+              "range": "30 ft",
+              "effect": "Save vs petrifaction or turn to stone",
+              "note": "Affects astral and æthereal creatures"
+            }
+          },
+          "defenses": {
+            "flying": "150 ft, short bursts only"
+          },
+          "treasure": {
+            "cp": "1d10×1,000 (25%)",
+            "sp": "1d8×1,000 (25%)",
+            "gp": "1d6×1,000 (25%)",
+            "pp": "1d6×100 (25%)",
+            "gems": "3d6 (50%)",
+            "jewellery": "3d4 (50%)",
+            "magicItems": "Any 3 items (25%)"
+          }
+        }
+      ],
+      "frequency": "Very rare",
+      "numberAppearing": "1d2",
+      "size": "Large",
+      "move": "90 ft; 150 ft flying (AA: II)",
+      "armorClass": 3,
+      "hitDice": "7+3",
+      "attacks": 3,
+      "damage": "1d6 / 1d6 / 3d4",
+      "specialAttacks": "Acid breath and petrifying gaze",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "60%",
+      "intelligence": "Low to average",
+      "alignment": "Chaotic evil",
+      "levelXP": "7/1,000 + 10/hp"
+    },
+    {
+      "name": "Dragon Turtle",
+      "category": "Dragonkin",
+      "variants": [
+        {
+          "name": "Dragon Turtle",
+          "description": "Massive, steam-breathing sea monsters resembling dragons crossed with turtles. Often mistaken for islands before they surface and attack ships.",
+          "appearance": {
+            "form": "Gigantic turtle with dragon-like head and flippers",
+            "size": "Large"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "intelligence": "Very",
+            "habitat": "Deep oceans and coastal waters",
+            "tactics": [
+              "Capsizes ships from below",
+              "Breathes devastating steam clouds"
+            ]
+          },
+          "combat": {
+            "attacks": 3,
+            "damage": "2d6 / 2d6 / 4d8",
+            "breathWeapon": {
+              "type": "Steam cloud",
+              "area": "60 ft long, 40 ft wide, 40 ft high",
+              "damage": "Equal to current HP (save for half)"
+            },
+            "shipAttack": "90% chance to capsize vessel it surfaces beneath"
+          },
+          "treasure": {
+            "cp": "5d6×1,000 (25%)",
+            "sp": "1d100×1,000 (40%)",
+            "ep": "1d4×10,000 (40%)",
+            "gp": "1d6×10,000 (55%)",
+            "pp": "5d10×100 (25%)",
+            "gems": "1d100 (50%)",
+            "jewellery": "1d4×10 (50%)",
+            "magicItems": "4 items + 1 scroll + 1 potion (15%), 2d4 potions (40%), 1d4 scrolls (50%)"
+          }
+        }
+      ],
+      "frequency": "Very rare",
+      "numberAppearing": "1",
+      "size": "Large",
+      "move": "90 ft swimming",
+      "armorClass": 0,
+      "hitDice": 13,
+      "attacks": 3,
+      "damage": "2d6 / 2d6 / 4d8",
+      "specialAttacks": "Steam cloud breath, capsizing ships",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "5%",
+      "intelligence": "Very",
+      "alignment": "Neutral",
+      "levelXP": "10/7,000+18/hp"
+    },
     {
       "name": "Black Dragon",
       "category": "Dragons",
@@ -2255,7 +4218,6 @@ export const MONSTER_MANUAL = {
         }
       ]
     },
-    
     {
       "name": "Dwarf",
       "category": "Demi-Human",
@@ -2802,7 +4764,142 @@ export const MONSTER_MANUAL = {
       }
     },
     
-
+    {
+      "name": "Ettercap",
+      "category": "Aberration",
+      "variants": [
+        {
+          "name": "Ettercap",
+          "description": "Grotesque humanoid-arachnid hybrids that spin silk from stubby tails and construct web-based traps and snares around their lairs. They are cunning ambush predators.",
+          "appearance": {
+            "size": "Man-sized",
+            "features": "Arachnid face, silk-spinning tail"
+          },
+          "behavior": {
+            "alignment": "Neutral evil",
+            "intelligence": "Semi-",
+            "habitat": "Underground or forested lairs",
+            "tactics": "Sets traps using silk; may use lassos or garrottes"
+          },
+          "combat": {
+            "attacks": 3,
+            "damage": "1d4 / 1d4 / 1d8",
+            "specialAttacks": "Poisonous bite"
+          }
+        }
+      ],
+      "frequency": "Rare",
+      "numberAppearing": "1d2",
+      "size": "Man-sized",
+      "move": "120 ft",
+      "armorClass": 6,
+      "hitDice": "5+1",
+      "attacks": 3,
+      "damage": "1d4 / 1d4 / 1d8",
+      "specialAttacks": "Poison",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "30%",
+      "intelligence": "Semi-",
+      "alignment": "Neutral evil",
+      "levelXP": "4/150 + 5/hp",
+      "treasure": "None"
+    },
+    {
+      "name": "Executioner’s Hood",
+      "category": "Aberration",
+      "variants": [
+        {
+          "name": "Executioner’s Hood",
+          "description": "A small, amorphous predator that drops from ceilings and envelops a victim’s head, attempting to strangle them to death.",
+          "appearance": {
+            "size": "Small",
+            "form": "Amorphous, flaccid mass with strong muscular body"
+          },
+          "behavior": {
+            "alignment": "Neutral evil",
+            "intelligence": "Semi-",
+            "habitat": "Underground or ruin ceilings",
+            "tactics": "Ambush drop, then auto-hit while latched on"
+          },
+          "combat": {
+            "attacks": 1,
+            "damage": "1d4 per round (if attached)",
+            "specialAttacks": "Auto-hit while attached; only removable by alcohol or death"
+          },
+          "defenses": {
+            "note": "Attacks targeting the creature also affect the victim"
+          }
+        }
+      ],
+      "frequency": "Rare",
+      "numberAppearing": "1",
+      "size": "Small",
+      "move": "60 ft",
+      "armorClass": 6,
+      "hitDice": "3 to 6",
+      "attacks": 1,
+      "damage": "1d4",
+      "specialAttacks": "Latch-on suffocation",
+      "specialDefenses": "Must be bathed in alcohol or slain to remove",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Semi-",
+      "alignment": "Neutral evil",
+      "levelXP": "4/250 + 4/hp",
+      "treasure": "None"
+    },
+    {
+      "name": "Eye of the Deep",
+      "category": "Aberration",
+      "variants": [
+        {
+          "name": "Eye of the Deep",
+          "description": "An aquatic beholder-like horror with powerful eye magic, massive claws, and a central eye that stuns its prey. It lurks in deep waters or sunken ruins.",
+          "appearance": {
+            "size": "Large (4 ft diameter)",
+            "features": "Floating orb with central eye, 2 eyestalks, lobster claws"
+          },
+          "behavior": {
+            "alignment": "Lawful evil",
+            "intelligence": "Very",
+            "habitat": "Underwater lairs or ruins",
+            "abilities": [
+              "Central eye: 30 ft cone, stun 2d4 rounds (save vs magic item)",
+              "Left eyestalk: Hold monster",
+              "Right eyestalk: Hold person",
+              "Both eyestalks: Phantasmal force"
+            ]
+          },
+          "combat": {
+            "attacks": 3,
+            "damage": "2d4 / 2d4 / 1d6",
+            "magicUse": "Spell-like powers usable every round"
+          },
+          "treasure": {
+            "gp": "2d6×1,000 (50%)",
+            "pp": "1d4×1,000 (40%)",
+            "gems": "4d10 (40%)",
+            "jewellery": "2d6 (35%)"
+          }
+        }
+      ],
+      "frequency": "Very rare",
+      "numberAppearing": "1",
+      "size": "Large",
+      "move": "60 ft swimming",
+      "armorClass": 5,
+      "hitDice": 11,
+      "attacks": 3,
+      "damage": "2d4 / 2d4 / 1d6",
+      "specialAttacks": "Stun cone, hold monster/person, phantasmal force",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "20%",
+      "intelligence": "Very",
+      "alignment": "Lawful evil",
+      "levelXP": "9/3,000 + 16/hp"
+    },
     {
       "name": "Ettin",
       "category": "Giants",
@@ -2932,6 +5029,85 @@ export const MONSTER_MANUAL = {
       }
     },
     {
+      "name": "Fly, Giant",
+      "category": "Giant Insect",
+      "variants": [
+        {
+          "name": "Blow Fly, Giant",
+          "description": "Large, metallic green or blue flies attracted to carrion, blood, and sweet substances. They rarely attack the living unless blood is present.",
+          "appearance": {
+            "size": "Medium",
+            "color": "Metallic green or blue with coarse black hairs and dark orange eyes"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "intelligence": "Non-",
+            "habitat": "Areas of decay, waste, or spoiled food",
+            "tactics": "Hover, land to bite, leap away defensively"
+          },
+          "combat": {
+            "attacks": 1,
+            "damage": "1d8+1",
+            "specialAttacks": "10% chance of disease with bite",
+            "defenses": "Leap-jump 30 ft and hover (non-retreating)"
+          }
+        },
+        {
+          "name": "Horsefly, Giant",
+          "description": "Aggressive bloodsuckers with tan and brown coloration. They land to bite warm-blooded creatures and feed continuously if not driven off.",
+          "appearance": {
+            "size": "Large (9 ft long)",
+            "color": "Flat tan and brown with shiny brown eyes"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "intelligence": "Non-",
+            "habitat": "Any warm-blooded prey territory",
+            "tactics": "Attack with bite, drain blood next round"
+          },
+          "combat": {
+            "attacks": 1,
+            "damage": "2d6",
+            "specialAttacks": "Inflicts same damage next round unless interrupted",
+            "defenses": "Leap 30 ft and hover"
+          }
+        }
+      ],
+      "frequency": {
+        "Blow Fly": "Rare",
+        "Horsefly": "Very rare"
+      },
+      "numberAppearing": {
+        "Blow Fly": "1d12",
+        "Horsefly": "1d6"
+      },
+      "move": "90 ft; 300 ft flying (AA:III)",
+      "armorClass": {
+        "Blow Fly": 6,
+        "Horsefly": 5
+      },
+      "hitDice": {
+        "Blow Fly": 3,
+        "Horsefly": 6
+      },
+      "attacks": 1,
+      "damage": {
+        "Blow Fly": "1d8+1",
+        "Horsefly": "2d6"
+      },
+      "specialAttacks": "Disease (Blow Fly), Blood Drain (Horsefly)",
+      "specialDefenses": "Leap/hover avoidance",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Non-",
+      "alignment": "Neutral",
+      "levelXP": {
+        "Blow Fly": "3/40 + 3/hp",
+        "Horsefly": "4/165 + 6/hp"
+      },
+      "treasure": "None"
+    },
+    {
       "name": "Frog, Giant",
       "category": "Animal",
       "frequency": "Uncommon",
@@ -2951,6 +5127,199 @@ export const MONSTER_MANUAL = {
       "levelXP": "1/10 +5/hp, 2/30 +10/hp, 3/50 +15/hp",
       "treasure": "None",
       "description": "Giant frogs can be 2, 4, or 6 ft in length. Found in similar habitats to normal frogs, they have camouflage and surprise on a roll of 1-4 on 1d6. They jump vast distances, shoot sticky tongues to attack, and may attempt to drag smaller victims into their mouths. If they score a natural 20, they can swallow prey whole."
+    },
+    {
+      "name": "Fungi, Violet",
+      "category": "Plant",
+      "variants": [
+        {
+          "name": "Violet Fungi",
+          "description": "Fungal creatures resembling shriekers, with waving rot-spore branches that cause rapid tissue decay. Often found in dungeon environments.",
+          "appearance": {
+            "size": "Small to medium (4–7 ft tall)",
+            "structure": "1d4 rot-spore branches, length = height in ft"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "intelligence": "Non-",
+            "habitat": "Underground areas; often with shriekers",
+            "tactics": "Detects movement, waves branches to release rot spores"
+          },
+          "combat": {
+            "attacks": "1d4",
+            "damage": "Save vs poison or rot flesh in 1 round",
+            "specialAttacks": "Rot spores require cure disease if failed save"
+          }
+        }
+      ],
+      "frequency": "Rare",
+      "numberAppearing": "1d4",
+      "size": "Small to Medium",
+      "move": "10 ft",
+      "armorClass": 7,
+      "hitDice": 3,
+      "attacks": "1d4",
+      "damage": "Rot flesh (Save vs poison)",
+      "specialAttacks": "Rotting spores",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Non-",
+      "alignment": "Neutral",
+      "levelXP": "3/50 + 1/hp",
+      "treasure": "None"
+    },
+    {
+      "name": "Gargoyle",
+      "category": "Magical Beast",
+      "variants": [
+        {
+          "name": "Gargoyle",
+          "description": "Malicious, horned winged humanoids made of enchanted stone. Gargoyles lie in wait, blending into masonry before springing to attack with tooth, claw, and horn.",
+          "appearance": {
+            "size": "Man-sized",
+            "form": "Grotesque stone-skinned creature with wings and a horn"
+          },
+          "behavior": {
+            "alignment": "Chaotic evil",
+            "intelligence": "Low",
+            "habitat": "Ruins, dungeons, ancient towers",
+            "tactics": "Attack any living creature 90% of the time"
+          },
+          "combat": {
+            "attacks": 4,
+            "damage": "1d3 / 1d3 / 1d6 / 1d4",
+            "specialDefenses": "Only hit by +1 or better magical weapons"
+          }
+        }
+      ],
+      "frequency": "Uncommon",
+      "numberAppearing": "2d8",
+      "size": "Man-sized",
+      "move": "90 ft; 150 ft flying (AA:IV)",
+      "armorClass": 5,
+      "hitDice": "4+4",
+      "attacks": 4,
+      "damage": "1d3 / 1d3 / 1d6 / 1d4",
+      "specialAttacks": "None",
+      "specialDefenses": "+1 or better weapon to hit",
+      "magicResistance": "Standard",
+      "lairProbability": "20%",
+      "intelligence": "Low",
+      "alignment": "Chaotic evil",
+      "levelXP": "4/155 + 4/hp",
+      "treasure": "None"
+    },
+    {
+      "name": "Gelatinous Cube",
+      "category": "Ooze",
+      "variants": [
+        {
+          "name": "Gelatinous Cube",
+          "description": "Transparent dungeon scavenger that silently glides through corridors absorbing organic matter. Nearly invisible, it paralyzes with its touch.",
+          "appearance": {
+            "size": "Large (10 ft cube)",
+            "form": "Gelatinous, nearly invisible cube"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "intelligence": "Non-",
+            "habitat": "Dungeon corridors, ruins",
+            "tactics": "Absorbs paralyzed prey, surprises on 1–3 in 6"
+          },
+          "combat": {
+            "attacks": 1,
+            "damage": "2d4",
+            "specialAttacks": "Paralysis (3d6+2 rounds, save vs paralysis)"
+          },
+          "defenses": {
+            "immunities": [
+              "Electricity",
+              "Fear",
+              "Sleep",
+              "Hold",
+              "Paralysis",
+              "Polymorph"
+            ],
+            "resistance": {
+              "Cold": "1d4 damage max, save negates",
+              "Fire": "Normal resistance"
+            }
+          },
+          "treasure": "Incidental (items suspended within)"
+        }
+      ],
+      "frequency": "Uncommon",
+      "numberAppearing": "1",
+      "size": "Large",
+      "move": "60 ft",
+      "armorClass": 8,
+      "hitDice": 4,
+      "attacks": 1,
+      "damage": "2d4",
+      "specialAttacks": "Paralyzing touch, surprise 1-3 in 6",
+      "specialDefenses": "See description",
+      "magicResistance": "Normal",
+      "lairProbability": "Nil",
+      "intelligence": "Non-",
+      "alignment": "Neutral",
+      "levelXP": "3/150 + 4/hp"
+    },
+    {
+      "name": "Genie",
+      "category": "Extraplanar",
+      "variants": [
+        {
+          "name": "Genie",
+          "description": "Noble elemental beings from the Plane of Air. Capable of powerful magic and physical strength, often encountered when summoned or bound into service.",
+          "appearance": {
+            "size": "Large",
+            "form": "Humanoid with swirling vapor lower half or fully solid form"
+          },
+          "behavior": {
+            "alignment": "Chaotic good",
+            "intelligence": "Average to high",
+            "habitat": "Elemental Plane of Air, occasionally the Astral or Prime Material",
+            "abilities": [
+              "Invisible or gaseous form at will",
+              "Wind walking, whirlwind form (2d6 dmg to all <2 HD)",
+              "Create food, water, cloth, wood, metal (non-permanent)",
+              "Create illusion (sight and sound)",
+              "Can carry up to 600 lbs indefinitely; 1,200 lbs briefly"
+            ]
+          },
+          "combat": {
+            "attacks": 1,
+            "damage": "2d8",
+            "specialAttacks": "Whirlwind form (once/round, 2d6 dmg, kills <2 HD instantly)"
+          },
+          "variants": {
+            "Noble Genie": {
+              "hitDice": "10 HD",
+              "damage": "3d8",
+              "whirlwindDamage": "3d6",
+              "special": "Grants 3 wishes when subdued"
+            }
+          },
+          "communication": "Genie language and telepathy"
+        }
+      ],
+      "frequency": "Very rare",
+      "numberAppearing": "1",
+      "size": "Large",
+      "move": "90 ft; 240 ft flying (AA:VI)",
+      "armorClass": 4,
+      "hitDice": "7+3",
+      "attacks": 1,
+      "damage": "2d8",
+      "specialAttacks": "Magical abilities, whirlwind",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Average to high",
+      "alignment": "Chaotic good",
+      "levelXP": "5/350 + 8/hp",
+      "treasure": "None"
     },
     {
       "name": "Ghast",
@@ -3200,7 +5569,7 @@ export const MONSTER_MANUAL = {
       "treasure": "D"
     },
     {
-      "name": "Stone Giant",
+      "name": "Giant, Stone",
       "category": "Giants",
       "name_variants": "",
       "frequency": "Uncommon",
@@ -3234,7 +5603,7 @@ export const MONSTER_MANUAL = {
       "treasure": "D"
     },
     {
-      "name": "Storm Giant",
+      "name": "Giant, Storm",
       "category": "Giants",
       "name_variants": "",
       "frequency": "Rare",
@@ -3415,6 +5784,55 @@ export const MONSTER_MANUAL = {
       }
     },
     {
+      "name": "Gorgon",
+      "category": "Magical Beast",
+      "variants": [
+        {
+          "name": "Gorgon",
+          "description": "Large, bull-like beasts covered in metallic scales. Known for their petrifying breath, they are aggressive and lethal hunters.",
+          "appearance": {
+            "size": "Large",
+            "form": "Giant bull with metallic scales"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "intelligence": "Animal",
+            "habitat": "Wilderness, ruins, underground",
+            "tactics": "Uses petrifying breath 85% of the time before goring"
+          },
+          "combat": {
+            "attacks": 1,
+            "damage": "2d6",
+            "specialAttacks": "Breath weapon (cone of petrifying gas, 60 ft x 10 ft radius, 3/day)"
+          }
+        }
+      ],
+      "frequency": "Rare",
+      "numberAppearing": "1d4",
+      "size": "Large",
+      "move": "120 ft",
+      "armorClass": 2,
+      "hitDice": 8,
+      "attacks": 1,
+      "damage": "2d6",
+      "specialAttacks": "Petrifying breath (save or turn to stone)",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "40%",
+      "intelligence": "Animal",
+      "alignment": "Neutral",
+      "levelXP": "7/1,500 + 10/hp",
+      "treasure": {
+        "cp": "1d8×1,000 (10%)",
+        "sp": "1d12×1,000 (25%)",
+        "ep": "1d6×1,000 (25%)",
+        "gp": "1d8×1,000 (25%)",
+        "gems": "1d10 (15%)",
+        "jewellery": "1d8 (10%)",
+        "magicItems": "Any 4 magic items (25%)"
+      }
+    },
+    {
       "name": "Grimlock",
       "category": "Humanoid",
       "frequency": "Uncommon",
@@ -3446,6 +5864,110 @@ export const MONSTER_MANUAL = {
           "jewellery": {"amount": "1d4", "chance": "25%"},
           "magic_items": {"amount": "1 item", "chance": "10%"}
         }
+      }
+    },
+    {
+      "name": "Grey Ooze",
+      "category": "Ooze",
+      "variants": [
+        {
+          "name": "Grey Ooze",
+          "description": "A nearly undetectable slime that appears as wet stone. It corrodes metal rapidly and is immune to cold and heat-based magic.",
+          "appearance": {
+            "form": "Amorphous ooze blending into dungeon floors",
+            "size": "Medium to Large"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "intelligence": "Animal",
+            "habitat": "Underground ruins, dungeons",
+            "traits": [
+              "Appears as part of stone floor",
+              "Forms pseudopods to strike prey",
+              "Consumes metal, not stone or wood"
+            ]
+          },
+          "combat": {
+            "attacks": 1,
+            "damage": "2d8",
+            "specialAttacks": "Corrodes metal (eats through chain in 1 round, plate in 2)",
+            "defenses": [
+              "Immune to heat/cold-based magic",
+              "Takes full damage from weapons, but corrodes metal ones"
+            ]
+          },
+          "growth": {
+            "note": "Larger specimens may reach 36 sq ft and develop rudimentary awareness"
+          }
+        }
+      ],
+      "frequency": "Rare",
+      "numberAppearing": "1d3",
+      "size": "Medium to Large",
+      "move": "10 ft",
+      "armorClass": 8,
+      "hitDice": "3+3",
+      "attacks": 1,
+      "damage": "2d8",
+      "specialAttacks": "Metal corrosion",
+      "specialDefenses": "Immune to heat/cold; corrodes metal weapons",
+      "magicResistance": "See description",
+      "lairProbability": "Nil",
+      "intelligence": "Animal",
+      "alignment": "Neutral",
+      "levelXP": "4/75 + 3/hp",
+      "treasure": "None"
+    },
+    {
+      "name": "Griffon",
+      "category": "Magical Beast",
+      "variants": [
+        {
+          "name": "Griffon",
+          "description": "Fierce aerial hunters with the body of a lion and head, wings, and forelegs of an eagle. Known for their hatred of horses and highly sought after as flying mounts.",
+          "appearance": {
+            "form": "Lion’s body with eagle head, wings, and talons",
+            "size": "Large"
+          },
+          "behavior": {
+            "alignment": "Neutral",
+            "intelligence": "Semi-",
+            "habitat": "Cliffside aeries and mountain caves",
+            "traits": [
+              "Hunt horses on sight",
+              "Valuable as flying mounts if raised from hatchlings",
+              "Cannot be trained once mature"
+            ]
+          },
+          "combat": {
+            "attacks": 3,
+            "damage": "1d4 / 1d4 / 2d8",
+            "notes": "Decreased aerial agility (to III) when bearing >100 lbs rider"
+          }
+        }
+      ],
+      "frequency": "Uncommon",
+      "numberAppearing": "2d6",
+      "size": "Large",
+      "move": "120 ft; 300 ft flying (AA:IV)",
+      "armorClass": 3,
+      "hitDice": 7,
+      "attacks": 3,
+      "damage": "1d4 / 1d4 / 2d8",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "25%",
+      "intelligence": "Semi-",
+      "alignment": "Neutral",
+      "levelXP": "7/225 + 8/hp",
+      "treasure": {
+        "cp": "1d12×1,000 (20%)",
+        "sp": "1d6×1,000 (30%)",
+        "ep": "1d4×1,000 (10%)",
+        "gems": "1d6 (25%)",
+        "jewellery": "1d3 (20%)",
+        "magicItems": "2 items (10%), 2d4 potions (40%)"
       }
     },
     {
@@ -3569,7 +6091,90 @@ export const MONSTER_MANUAL = {
         "lair": "B"
       }
     },
-
+    {
+      "name": "Harpy",
+      "category": "Monstrous Humanoid",
+      "frequency": "Rare",
+      "numberAppearing": "2d6",
+      "size": "Medium",
+      "move": "60 ft; 150 ft flying (AA:IV)",
+      "armorClass": 7,
+      "hitDice": 3,
+      "attacks": 3,
+      "damage": "1d3/1d3/1d6",
+      "specialAttacks": "Singing and charm",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "25%",
+      "intelligence": "Low",
+      "alignment": "Chaotic evil",
+      "levelXP": "3/50 + 3/hp",
+      "description": "These vile creatures lure victims with a magical song, then charm and devour them.",
+      "treasure": {
+        "cp": "1d12×1,000 (20%)",
+        "sp": "1d6×1,000 (30%)",
+        "ep": "1d4×1,000 (10%)",
+        "gems": "1d6 (25%)",
+        "jewellery": "1d3 (20%)",
+        "magicItems": "2 items (10%)"
+      }
+    },
+    {
+      "name": "Hell Hound",
+      "category": "Extraplanar Beast",
+      "frequency": "Very rare",
+      "numberAppearing": "2d4",
+      "size": "Medium",
+      "move": "120 ft",
+      "armorClass": 4,
+      "hitDice": "4 to 7",
+      "attacks": 1,
+      "damage": "1d10",
+      "specialAttacks": "Breathe fire",
+      "specialDefenses": "High surprise rating; keen senses",
+      "magicResistance": "Standard",
+      "lairProbability": "30%",
+      "intelligence": "Low",
+      "alignment": "Lawful evil",
+      "levelXP": {
+        "4HD": "4/75 + 4/hp",
+        "5HD": "5/110 + 5/hp",
+        "6HD": "6/160 + 6/hp",
+        "7HD": "7/225 + 8/hp"
+      },
+      "description": "Infernal dogs that serve as otherworldly sentries, attacking with fiery breath and terrifying silence.",
+      "treasure": {
+        "cp": "1d12×1,000 (20%)",
+        "sp": "1d6×1,000 (30%)",
+        "ep": "1d4×1,000 (10%)",
+        "gems": "1d6 (25%)",
+        "jewellery": "1d3 (25%)",
+        "magicItems": "2 items (10%)"
+      }
+    },
+    {
+      "name": "Hippogriff",
+      "category": "Magical Beast",
+      "frequency": "Rare",
+      "numberAppearing": "2d8",
+      "size": "Large",
+      "move": "180 ft; 360 ft flying (AA:IV)",
+      "armorClass": 5,
+      "hitDice": "3 +3",
+      "attacks": 3,
+      "damage": "1d6/1d6/1d10",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "10%",
+      "intelligence": "Semi-",
+      "alignment": "Neutral",
+      "levelXP": "4/150 + 3/hp",
+      "description": "A winged creature combining features of horse and eagle, often sought as a mount but highly territorial.",
+      "treasure": {
+        "gems": "5d4 (50%)"
+      }
+    },
     {
       "name": "Hippopotamus",
       "category": "Animal",
@@ -3726,6 +6331,333 @@ export const MONSTER_MANUAL = {
       }
     },
     {
+      "name": "Homonculus",
+      "category": "Construct",
+      "frequency": "Very rare",
+      "numberAppearing": "1",
+      "size": "Small (18 in)",
+      "move": "60 ft; 180 ft flying (AA:V)",
+      "armorClass": 6,
+      "hitDice": 2,
+      "attacks": 1,
+      "damage": "1d3",
+      "specialAttacks": "Bite causes sleep",
+      "specialDefenses": "See below",
+      "magicResistance": "See below",
+      "lairProbability": "Nil",
+      "intelligence": "See below",
+      "alignment": "See below",
+      "levelXP": "2/81 + 2/hp",
+      "description": "A magically created construct under the complete control of its wizard master. Communicates telepathically within 500 ft and transmits what it sees and hears. If killed, its creator takes 2d10 damage.",
+      "treasure": "None"
+    },
+    {
+      "name": "Hippopotamus",
+      "category": "Animal",
+      "frequency": "Uncommon",
+      "numberAppearing": "2d6",
+      "size": "Large",
+      "move": "90 ft; 120 ft swimming",
+      "armorClass": 6,
+      "hitDice": 8,
+      "attacks": 1,
+      "damage": "2d6 or 3d6",
+      "specialAttacks": "Capsize boats",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Animal",
+      "alignment": "Neutral",
+      "levelXP": "5/600 + 12/hp",
+      "treasure": "None",
+      "description": "Hippopotami are large semi-aquatic mammals that spend most of their time in water. Though herbivores, they aggressively defend their territory and can outrun humans on land despite their bulk. They can't float but can propel themselves to the surface for air, staying submerged for up to 15 minutes. Bull hippos (1 per 4 animals) bite for 3d6 damage, while cows bite for 2d6. Boats passing over a hippo have a 50% chance of being tipped over when the animal surfaces."
+    },
+    {
+      "name": "Horse",
+      "category": "Animal",
+      "variants": [
+        {
+          "type": "Draft",
+          "frequency": "Common",
+          "numberAppearing": "1",
+          "size": "Large",
+          "move": "120 ft",
+          "armorClass": 7,
+          "hitDice": "3",
+          "attacks": "1",
+          "damage": "1d3",
+          "levelXP": "2/20+2/hp"
+        },
+        {
+          "type": "Heavy (Warhorse)",
+          "frequency": "Uncommon",
+          "numberAppearing": "1",
+          "size": "Large",
+          "move": "150 ft",
+          "armorClass": 7,
+          "hitDice": "3+3",
+          "attacks": "3",
+          "damage": "1d8/1d8/1d3",
+          "levelXP": "2/20+2/hp"
+        },
+        {
+          "type": "Light (Warhorse)",
+          "frequency": "Uncommon",
+          "numberAppearing": "1",
+          "size": "Large",
+          "move": "240 ft",
+          "armorClass": 7,
+          "hitDice": "2",
+          "attacks": "2",
+          "damage": "1d4/1d4",
+          "levelXP": "2/20+2/hp"
+        },
+        {
+          "type": "Medium (Warhorse)",
+          "frequency": "Uncommon",
+          "numberAppearing": "1",
+          "size": "Large",
+          "move": "180 ft",
+          "armorClass": 7,
+          "hitDice": "2+2",
+          "attacks": "3",
+          "damage": "1d6/1d6/1d3",
+          "levelXP": "2/20+2/hp"
+        },
+        {
+          "type": "Pony",
+          "frequency": "Uncommon",
+          "numberAppearing": "1",
+          "size": "Large",
+          "move": "120 ft",
+          "armorClass": 7,
+          "hitDice": "1+1",
+          "attacks": "1",
+          "damage": "1d2",
+          "levelXP": "2/20+2/hp"
+        },
+        {
+          "type": "Wild",
+          "frequency": "Uncommon",
+          "numberAppearing": "5d6",
+          "size": "Large",
+          "move": "240 ft",
+          "armorClass": 7,
+          "hitDice": "2",
+          "attacks": "1",
+          "damage": "1d3",
+          "levelXP": "2/20+2/hp"
+        }
+      ],
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Animal",
+      "alignment": "Neutral",
+      "treasure": "None",
+      "description": "Horses are ubiquitous domesticated animals. Warhorses are classified as heavy, medium, or light, with only 10% able to be trained as such. Draft horses are used for hauling, ponies for light loads or children. Wild horses travel in herds."
+    },
+    {
+      "name": "Hydra",
+      "category": "Magical Beast",
+      "frequency": "Uncommon",
+      "numberAppearing": "1",
+      "size": "Large",
+      "move": "90 ft",
+      "armorClass": 5,
+      "hitDice": "5 to 16",
+      "attacks": "5 to 16",
+      "damage": "1d6 to 1d12 based on size",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "20%",
+      "intelligence": "Semi-",
+      "alignment": "Neutral",
+      "levelXP": "5/110 + 5/hp up to 9/5,000 + 20/hp",
+      "description": "Multi-headed lizard-like creatures. Each head attacks independently and deals variable damage by size. Found in swamps, bogs, or underground lairs.",
+      "treasure": {
+        "cp": "1d8×1,000 (50%)",
+        "sp": "1d6×1,000 (25%)",
+        "ep": "1d4×1,000 (25%)",
+        "gp": "1d3×1,000 (25%)",
+        "gems": "1d8 (30%)",
+        "jewellery": "1d4 (20%)",
+        "magicItems": "sword, armour or misc. weapon (10%)"
+      }
+    },
+    {
+      "name": "Hyena",
+      "category": "Animal",
+      "variants": [
+        {
+          "type": "Normal",
+          "frequency": "Common",
+          "numberAppearing": "2d6",
+          "size": "Medium",
+          "move": "120 ft",
+          "armorClass": 7,
+          "hitDice": "2",
+          "attacks": "1",
+          "damage": "2d4",
+          "levelXP": "3/50 +2/hp"
+        },
+        {
+          "type": "Huge",
+          "frequency": "Rare",
+          "numberAppearing": "2d6",
+          "size": "Medium",
+          "move": "120 ft",
+          "armorClass": 6,
+          "hitDice": "3",
+          "attacks": "1",
+          "damage": "2d4+1",
+          "levelXP": "4/75 +3/hp"
+        },
+        {
+          "type": "Giant",
+          "frequency": "Very rare",
+          "numberAppearing": "1d6",
+          "size": "Large",
+          "move": "180 ft",
+          "armorClass": 5,
+          "hitDice": "4",
+          "attacks": "1",
+          "damage": "2d6",
+          "levelXP": "6/160 +6/hp"
+        }
+      ],
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Animal",
+      "alignment": "Neutral",
+      "treasure": "None",
+      "description": "Hyenas are 4-5 ft long scavengers and predators with strong jaws. Huge types are more aggressive; Giant types may be magically bred. Found in grasslands, woodlands, and deserts. Known for grave-raiding and eerie vocalizations."
+    },
+    {
+      "name": "Indricotherium",
+      "category": "Animal",
+      "frequency": "Rare",
+      "numberAppearing": "1d3",
+      "size": "Large",
+      "move": "120 ft",
+      "armorClass": 5,
+      "hitDice": "14",
+      "attacks": "2",
+      "damage": "5d4",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Semi-",
+      "alignment": "Neutral",
+      "levelXP": "7/1,800+18/hp",
+      "treasure": "None",
+      "description": "A prehistoric ruminant, the indricotherium looks rather like its contemporary descendant the rhinoceros. If spooked, it will charge in an effort to trample. A 'two' on the Number Encountered roll means a mated pair; a 'three' means a mated pair with a juvenile."
+    },
+    {
+      "name": "Invisible Stalker",
+      "category": "Elemental",
+      "frequency": "Very rare",
+      "numberAppearing": "1",
+      "size": "Large (8 ft tall)",
+      "move": "120 ft",
+      "armorClass": 3,
+      "hitDice": 8,
+      "attacks": 1,
+      "damage": "2d8",
+      "specialAttacks": "Surprise on 1-5",
+      "specialDefenses": "Invisibility",
+      "magicResistance": "30%",
+      "lairProbability": "Nil",
+      "intelligence": "High",
+      "alignment": "Neutral",
+      "levelXP": "7/1,100 + 10/hp",
+      "description": "Summoned air elementals that track and attack at their master's command. May attempt to twist instructions for prolonged tasks. Cannot be permanently killed on the Prime Material Plane.",
+      "treasure": "None"
+    },
+    {
+      "name": "Jackal",
+      "category": "Animal",
+      "variants": [
+        {
+          "type": "Normal",
+          "frequency": "Common",
+          "numberAppearing": "1d6",
+          "size": "Small",
+          "move": "120 ft",
+          "armorClass": 7,
+          "hitDice": "1",
+          "attacks": "1",
+          "damage": "1d4",
+          "levelXP": "1/10 +1/hp"
+        },
+        {
+          "type": "Huge",
+          "frequency": "Rare",
+          "numberAppearing": "1d6",
+          "size": "Small",
+          "move": "150 ft",
+          "armorClass": 6,
+          "hitDice": "2",
+          "attacks": "1",
+          "damage": "1d4+1",
+          "levelXP": "2/30 +1/hp"
+        },
+        {
+          "type": "Giant",
+          "frequency": "Very rare",
+          "numberAppearing": "1d4",
+          "size": "Medium",
+          "move": "180 ft",
+          "armorClass": 5,
+          "hitDice": "4",
+          "attacks": "1",
+          "damage": "1d8",
+          "levelXP": "3/75 +3/hp"
+        }
+      ],
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "25%",
+      "intelligence": "Animal",
+      "alignment": "Neutral",
+      "treasure": "None",
+      "description": "Jackals are nocturnal scavengers and occasional predators found in grasslands and wastelands. Huge jackals are more aggressive. Giant jackals are possibly magical and sometimes associated with evil cults. Some rumors claim they possess unnatural intelligence and will."
+    },
+    {
+      "name": "Jackalwere",
+      "category": "Shapechanger",
+      "frequency": "Rare",
+      "numberAppearing": "1d4",
+      "size": "Small (medium)",
+      "move": "120 ft",
+      "armorClass": 4,
+      "hitDice": 4,
+      "attacks": 1,
+      "damage": "2d8 or by weapon",
+      "specialAttacks": "Gaze causes sleep",
+      "specialDefenses": "Iron or +1 weapon to hit",
+      "magicResistance": "Standard",
+      "lairProbability": "30%",
+      "intelligence": "Very",
+      "alignment": "Chaotic evil",
+      "levelXP": "4/75+4/hp",
+      "description": "Malevolent jackal creatures in human form. They prey on travelers, using their sleep gaze to subdue victims. Immune to non-magical, non-iron weapons.",
+      "treasure": {
+        "cp": "1d12×1,000 (20%)",
+        "sp": "1d6×1,000 (30%)",
+        "ep": "1d4×1,000 (10%)",
+        "gems": "1d6 (25%)",
+        "jewellery": "1d3 (20%)",
+        "magicItems": "any 2 magic items (10%)"
+      }
+    },
+    {
       "name": "Koalinth",
       "category": "Humanoid",
       "frequency": "Rare",
@@ -3823,235 +6755,91 @@ export const MONSTER_MANUAL = {
         }
       }
     },
-    
     {
-      "name": "Horse",
-      "category": "Animal",
-      "variants": [
-        {
-          "type": "Draft",
-          "frequency": "Common",
-          "numberAppearing": "1",
-          "size": "Large",
-          "move": "120 ft",
-          "armorClass": 7,
-          "hitDice": "3",
-          "attacks": "1",
-          "damage": "1d3",
-          "levelXP": "2/20+2/hp"
-        },
-        {
-          "type": "Heavy (Warhorse)",
-          "frequency": "Uncommon",
-          "numberAppearing": "1",
-          "size": "Large",
-          "move": "150 ft",
-          "armorClass": 7,
-          "hitDice": "3+3",
-          "attacks": "3",
-          "damage": "1d8/1d8/1d3",
-          "levelXP": "2/20+2/hp"
-        },
-        {
-          "type": "Light (Warhorse)",
-          "frequency": "Uncommon",
-          "numberAppearing": "1",
-          "size": "Large",
-          "move": "240 ft",
-          "armorClass": 7,
-          "hitDice": "2",
-          "attacks": "2",
-          "damage": "1d4/1d4",
-          "levelXP": "2/20+2/hp"
-        },
-        {
-          "type": "Medium (Warhorse)",
-          "frequency": "Uncommon",
-          "numberAppearing": "1",
-          "size": "Large",
-          "move": "180 ft",
-          "armorClass": 7,
-          "hitDice": "2+2",
-          "attacks": "3",
-          "damage": "1d6/1d6/1d3",
-          "levelXP": "2/20+2/hp"
-        },
-        {
-          "type": "Pony",
-          "frequency": "Uncommon",
-          "numberAppearing": "1",
-          "size": "Large",
-          "move": "120 ft",
-          "armorClass": 7,
-          "hitDice": "1+1",
-          "attacks": "1",
-          "damage": "1d2",
-          "levelXP": "2/20+2/hp"
-        },
-        {
-          "type": "Wild",
-          "frequency": "Uncommon",
-          "numberAppearing": "5d6",
-          "size": "Large",
-          "move": "240 ft",
-          "armorClass": 7,
-          "hitDice": "2",
-          "attacks": "1",
-          "damage": "1d3",
-          "levelXP": "2/20+2/hp"
-        }
-      ],
-      "specialAttacks": "None",
-      "specialDefenses": "None",
-      "magicResistance": "Standard",
-      "lairProbability": "Nil",
-      "intelligence": "Animal",
-      "alignment": "Neutral",
-      "treasure": "None",
-      "description": "Horses are ubiquitous domesticated animals. Warhorses are classified as heavy, medium, or light, with only 10% able to be trained as such. Draft horses are used for hauling, ponies for light loads or children. Wild horses travel in herds."
-    },
-    {
-      "name": "Hippopotamus",
-      "category": "Animal",
-      "frequency": "Uncommon",
-      "numberAppearing": "2d6",
+      "name": "Kraken",
+      "category": "Aquatic Monster",
+      "frequency": "Very rare",
+      "numberAppearing": "1",
       "size": "Large",
-      "move": "90 ft; 120 ft swimming",
-      "armorClass": 6,
-      "hitDice": 8,
-      "attacks": 1,
-      "damage": "2d6 or 3d6",
-      "specialAttacks": "Capsize boats",
-      "specialDefenses": "None",
+      "move": "210 ft swimming",
+      "armorClass": "5/0",
+      "hitDice": 20,
+      "attacks": 9,
+      "damage": "2d6(x8)/5d4",
+      "specialAttacks": "Crushing tentacles, poison ink cloud, spell-like abilities",
+      "specialDefenses": "See below",
       "magicResistance": "Standard",
-      "lairProbability": "Nil",
-      "intelligence": "Animal",
-      "alignment": "Neutral",
-      "levelXP": "5/600 + 12/hp",
-      "treasure": "None",
-      "description": "Hippopotami are large semi-aquatic mammals that spend most of their time in water. Though herbivores, they aggressively defend their territory and can outrun humans on land despite their bulk. They can't float but can propel themselves to the surface for air, staying submerged for up to 15 minutes. Bull hippos (1 per 4 animals) bite for 3d6 damage, while cows bite for 2d6. Boats passing over a hippo have a 50% chance of being tipped over when the animal surfaces."
+      "lairProbability": "75%",
+      "intelligence": "Genius",
+      "alignment": "Neutral evil",
+      "levelXP": "10/17,500+30/hp",
+      "description": "Giant sea monsters with massive tentacles, poisonous ink, and devastating magic. Will drag ships and sailors to the depths. Intelligent and ruthless.",
+      "treasure": {
+        "gp": "12d4×1,000 (50%)",
+        "pp": "1d8×1,000 (50%)",
+        "gems": "9d6 (55%)",
+        "jewellery": "2d10 (45%)",
+        "magicItems": "4 magic items + 1d6 scrolls + 2d4 potions (50%)"
+      }
     },
     {
-      "name": "Hyena",
-      "category": "Animal",
-      "variants": [
-        {
-          "type": "Normal",
-          "frequency": "Common",
-          "numberAppearing": "2d6",
-          "size": "Medium",
-          "move": "120 ft",
-          "armorClass": 7,
-          "hitDice": "2",
-          "attacks": "1",
-          "damage": "2d4",
-          "levelXP": "3/50 +2/hp"
-        },
-        {
-          "type": "Huge",
-          "frequency": "Rare",
-          "numberAppearing": "2d6",
-          "size": "Medium",
-          "move": "120 ft",
-          "armorClass": 6,
-          "hitDice": "3",
-          "attacks": "1",
-          "damage": "2d4+1",
-          "levelXP": "4/75 +3/hp"
-        },
-        {
-          "type": "Giant",
-          "frequency": "Very rare",
-          "numberAppearing": "1d6",
-          "size": "Large",
-          "move": "180 ft",
-          "armorClass": 5,
-          "hitDice": "4",
-          "attacks": "1",
-          "damage": "2d6",
-          "levelXP": "6/160 +6/hp"
-        }
-      ],
-      "specialAttacks": "None",
+      "name": "Lamia",
+      "frequency": "Very rare",
+      "numberAppearing": "1",
+      "size": "Medium",
+      "move": "240 ft",
+      "armorClass": 3,
+      "hitDice": "9",
+      "attacks": "1",
+      "damage": "1d4",
+      "specialAttacks": "Spells (charm person, mirror image, suggestion, illusion); Wisdom drain (1 per touch)",
       "specialDefenses": "None",
       "magicResistance": "Standard",
-      "lairProbability": "Nil",
-      "intelligence": "Animal",
-      "alignment": "Neutral",
-      "treasure": "None",
-      "description": "Hyenas are 4-5 ft long scavengers and predators with strong jaws. Huge types are more aggressive; Giant types may be magically bred. Found in grasslands, woodlands, and deserts. Known for grave-raiding and eerie vocalizations."
+      "lairProbability": "60%",
+      "intelligence": "High",
+      "alignment": "Chaotic evil",
+      "levelXP": "7/1,500 + 12/hp",
+      "treasure": "1d8×1,000 cp (10%), 1d12×1,000 sp (15%), 1d8×1,000 ep (15%), 1d6×1,000 gp (50%), 1d10 gems (30%), 1d6 jewellery (25%), any 2 magic items + 1 potion (15%)"
     },
     {
-      "name": "Indricotherium",
-      "category": "Animal",
+      "name": "Lammasu",
       "frequency": "Rare",
-      "numberAppearing": "1d3",
+      "numberAppearing": "1d8",
       "size": "Large",
-      "move": "120 ft",
-      "armorClass": 5,
-      "hitDice": "14",
+      "move": "120 ft; 240 ft flying (AA:III)",
+      "armorClass": 6,
+      "hitDice": "7+7",
       "attacks": "2",
-      "damage": "5d4",
-      "specialAttacks": "None",
+      "damage": "1d6+1/1d6+1",
+      "specialAttacks": "Spells as 8th-level cleric; holy word (20%)",
+      "specialDefenses": "Dimension door, invisibility, protection from evil 10 ft radius",
+      "magicResistance": "30%",
+      "lairProbability": "25%",
+      "intelligence": "Genius",
+      "alignment": "Lawful good",
+      "levelXP": "8/875+10/hp",
+      "treasure": "2d4×1,000 gp (45%), 1d8×100pp (60%), 4d8 gems (50%), 2d6 jewellery (40%), 2d4 potions (40%), 1 misc magic (20%)"
+    },
+    {
+      "name": "Leech, Giant",
+      "frequency": "Uncommon",
+      "numberAppearing": "4d4",
+      "size": "Small",
+      "move": "30 ft",
+      "armorClass": 9,
+      "hitDice": "1-4 HD",
+      "attacks": "1",
+      "damage": "1d4 (1 HD), 1d6 (2–3 HD), 1d8 (4 HD)",
+      "specialAttacks": "Blood drain per round; disease",
       "specialDefenses": "None",
       "magicResistance": "Standard",
       "lairProbability": "Nil",
-      "intelligence": "Semi-",
+      "intelligence": "Non-",
       "alignment": "Neutral",
-      "levelXP": "7/1,800+18/hp",
-      "treasure": "None",
-      "description": "A prehistoric ruminant, the indricotherium looks rather like its contemporary descendant the rhinoceros. If spooked, it will charge in an effort to trample. A 'two' on the Number Encountered roll means a mated pair; a 'three' means a mated pair with a juvenile."
+      "levelXP": "2/50 + 3/hp",
+      "treasure": "None"
     },
-    {
-      "name": "Jackal",
-      "category": "Animal",
-      "variants": [
-        {
-          "type": "Normal",
-          "frequency": "Common",
-          "numberAppearing": "1d6",
-          "size": "Small",
-          "move": "120 ft",
-          "armorClass": 7,
-          "hitDice": "1",
-          "attacks": "1",
-          "damage": "1d4",
-          "levelXP": "1/10 +1/hp"
-        },
-        {
-          "type": "Huge",
-          "frequency": "Rare",
-          "numberAppearing": "1d6",
-          "size": "Small",
-          "move": "150 ft",
-          "armorClass": 6,
-          "hitDice": "2",
-          "attacks": "1",
-          "damage": "1d4+1",
-          "levelXP": "2/30 +1/hp"
-        },
-        {
-          "type": "Giant",
-          "frequency": "Very rare",
-          "numberAppearing": "1d4",
-          "size": "Medium",
-          "move": "180 ft",
-          "armorClass": 5,
-          "hitDice": "4",
-          "attacks": "1",
-          "damage": "1d8",
-          "levelXP": "3/75 +3/hp"
-        }
-      ],
-      "specialAttacks": "None",
-      "specialDefenses": "None",
-      "magicResistance": "Standard",
-      "lairProbability": "25%",
-      "intelligence": "Animal",
-      "alignment": "Neutral",
-      "treasure": "None",
-      "description": "Jackals are nocturnal scavengers and occasional predators found in grasslands and wastelands. Huge jackals are more aggressive. Giant jackals are possibly magical and sometimes associated with evil cults. Some rumors claim they possess unnatural intelligence and will."
-    },
+    
     {
       "name": "Kobold",
       "category": "Humanoid",
@@ -4083,6 +6871,63 @@ export const MONSTER_MANUAL = {
           "gems": {"amount": "1d4", "chance": "50%"}
         }
       }
+    },
+    {
+      "name": "Lamia",
+      "frequency": "Very rare",
+      "numberAppearing": "1",
+      "size": "Medium",
+      "move": "240 ft",
+      "armorClass": 3,
+      "hitDice": "9",
+      "attacks": "1",
+      "damage": "1d4",
+      "specialAttacks": "Spells (charm person, mirror image, suggestion, illusion); Wisdom drain (1 per touch)",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "60%",
+      "intelligence": "High",
+      "alignment": "Chaotic evil",
+      "levelXP": "7/1,500 + 12/hp",
+      "treasure": "1d8×1,000 cp (10%), 1d12×1,000 sp (15%), 1d8×1,000 ep (15%), 1d6×1,000 gp (50%), 1d10 gems (30%), 1d6 jewellery (25%), any 2 magic items + 1 potion (15%)"
+    },
+    {
+      "name": "Lammasu",
+      "frequency": "Rare",
+      "numberAppearing": "1d8",
+      "size": "Large",
+      "move": "120 ft; 240 ft flying (AA:III)",
+      "armorClass": 6,
+      "hitDice": "7+7",
+      "attacks": "2",
+      "damage": "1d6+1/1d6+1",
+      "specialAttacks": "Spells as 8th-level cleric; holy word (20%)",
+      "specialDefenses": "Dimension door, invisibility, protection from evil 10 ft radius",
+      "magicResistance": "30%",
+      "lairProbability": "25%",
+      "intelligence": "Genius",
+      "alignment": "Lawful good",
+      "levelXP": "8/875+10/hp",
+      "treasure": "2d4×1,000 gp (45%), 1d8×100pp (60%), 4d8 gems (50%), 2d6 jewellery (40%), 2d4 potions (40%), 1 misc magic (20%)"
+    },
+    {
+      "name": "Leech, Giant",
+      "frequency": "Uncommon",
+      "numberAppearing": "4d4",
+      "size": "Small",
+      "move": "30 ft",
+      "armorClass": 9,
+      "hitDice": "1-4 HD",
+      "attacks": "1",
+      "damage": "1d4 (1 HD), 1d6 (2–3 HD), 1d8 (4 HD)",
+      "specialAttacks": "Blood drain per round; disease",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Non-",
+      "alignment": "Neutral",
+      "levelXP": "2/50 + 3/hp",
+      "treasure": "None"
     },
     {
       "name": "Lich",
@@ -4170,7 +7015,82 @@ export const MONSTER_MANUAL = {
       "treasure": "None",
       "description": "All lions gain two additional rear leg raking claw attacks if they hit with both forepaw attacks. Lions organize into family 'prides' with 1d2 males and 2d4+1 females. When encountered in their lair, 1d10 cubs will be present, with adults fighting to the death to protect young. Cougars (mountain lions) are more solitary and wide-ranging, capable of 20 ft horizontal leaps and 15 ft vertical jumps. Prehistoric lions (cave lions) are larger versions typically found in 'lost world' settings."
     },
-
+    {
+      "name": "Lizard, Giant (Fire)",
+      "frequency": "Very rare",
+      "numberAppearing": "1d4",
+      "size": "Large (30 ft long)",
+      "move": "90 ft",
+      "armorClass": 3,
+      "hitDice": "10",
+      "attacks": "3",
+      "damage": "1d8/1d8/2d8",
+      "specialAttacks": "Flame breath (cone 150 ft, 2d6 dmg, save for half)",
+      "specialDefenses": "Tough scaled hide",
+      "magicResistance": "Standard",
+      "lairProbability": "40%",
+      "intelligence": "Animal",
+      "alignment": "Neutral",
+      "levelXP": "7/1,500 + 14/hp",
+      "treasure": "None carried. In lair: 1d8×1,000 cp (45%), 1d6×1,000 sp (30%), 1d6×1,000 ep (25%), 1d4×1,000 gp (33%), 1d4×100 pp (10%), 2d4 gems (30%), 1d6 jewellery (20%), Magic Sword/Armour/Weapon (12%), 2d4 potions (50%), 1d6 scrolls (40%)"
+    },
+    {
+      "name": "Lizard, Giant",
+      "frequency": "Uncommon",
+      "numberAppearing": "2d6",
+      "size": "Large (20 ft long)",
+      "move": "150 ft",
+      "armorClass": 5,
+      "hitDice": "3+1",
+      "attacks": "1",
+      "damage": "1d8+1",
+      "specialAttacks": "Double damage on nat 20",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Non-",
+      "alignment": "Neutral",
+      "levelXP": "3/120 + 4/hp",
+      "treasure": "None"
+    },
+    {
+      "name": "Lizard, Monitor",
+      "frequency": "Rare",
+      "numberAppearing": "1d6",
+      "size": "Large (40 ft long)",
+      "move": "60 ft",
+      "armorClass": 5,
+      "hitDice": "8",
+      "attacks": "3",
+      "damage": "2d6/2d6/3d6",
+      "specialAttacks": "Clamp on nat 20, auto-damage following round",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Non-",
+      "alignment": "Neutral",
+      "levelXP": "6/925 + 10/hp",
+      "treasure": "In lair: 4d6 cp (90%), 3d6 sp (80%), 3d6 ep (70%), 2d6 gp (60%), 1d6 pp (50%), 2d6 gems (40%), 1d2 magic items (10%)"
+    },
+    {
+      "name": "Lizard, Cave",
+      "frequency": "Uncommon",
+      "numberAppearing": "1d6",
+      "size": "Large (20 ft long)",
+      "move": "120 ft",
+      "armorClass": 5,
+      "hitDice": "6",
+      "attacks": "1",
+      "damage": "2d6",
+      "specialAttacks": "Clamp on nat 20; will drag victim to lair",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Non-",
+      "alignment": "Neutral",
+      "levelXP": "7/375 + 6/hp",
+      "treasure": "In lair: 1d4×1,000 cp (30%), 2d4×1,000 sp (40%), 1d3×1,000 ep (25%), 1d4 gems (50%)"
+    },
     {
       "name": "Lizard Man",
       "category": "Humanoid",
@@ -4202,7 +7122,82 @@ export const MONSTER_MANUAL = {
         }
       }
     },
-    
+    {
+      "name": "Locathah",
+      "frequency": "Rare",
+      "numberAppearing": "20d10",
+      "size": "Man-sized",
+      "move": "120 ft",
+      "armorClass": 6,
+      "hitDice": "2",
+      "attacks": "1",
+      "damage": "By weapon",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "10%",
+      "intelligence": "Very",
+      "alignment": "Neutral",
+      "levelXP": "2/30 + 1/hp",
+      "treasure": "None carried. In lair: 1d4×1,000 cp (30%), 1d6×1,000 sp (20%), 1d8×1,000 ep (30%), 1d10×1,000 gp (40%), 1d6×100 pp (25%), 3d12 gems (65%), 4d10 jewellery (50%), 3 magic items (33%)"
+    },
+    {
+      "name": "Lurker Above",
+      "frequency": "Rare",
+      "numberAppearing": "1",
+      "size": "Large",
+      "move": "10 ft; 90 ft flying (AA:I)",
+      "armorClass": 6,
+      "hitDice": "10",
+      "attacks": "1",
+      "damage": "1d6",
+      "specialAttacks": "Engulf and constrict (1d6/round), suffocation",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "95%",
+      "intelligence": "Non-",
+      "alignment": "Neutral",
+      "levelXP": "7/1,500 + 4/hp",
+      "treasure": "1d10×1,000 cp (25%), 1d8×1,000 sp (25%), 1d6×1,000 gp (25%), 1d6 gems (25%), 1d3 jewellery (25%), any two Magic Items (10%)"
+    },
+    {
+      "name": "Manticore",
+      "frequency": "Uncommon",
+      "number_appearing": "1d4",
+      "size": "Large",
+      "movement": "120 ft; 180 ft flying (AA:II)",
+      "armor_class": 4,
+      "hit_dice": "6+3",
+      "attacks": 3,
+      "damage": "1d3/1d3/1d8",
+      "special_attacks": "Tail spikes",
+      "special_defenses": null,
+      "magic_resistance": "Standard",
+      "lair_probability": "20%",
+      "intelligence": "Low",
+      "alignment": "Lawful evil",
+      "level_xp": "6/525 + 8/hp",
+      "treasure": "1d10×1,000 cp (5%), 1d12×1,000 sp (25%), 1d6×1,000 ep (25%), 1d8×1,000 gp (25%), 1d12 gems, 1d8 jewellery, 3 misc. magic and 1 scroll (25%)"
+    },
+    {
+      "name": "Medusa",
+      "frequency": "Rare",
+      "number_appearing": "1d3",
+      "size": "Medium",
+      "movement": "90 ft",
+      "armor_class": 5,
+      "hit_dice": "6+1",
+      "attacks": 1,
+      "damage": "1d6",
+      "special_attacks": "Poison, petrifaction",
+      "special_defenses": null,
+      "magic_resistance": "Normal",
+      "lair_probability": "50%",
+      "intelligence": "Very to High",
+      "alignment": "Neutral evil",
+      "level_xp": "5/750+6/hp",
+      "treasure": "1d6×1,000 sp (30%), 1d2×1,000 ep (25%), 2d6×1,000 gp (70%), 10d4 gems (50%), 1 misc magic + 1 potion (60%)"
+    },
     {
       "name": "Men, Bandit",
       "category": "Men",
@@ -5433,7 +8428,82 @@ export const MONSTER_MANUAL = {
         }
       }
     },
-    
+      {
+        "name": "Mephit, Fire",
+        "frequency": "Very rare",
+        "number_appearing": "1",
+        "size": "Man-sized (5 ft tall)",
+        "movement": "120 ft; 240 ft flying (AA:IV)",
+        "armor_class": 5,
+        "hit_dice": "3+1",
+        "attacks": 2,
+        "damage": "1d3/1d3 (+1 heat each)",
+        "special_attacks": "Breath weapon (jet or blanket of flame)",
+        "special_defenses": "See below",
+        "magic_resistance": "Standard",
+        "lair_probability": "Nil",
+        "intelligence": "Average",
+        "alignment": "Any evil",
+        "level_xp": "3/155 + 4/hp",
+        "treasure": "3d12pp per individual",
+    },
+    {
+        "name": "Mephit, Lava",
+        "frequency": "Very rare",
+        "number_appearing": "1",
+        "size": "Man-sized (5 ft tall)",
+        "movement": "120 ft; 240 ft flying (AA:IV)",
+        "armor_class": 6,
+        "hit_dice": "3",
+        "attacks": 2,
+        "damage": "1 + 1d8 heat each",
+        "special_attacks": "Breath weapon (molten blob); dissolves materials",
+        "special_defenses": "Regenerates in lava",
+        "magic_resistance": "Standard",
+        "lair_probability": "Nil",
+        "intelligence": "Average",
+        "alignment": "Any evil",
+        "level_xp": "3/110 + 3/hp",
+        "treasure": "3d12pp per individual"
+    },
+    {
+        "name": "Mephit, Smoke",
+        "frequency": "Very rare",
+        "number_appearing": "1",
+        "size": "Man-sized (5 ft tall)",
+        "movement": "120 ft; 240 ft flying (AA:IV)",
+        "armor_class": 4,
+        "hit_dice": "3",
+        "attacks": 2,
+        "damage": "1d2/1d2",
+        "special_attacks": "Breath weapon (smoke orb)",
+        "special_defenses": "Flash-fire on death",
+        "magic_resistance": "Standard",
+        "lair_probability": "Nil",
+        "intelligence": "Average",
+        "alignment": "Any evil",
+        "level_xp": "3/100 + 3/hp",
+        "treasure": "3d12pp per individual"
+    },
+    {
+        "name": "Mephit, Steam",
+        "frequency": "Very rare",
+        "number_appearing": "1",
+        "size": "Man-sized (5 ft tall)",
+        "movement": "120 ft; 240 ft flying (AA:IV)",
+        "armor_class": 7,
+        "hit_dice": "3+3",
+        "attacks": 2,
+        "damage": "1d4/1d4",
+        "special_attacks": "Breath weapon (scalding water)",
+        "special_defenses": "See below",
+        "magic_resistance": "Standard",
+        "lair_probability": "Nil",
+        "intelligence": "Average",
+        "alignment": "Any evil",
+        "level_xp": "3/170 + 4/hp",
+        "treasure": "3d12pp per individual"
+    },
     {
       "name": "Mule",
       "category": "Animal",
@@ -5455,6 +8525,82 @@ export const MONSTER_MANUAL = {
       "treasure": "None",
       "description": "Mules are sterile crosses between horses and donkeys, sufficiently sure-footed to be taken into dungeons. Their stubbornness is legendary. These statistics can also be used for asses and donkeys, though these should have hit points rolled on d6s rather than d8s to reflect their smaller size."
     },
+    {
+      "name": "Merman",
+      "frequency": "Uncommon",
+      "number_appearing": "20d10",
+      "size": "Man-sized",
+      "movement": "10 ft; 180 ft swimming",
+      "armor_class": 7,
+      "hit_dice": "1+1",
+      "attacks": "1",
+      "damage": "By weapon",
+      "special_attacks": "None",
+      "special_defenses": "None",
+      "magic_resistance": "Standard",
+      "lair_probability": "25%",
+      "intelligence": "Average",
+      "alignment": "Neutral",
+      "level_xp": "2/30 + 1/hp",
+      "treasure": "1d12×1,000 cp (20%), 1d6×1,000 sp (30%), 1d4×1,000 ep (10%), 2d4×1,000 gp (40%), 1d6×1,000 pp (50%), 5d8 gems (55%), 1d12 jewellery (45%), 2 magic items (10%)"
+  },
+  {
+      "name": "Minotaur",
+      "frequency": "Rare",
+      "number_appearing": "1d8",
+      "size": "Large",
+      "movement": "120 ft",
+      "armor_class": 6,
+      "hit_dice": "6+3",
+      "attacks": "2 or 1",
+      "damage": "2d4/1d4, or by weapon",
+      "special_attacks": "None",
+      "special_defenses": "Surprised only on a 1",
+      "magic_resistance": "Standard",
+      "lair_probability": "20%",
+      "intelligence": "Low",
+      "alignment": "Chaotic evil",
+      "level_xp": "5/225 + 6/hp",
+      "treasure": "1d12×1,000 cp (20%), 1d6×1,000 sp (30%), 1d4×1,000 ep (10%), 1d6 gems (25%), 1d3 jewellery (20%), any 2 magic items (10%)"
+  },
+  {
+      "name": "Mongrelman",
+      "frequency": "Rare",
+      "number_appearing": "10d10",
+      "size": "Man-sized",
+      "movement": "90 ft",
+      "armor_class": 5,
+      "hit_dice": "1 to 4 hit dice",
+      "attacks": "1",
+      "damage": "1d4 (1HD), 1d6 (2HD), 1d8 (3HD), 1d10 (4HD)",
+      "special_attacks": "None",
+      "special_defenses": "Camouflage",
+      "magic_resistance": "Standard",
+      "lair_probability": "40%",
+      "intelligence": "Low to average",
+      "alignment": "Lawful neutral",
+      "level_xp": "(1 HD) 1/20+1/hp, (2 HD) 2/30+2/hp, (3 HD) 3/50+3/hp, (4 HD) 3/100+4/hp",
+      "treasure": "2d6×1,000 cp (20%), 1d6×1,000 sp (35%), 1d4×1,000 ep (10%), 1d4 gems (25%), 1d3 jewellery (20%), any two magic items plus two potions (10%)"
+  },
+  {
+      "name": "Mould (Brown or Yellow)",
+      "frequency": "Very rare",
+      "number_appearing": "1 patch",
+      "size": "Small to large",
+      "movement": "Nil",
+      "armor_class": 10,
+      "hit_dice": "N/A",
+      "attacks": "Nil",
+      "damage": "Nil",
+      "special_attacks": "Freezing",
+      "special_defenses": "See below",
+      "magic_resistance": "See below",
+      "lair_probability": "Nil",
+      "intelligence": "Non-",
+      "alignment": "Neutral",
+      "level_xp": "None",
+      "treasure": "None"
+  },
     {
       "name": "Mummy",
       "category": "Undead",
@@ -5828,6 +8974,36 @@ export const MONSTER_MANUAL = {
       "description": "Huge and giant rats are vicious omnivores commonly found in ruins and upper dungeon levels. Each successful bite has a 5% chance of causing disease (as the cleric spell) unless the victim passes a saving throw vs poison."
     },
     {
+      "name": "Remorhaz",
+      "category": "Monster",
+      "frequency": "Rare",
+      "numberAppearing": "1",
+      "size": "Large (21+ ft long)",
+      "move": "Not specified",
+      "armorClass": "Not specified",
+      "hitDice": "7-14",
+      "attacks": "Not specified",
+      "damage": "6d6",
+      "specialAttacks": "See below",
+      "specialDefenses": "See below",
+      "magicResistance": "75%",
+      "lairProbability": "20%",
+      "intelligence": "Animal",
+      "alignment": "Neutral",
+      "levelXP": {
+        "7HD": "6/625+8/hp",
+        "8HD": "6/950+10/hp",
+        "9HD": "7/1,400+12/hp",
+        "10HD": "7/1,700+13/hp",
+        "11HD": "7/2,100+14/hp",
+        "12HD": "8/3,000+16/hp",
+        "13HD": "8/3,500+17/hp",
+        "14HD": "8/4,200+18/hp"
+      },
+      "description": "These great polar worms are found only in arctic areas. The remorhaz attacks on sight, and if encountered in its lair there is a 1 in 4 chance it has a mate and 1d3 eggs; the eggs can be sold on some markets for 5,000 gp each. The HD of the remorhaz determines its length: starting at 21 ft, each hit die above 7 adds 3 ft, so that a 14 HD specimen will be roughly 42 ft long. The remorhaz is ice-blue in colour, with white protrusions along its back and white insect-like eyes. When attacking, the remorhaz rises on the back section of its body and begins beating its bat-like wings. Its attack is blinding, and the larger-sized remorhaz can swallow its prey whole. All remorhaz generate an intense internal heat that instantly destroys any swallowed opponent. An opponent is swallowed and destroyed if the remorhaz' attack score is a 20. When aroused for combat, the internal heat of the remorhaz seeps up into the protrusions on the back of the creature. Non-magical weapons that strike the back will melt, and any physical touch deals 10d10 hp damage.",
+      "treasure": "None"
+    },
+    {
       "name": "Rhinoceros",
       "category": "Animal",
       "variants": [
@@ -5868,6 +9044,487 @@ export const MONSTER_MANUAL = {
       "description": "Rhinoceroses are aggressive herbivores that charge any detected creature. Despite poor eyesight, they have excellent smell and hearing. Single-horned varieties (8 HD, 2d4 damage) and double-horned varieties (9 HD, 2d6 damage) charge for double damage and trample prone opponents for 2d4 damage per foreleg. Woolly rhinoceroses are larger Arctic variants found in 'lost world' settings."
     },
     {
+      "name": "Roc",
+      "category": "Monster",
+      "frequency": "Rare",
+      "numberAppearing": "1d2",
+      "size": "Large (60 ft + wingspan)",
+      "move": "30 ft; 300 ft flying (AA:II)",
+      "armorClass": 4,
+      "hitDice": 18,
+      "attacks": "1 or 2",
+      "damage": "4d6 or 3d6/3d6",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "10%",
+      "intelligence": "Animal",
+      "alignment": "Neutral",
+      "levelXP": "8/3,010 + 25/hp",
+      "description": "Rocs are powerful creatures living at high elevations in warm environments, and look somewhat like huge eagles. They will sometimes be found with giants, who keep them as pets. The immense size of a roc is accompanied by its equally immense appetites, as rocs will frequently consume large mammals including horses and cattle. A roc hunts much like an eagle, swooping down on its meal and capturing it in its immense claws, carrying it back to its nest. A roc will silence struggling prey by impaling it with its powerful beak for 4d6 hit points of damage. Any treasure found in the gigantic nests of rocs is there purely on accident, since rocs have no concept of wealth. The belongings of past victims will be found woven into the intricate nest.",
+      "treasure": {
+        "cp": { "amount": "1d12×1,000", "chance": "20%" },
+        "sp": { "amount": "1d6×1,000", "chance": "30%" },
+        "ep": { "amount": "1d4×1,000", "chance": "10%" },
+        "gems": { "amount": "1d6", "chance": "25%" },
+        "jewellery": { "amount": "1d33", "chance": "20%" },
+        "magic_items": { "amount": 2, "chance": "10%" }
+      }
+    },
+    {
+      "name": "Roper",
+      "category": "Monster",
+      "frequency": "Rare",
+      "numberAppearing": "1d4",
+      "size": "Large",
+      "move": "30 ft",
+      "armorClass": 0,
+      "hitDice": "11",
+      "attacks": 1,
+      "damage": "2d10+2",
+      "specialAttacks": "See below",
+      "specialDefenses": "See below",
+      "magicResistance": "80%",
+      "lairProbability": "93%",
+      "intelligence": "Exceptional",
+      "alignment": "Chaotic evil",
+      "levelXP": "9/2,700+16/hp",
+      "description": "Ropers are cavern-dwelling monsters and are frequently mistaken for stalagmites. These monsters are grey-green in colour, standing around 8 ft-12 ft tall, with a hide that mimics the smooth limestone formations of a natural cavern. Ropers are about 3 ft-4 ft at the base and approximately 1 ft wide at the apex. These monsters are almost always encountered in their stalagmite shape but can alter their appearance to some degree. A roper can assume the shape of a pillar, a boulder, or flatten themselves and lie flat to appear as no more than an irregularity on the walking surface of the cavern floor. It can also cling to a cavern ceiling (or wall) and appear as a stalactite. Through means of tiny adhesive cilia on its underside, the roper can move slowly and these cilia are what allow it to cling upside down to the ceiling. Ropers are predators and attack by means of the 6 rope-like appendages that give these monsters their name. The ropes secrete a powerful and poisonous adhesive and can lash out some distance from the creature; up to 50 ft. A successful to hit roll will weaken the target, decreasing its strength ability score by 50% (rounded down) within 1d3 rounds and lasting 2d4 turns; with multiple hits having a cumulative strength drain effect. An ensnared victim can break the strand by performing a Minor Test of Strength but for every round the victim is roped he or she will be dragged 10 ft closer to the roper. Creatures within 10 ft of the roper are subject to its vicious bite attack, this attack automatically hits any victim held by the strands of the roper. A strand can be sliced with an edged weapon but the attack must do a minimum of 6 points of damage in a single attack to the AC 0 tentacle to sever it. The strand of a roper can easily pull 800 lbs and can lift about a third of that amount. A roper is a tough monster. The stony hide grants it AC 0 in combat and it has an innate resistance to magic. Besides its base 80% magic resistance, the roper is completely immune to electricity based damage including lightning, ropers are also resistant to cold based magic and take only half damage from any such attacks. These creatures have few weaknesses but are susceptible to fire, saving vs fire based attacks at -4. Any fire based magic attacks, however, must still overcome the monster's magic resistance.",
+      "variants": {
+        "Quartz Roper": {
+          "frequency": "Rare",
+          "numberAppearing": "1",
+          "size": "Medium (5 ft)",
+          "move": "10 ft",
+          "armorClass": 0,
+          "hitDice": 6,
+          "attacks": 1,
+          "damage": "1d10",
+          "specialAttacks": "See below",
+          "specialDefenses": "See below",
+          "magicResistance": "Standard",
+          "lairProbability": "93%",
+          "intelligence": "High",
+          "alignment": "Chaotic evil",
+          "levelXP": "5/525+6/hp",
+          "description": "To adventurers familiar with ropers, a quartz roper appears as a 5 ft tall and 2 ft wide (at the base) statue of a roper hewn from some brownish or smoky grey crystalline mineral. The quartz roper is actually a monster with a rocky hide composed of living quartz. Quartz ropers are very sensitive to motion and are able to sense movement up to 225 ft away. In combat, quartz ropers fight in a manner similar to ropers: its tentacles can hit targets up to 50 ft away, the poisonous adhesive of the tentacles inflicts a 50% strength penalty on its targets, and it drags roped victims toward itself to deliver its nasty bite automatically. A quartz roper also differs from its larger cousins in a number of ways. First, it tends to concentrate its first attacks on two victims, striking each with 3 tentacles. The first two successfully roped victims will be injected with a venom which allows no saving throw and causes the victim to freeze in place, looking as if he or she has been turned to stone. One round after this apparent stoning the victim recovers and but is now under the delusion the quartz roper is a close friend and valued ally. These influenced adventurers will fight to protect the monster to the utmost of their abilities for the duration of effect of the venom; 10 turns. If the quartz roper is killed before the venom expires the deluded defenders will cease attacking and wander about aimlessly until the venom expires. The quartz roper can only inject its venom twice per day and afterward its combat tactics conform to those of a roper. A quartz roper's tentacles are strong, but not so strong as the larger variety of roper. A roped character's chances of breaking free are equal to double his or her chance to perform a Minor Test of Strength. Quartz ropers also lack a roper's magic resistance but its mineral-laden hide will resist normal missile fire, though magic missiles and hand held weapons damage it normally. All magic spells do normal damage as well. A quartz roper's gizzard has the same percentage chance of containing platinum pieces and gemstones as the standard variety of roper."
+        }
+      },
+      "treasure": "Ropers do not hoard treasure but their acidic bile cannot dissolve platinum or gemstones. Cutting open the gizzard of a roper has a 40% chance of yielding 3d6 (3-18) platinum pieces and 30% chance of 4d6 (4-24) gems."
+    },
+    {
+      "name": "Roc",
+      "category": "Monster",
+      "frequency": "Rare",
+      "numberAppearing": "1d2",
+      "size": "Large (60 ft + wingspan)",
+      "move": "30 ft; 300 ft flying (AA:II)",
+      "armorClass": 4,
+      "hitDice": 18,
+      "attacks": "1 or 2",
+      "damage": "4d6 or 3d6/3d6",
+      "specialAttacks": "None",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "10%",
+      "intelligence": "Animal",
+      "alignment": "Neutral",
+      "levelXP": "8/3,010 + 25/hp",
+      "description": "Rocs are powerful creatures living at high elevations in warm environments, and look somewhat like huge eagles. They will sometimes be found with giants, who keep them as pets. The immense size of a roc is accompanied by its equally immense appetites, as rocs will frequently consume large mammals including horses and cattle. A roc hunts much like an eagle, swooping down on its meal and capturing it in its immense claws, carrying it back to its nest. A roc will silence struggling prey by impaling it with its powerful beak for 4d6 hit points of damage. Any treasure found in the gigantic nests of rocs is there purely on accident, since rocs have no concept of wealth. The belongings of past victims will be found woven into the intricate nest.",
+      "treasure": {
+        "cp": { "amount": "1d12×1,000", "chance": "20%" },
+        "sp": { "amount": "1d6×1,000", "chance": "30%" },
+        "ep": { "amount": "1d4×1,000", "chance": "10%" },
+        "gems": { "amount": "1d6", "chance": "25%" },
+        "jewellery": { "amount": "1d33", "chance": "20%" },
+        "magic_items": { "amount": 2, "chance": "10%" }
+      }
+    },
+    {
+      "name": "Roper",
+      "category": "Monster",
+      "frequency": "Rare",
+      "numberAppearing": "1d4",
+      "size": "Large",
+      "move": "30 ft",
+      "armorClass": 0,
+      "hitDice": "11",
+      "attacks": 1,
+      "damage": "2d10+2",
+      "specialAttacks": "See below",
+      "specialDefenses": "See below",
+      "magicResistance": "80%",
+      "lairProbability": "93%",
+      "intelligence": "Exceptional",
+      "alignment": "Chaotic evil",
+      "levelXP": "9/2,700+16/hp",
+      "description": "Ropers are cavern-dwelling monsters and are frequently mistaken for stalagmites. These monsters are grey-green in colour, standing around 8 ft-12 ft tall, with a hide that mimics the smooth limestone formations of a natural cavern. Ropers are about 3 ft-4 ft at the base and approximately 1 ft wide at the apex. These monsters are almost always encountered in their stalagmite shape but can alter their appearance to some degree. A roper can assume the shape of a pillar, a boulder, or flatten themselves and lie flat to appear as no more than an irregularity on the walking surface of the cavern floor. It can also cling to a cavern ceiling (or wall) and appear as a stalactite. Through means of tiny adhesive cilia on its underside, the roper can move slowly and these cilia are what allow it to cling upside down to the ceiling. Ropers are predators and attack by means of the 6 rope-like appendages that give these monsters their name. The ropes secrete a powerful and poisonous adhesive and can lash out some distance from the creature; up to 50 ft. A successful to hit roll will weaken the target, decreasing its strength ability score by 50% (rounded down) within 1d3 rounds and lasting 2d4 turns; with multiple hits having a cumulative strength drain effect. An ensnared victim can break the strand by performing a Minor Test of Strength but for every round the victim is roped he or she will be dragged 10 ft closer to the roper. Creatures within 10 ft of the roper are subject to its vicious bite attack, this attack automatically hits any victim held by the strands of the roper. A strand can be sliced with an edged weapon but the attack must do a minimum of 6 points of damage in a single attack to the AC 0 tentacle to sever it. The strand of a roper can easily pull 800 lbs and can lift about a third of that amount. A roper is a tough monster. The stony hide grants it AC 0 in combat and it has an innate resistance to magic. Besides its base 80% magic resistance, the roper is completely immune to electricity based damage including lightning, ropers are also resistant to cold based magic and take only half damage from any such attacks. These creatures have few weaknesses but are susceptible to fire, saving vs fire based attacks at -4. Any fire based magic attacks, however, must still overcome the monster's magic resistance.",
+      "variants": [
+        {
+          "name": "Quartz Roper",
+          "frequency": "Rare",
+          "numberAppearing": "1",
+          "size": "Medium (5 ft)",
+          "move": "10 ft",
+          "armorClass": 0,
+          "hitDice": 6,
+          "attacks": 1,
+          "damage": "1d10",
+          "specialAttacks": "See below",
+          "specialDefenses": "See below",
+          "magicResistance": "Standard",
+          "lairProbability": "93%",
+          "intelligence": "High",
+          "alignment": "Chaotic evil",
+          "levelXP": "5/525+6/hp",
+          "description": "To adventurers familiar with ropers, a quartz roper appears as a 5 ft tall and 2 ft wide (at the base) statue of a roper hewn from some brownish or smoky grey crystalline mineral. The quartz roper is actually a monster with a rocky hide composed of living quartz. Quartz ropers are very sensitive to motion and are able to sense movement up to 225 ft away. In combat, quartz ropers fight in a manner similar to ropers: its tentacles can hit targets up to 50 ft away, the poisonous adhesive of the tentacles inflicts a 50% strength penalty on its targets, and it drags roped victims toward itself to deliver its nasty bite automatically. A quartz roper also differs from its larger cousins in a number of ways. First, it tends to concentrate its first attacks on two victims, striking each with 3 tentacles. The first two successfully roped victims will be injected with a venom which allows no saving throw and causes the victim to freeze in place, looking as if he or she has been turned to stone. One round after this apparent stoning the victim recovers and but is now under the delusion the quartz roper is a close friend and valued ally. These influenced adventurers will fight to protect the monster to the utmost of their abilities for the duration of effect of the venom; 10 turns. If the quartz roper is killed before the venom expires the deluded defenders will cease attacking and wander about aimlessly until the venom expires. The quartz roper can only inject its venom twice per day and afterward its combat tactics conform to those of a roper. A quartz roper's tentacles are strong, but not so strong as the larger variety of roper. A roped character's chances of breaking free are equal to double his or her chance to perform a Minor Test of Strength. Quartz ropers also lack a roper's magic resistance but its mineral-laden hide will resist normal missile fire, though magic missiles and hand held weapons damage it normally. All magic spells do normal damage as well. A quartz roper's gizzard has the same percentage chance of containing platinum pieces and gemstones as the standard variety of roper."
+        }
+      ],
+      "treasure": "Ropers do not hoard treasure but their acidic bile cannot dissolve platinum or gemstones. Cutting open the gizzard of a roper has a 40% chance of yielding 3d6 (3-18) platinum pieces and 30% chance of 4d6 (4-24) gems."
+    },
+    {
+      "name": "Rot Grub",
+      "category": "Monster",
+      "frequency": "Rare",
+      "numberAppearing": "5d4",
+      "size": "Small",
+      "move": "10 ft",
+      "armorClass": 9,
+      "hitDice": "1 hit point",
+      "attacks": 0,
+      "damage": "None",
+      "specialAttacks": "See below",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Non-",
+      "alignment": "Neutral",
+      "levelXP": "1/5 + 1/hp",
+      "description": "Although rot grubs can be found in animal waste and other foul refuse, they prefer to consume tissue that is still alive. Upon contact with a living being, rot grubs will begin to vigorously burrow deep into the body. Fire must be applied to the site of contact at once in order to prevent the rot grubs from burrowing further. This application of flame inflicts 1d6 hit points of damage per instance. If not stopped immediately, within 1 to 3 turns the rot grubs will find the heart and kill their victim.",
+      "treasure": "None"
+    },
+    {
+      "name": "Rust Monster",
+      "category": "Monster",
+      "frequency": "Uncommon",
+      "numberAppearing": "1d2",
+      "size": "Medium (5 ft long)",
+      "move": "180 ft",
+      "armorClass": 2,
+      "hitDice": 5,
+      "attacks": 2,
+      "damage": "Nil",
+      "specialAttacks": "See below",
+      "specialDefenses": "None",
+      "magicResistance": "Standard",
+      "lairProbability": "10%",
+      "intelligence": "Animal",
+      "alignment": "Neutral",
+      "levelXP": "3/185 + 4 per hp",
+      "description": "Rust monsters are creatures vaguely resembling a 5 ft long and 3 ft tall giant bug-like armadillo that weighs about 200 lbs. Rust monsters have rust-red colouration on their dorsal hides, yellowish tan on their ventral hides, and two prehensile antennae on their heads. Rust monsters are only found in underground type environments, which they prowl constantly in search of food. Rust monsters consume metal of any kind, especially ferrous metals and ferrous metal alloys. The antennae of a rust monster can \"smell\" metal 90 ft away, and the creature will dart toward such a source of food with blinding speed, rolling 2 attacks with its antennae at the largest piece of metal it can sense. A successful attack causes up to 10 cubic ft of metal instantly to crumble into easily-digestible rust and the creature will immediately cease attacking in such a case and begin devouring its newly-created meal. Metal with magical bonuses gains a 10% chance per plus of not being affected by the rust monsters attack. For instance a +3 shield would have a 30% of resisting the rusting effect. A successful \"to hit\" roll against a rust monster with a metal weapon automatically subjects that weapon to a rust attack. Rust monsters are motivated by animal intelligence and blind hunger, therefore can be easily distracted from pursuit by dropping metal objects and fleeing; some iron spikes or a heavy mace will cause the attacking rust monster to stop for 1 round to devour the treat. Otherwise, rust monsters will relentlessly pursue the PCs until slain or all metal items have been consumed.",
+      "treasure": "1d4 gems per individual (50%)"
+    },
+    {
+      "name": "Sahuagin",
+      "category": "Monster",
+      "variants": [
+        {
+          "name": "Warrior",
+          "frequency": "Uncommon",
+          "numberAppearing": "20d4",
+          "size": "Man-sized",
+          "move": "120 ft; 240 ft swimming",
+          "armorClass": 5,
+          "hitDice": "2+2",
+          "attacks": 1,
+          "damage": "By weapon",
+          "specialAttacks": "See below",
+          "specialDefenses": "See below",
+          "magicResistance": "Standard",
+          "lairProbability": "25%",
+          "intelligence": "High",
+          "alignment": "Lawful evil",
+          "levelXP": "2/30+3/hp"
+        },
+        {
+          "name": "Female",
+          "frequency": "Uncommon",
+          "numberAppearing": "30d4",
+          "size": "Man-sized",
+          "move": "120 ft; 240 ft swimming",
+          "armorClass": 6,
+          "hitDice": 2,
+          "attacks": 1,
+          "damage": "By weapon",
+          "specialAttacks": "See below",
+          "specialDefenses": "See below",
+          "magicResistance": "Standard",
+          "lairProbability": "100%",
+          "intelligence": "High",
+          "alignment": "Lawful evil",
+          "levelXP": "2/20+2/hp"
+        },
+        {
+          "name": "Hatchling",
+          "frequency": "Uncommon",
+          "numberAppearing": "10d4",
+          "size": "Small",
+          "move": "120 ft; 240 ft swimming",
+          "armorClass": 7,
+          "hitDice": 1,
+          "attacks": 1,
+          "damage": "1d4",
+          "specialAttacks": "See below",
+          "specialDefenses": "See below",
+          "magicResistance": "Standard",
+          "lairProbability": "100%",
+          "intelligence": "High",
+          "alignment": "Lawful evil",
+          "levelXP": "1/10+1/hp"
+        },
+        {
+          "name": "Guard",
+          "frequency": "Uncommon",
+          "numberAppearing": "3d6",
+          "size": "Man-sized",
+          "move": "120 ft; 240 ft swimming",
+          "armorClass": 5,
+          "hitDice": "3+3",
+          "attacks": 1,
+          "damage": "By weapon",
+          "specialAttacks": "See below",
+          "specialDefenses": "See below",
+          "magicResistance": "Standard",
+          "lairProbability": "25%",
+          "intelligence": "High",
+          "alignment": "Lawful evil",
+          "levelXP": "3/50+4/hp"
+        },
+        {
+          "name": "Warchief",
+          "frequency": "Rare",
+          "numberAppearing": "1",
+          "size": "Man-sized",
+          "move": "120 ft; 240 ft swimming",
+          "armorClass": 4,
+          "hitDice": "4+4",
+          "attacks": 1,
+          "damage": "By weapon",
+          "specialAttacks": "See below",
+          "specialDefenses": "See below",
+          "magicResistance": "Standard",
+          "lairProbability": "25%",
+          "intelligence": "High",
+          "alignment": "Lawful evil",
+          "levelXP": "4/100+5/hp"
+        },
+        {
+          "name": "Priestess",
+          "frequency": "Very rare",
+          "numberAppearing": "1d4+1",
+          "size": "Man-sized",
+          "move": "120 ft; 240 ft swimming",
+          "armorClass": 5,
+          "hitDice": "2 to 6",
+          "attacks": 1,
+          "damage": "By weapon",
+          "specialAttacks": "See below",
+          "specialDefenses": "See below",
+          "magicResistance": "Standard",
+          "lairProbability": "100%",
+          "intelligence": "Exceptional",
+          "alignment": "Lawful evil",
+          "levelXP": "Variable"
+        },
+        {
+          "name": "Baron",
+          "frequency": "Very rare",
+          "numberAppearing": "1",
+          "size": "Man-sized",
+          "move": "120 ft; 240 ft swimming",
+          "armorClass": 3,
+          "hitDice": "6+6",
+          "attacks": 1,
+          "damage": "By weapon",
+          "specialAttacks": "See below",
+          "specialDefenses": "See below",
+          "magicResistance": "Standard",
+          "lairProbability": "100%",
+          "intelligence": "High",
+          "alignment": "Lawful evil",
+          "levelXP": "4/300+8/hp"
+        },
+        {
+          "name": "Prince",
+          "frequency": "Very rare",
+          "numberAppearing": "1",
+          "size": "Man-sized",
+          "move": "120 ft; 240 ft swimming",
+          "armorClass": 2,
+          "hitDice": "8+8",
+          "attacks": 2,
+          "damage": "By weapon",
+          "specialAttacks": "See below",
+          "specialDefenses": "See below",
+          "magicResistance": "Standard",
+          "lairProbability": "100%",
+          "intelligence": "High",
+          "alignment": "Lawful evil",
+          "levelXP": "5/500+12/hp"
+        },
+        {
+          "name": "King",
+          "frequency": "Very rare",
+          "numberAppearing": "1",
+          "size": "Man-sized",
+          "move": "120 ft; 240 ft swimming",
+          "armorClass": 1,
+          "hitDice": "10+10",
+          "attacks": 4,
+          "damage": "By weapon",
+          "specialAttacks": "See below",
+          "specialDefenses": "See below",
+          "magicResistance": "Standard",
+          "lairProbability": "100%",
+          "intelligence": "Exceptional",
+          "alignment": "Lawful evil",
+          "levelXP": "6/1,250+14/hp"
+        }
+      ],
+      "description": "Sahuagin are humanoid ichthyans of evil alignment. They dwell in shallow, warmer salt waters and raid villages and communities on land for loot and sport. They are nocturnal. Each sahuagin realm has a King and is divided into nine provinces, each ruled by a Prince. Each Prince will have a number of Barons under his command, and each Baron controls a war-band. The \"Number Encountered\" listing for this creature is for the lair of a typical war-band; the lairs of a Prince will be much larger. If encountered outside their lair, there will be no females or hatchlings, no priestesses or above, and the band will be led by a warchief. Sahuagin are typically armed as follows: Dagger and spear 25% of the band, Dagger, trident and net 50% of the band, Dagger and heavy crossbow 25% of the band. All these weapons are fully usable both above and below the water, which makes them quite highly prized. The sahuagin clergy will always be led by a priestess with 6 HD and the spellcasting powers of an 8th level cleric. The remaining priestesses will be trainees of 2nd to 7th level (1d6+1). Their HD are equal to their spellcasting level -2 (minimum 2). Sahuagin priestesses will typically be attended by zombie or skeleton servants, as they are fond of the animate dead spell. Sahuagin have been known to tame sharks and keep them as pets.",
+      "treasure": {
+        "individual": "1d6 pp each",
+        "lair": {
+          "gp": { "amount": "2d6×1,000", "chance": "75%" },
+          "pp": { "amount": "3d6×100", "chance": "50%" },
+          "gems": { "amount": "3d8", "chance": "50%" },
+          "jewellery": { "amount": "2d6", "chance": "50%" },
+          "magic_items": { "amount": "1 miscellaneous magic and 1 potion", "chance": "50%" }
+        }
+      }
+    },
+    {
+      "name": "Scorpion",
+      "category": "Monster",
+      "variants": [
+        {
+          "name": "Large",
+          "frequency": "Common",
+          "numberAppearing": "1d6",
+          "size": "Small",
+          "move": "90 ft",
+          "armorClass": 5,
+          "hitDice": "2+2",
+          "attacks": 3,
+          "damage": "1d4/1d4/1d2",
+          "specialAttacks": "Poison sting",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "25%",
+          "intelligence": "Non-",
+          "alignment": "Neutral",
+          "levelXP": "3/75+3/hp"
+        },
+        {
+          "name": "Huge",
+          "frequency": "Uncommon",
+          "numberAppearing": "1d4",
+          "size": "Small",
+          "move": "120 ft",
+          "armorClass": 4,
+          "hitDice": "4+4",
+          "attacks": 3,
+          "damage": "1d8/1d8/1d3",
+          "specialAttacks": "Poison sting",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "25%",
+          "intelligence": "Non-",
+          "alignment": "Neutral",
+          "levelXP": "4/125+5/hp"
+        },
+        {
+          "name": "Giant",
+          "frequency": "Uncommon",
+          "numberAppearing": "1d3",
+          "size": "Medium",
+          "move": "150 ft",
+          "armorClass": 3,
+          "hitDice": "5+5",
+          "attacks": 3,
+          "damage": "1d10/1d10/1d4",
+          "specialAttacks": "Poison sting",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "50%",
+          "intelligence": "Non-",
+          "alignment": "Neutral",
+          "levelXP": "5/600 + 6/hp"
+        }
+      ],
+      "description": "Large, huge and giant scorpions are vicious, fearless predators found almost anywhere. Their usual tactic is to attack anything smaller than themselves. The scorpion will try and grab its prey with its huge claws then sting it to death with its tail. While its tail only does 1d4 points of damage the victim must save vs poison or die. The scorpion can use its attacks independently of each other on 3 different targets. Anything that the scorpion kills is taken back to its lair and consumed. It should be noted that the scorpion is not immune to its own poison; if it stings itself it could die.",
+      "treasure": {
+        "lair": {
+          "cp": { "amount": "1d8×1,000", "chance": "10%" },
+          "sp": { "amount": "1d12×1,000", "chance": "15%" },
+          "ep": { "amount": "1d8×1,000", "chance": "15%" },
+          "gp": { "amount": "1d6×1,000", "chance": "30%" },
+          "gems": { "amount": "1d10", "chance": "10%" },
+          "jewellery": { "amount": "1d6", "chance": "5%" },
+          "magic_items": { "amount": "2 misc. magic + 1 potion", "chance": "5%" }
+        }
+      }
+    },
+    {
+      "name": "Sea Hag",
+      "category": "Monster",
+      "frequency": "Rare",
+      "numberAppearing": "1d3",
+      "size": "Medium",
+      "move": "90 ft; 150 ft swimming",
+      "armorClass": 7,
+      "hitDice": 3,
+      "attacks": "2 claws or 1 weapon",
+      "damage": "1d3+3/1d3+3 or by weapon +3",
+      "specialAttacks": "See Below",
+      "specialDefenses": "See Below",
+      "magicResistance": "50%",
+      "lairProbability": "50%",
+      "intelligence": "Average",
+      "alignment": "Chaotic evil",
+      "levelXP": "5/410 +2/hp",
+      "description": "Sea Hags are wretched creatures given to committing dreadful acts of evil. They typically make their lairs beneath the ocean depths, but they are occasionally found in large lakes or other significant bodies of water. Their true form is that of a decrepit old woman, ravaged by time and repellent beyond reason, but they generally use their magic to assume a much more pleasant visage. They have sharp claws and teeth, as well as an insatiable appetite for flesh. Most Sea Hags are thought to be capable of speaking a number of languages. The appearance of a Sea Hag belies their true abilities, for they are all supernaturally swift and strong, but more potent are their magical abilities. They take particular delight in their ability to use change self to deceive the unwary, either luring them to an unpleasant and immediate death or as part of a more subtle scheme; they can use this power at will and the duration is unlimited. Should a Sea Hag's true appearance ever be revealed, then the horror causes anyone within thirty feet to be subject to a saving throw versus spells to avoid losing half their strength score for 1d6 turns. Furthermore, a Sea Hag can employ an evil gaze up to three times per day that subjects one creature within thirty feet to a saving throw vs poison; failure results in immediate collapse and paralysis for three days, though for 1 in 4 victims the effect is stronger and causes instant death. If physical combat becomes unavoidable, Sea Hags will attack with a weapon or their sharp claws; regardless, they have +3 to hit and +3 to damage. Sea Hags are immune to charm, fear, sleep and fire or cold based spells and immune to weapons that are not forged of cold iron, silver or else enchanted with at least a +1 bonus.",
+      "treasure": {
+        "cp": { "amount": "1d10×1,000", "chance": "25%" },
+        "sp": { "amount": "1d8×1,000", "chance": "25%" },
+        "gp": { "amount": "1d6×1,000", "chance": "25%" },
+        "gems": { "amount": "1d6", "chance": "25%" },
+        "jewellery": { "amount": "1d3", "chance": "25%" },
+        "magic_items": { "amount": "any two", "chance": "10%" }
+      }
+    },
+    {
+      "name": "Sea Serpent",
+      "category": "Monster",
+      "frequency": "Uncommon",
+      "numberAppearing": "1d2",
+      "size": "Large (50 ft long)",
+      "move": "120 ft swimming",
+      "armorClass": 5,
+      "hitDice": 10,
+      "attacks": 2,
+      "damage": "1d6/3d6",
+      "specialAttacks": "Poison, constrict",
+      "specialDefenses": "Nil",
+      "magicResistance": "Nil",
+      "lairProbability": "5%",
+      "intelligence": "Animal",
+      "alignment": "Neutral",
+      "levelXP": "7/1,000 + 12/hp",
+      "description": "Descriptions of sea serpents vary with the region in which they are found. Sometimes they appear as giant sea snakes and other times as dragon-like serpentine creatures with legs or flippers. What is known for certain is a sea serpent can be encountered in any ocean, sea, or large body of fresh water. Sea serpents have two attacks. It has a poisonous bite for 1d6 points of damage and death in 1d4 rounds, save vs poison to negate; and a coiling attack which can crush a ship or creature in 1d6+4 (5-10) rounds. Sea serpents are very territorial but are not otherwise aggressive, only attacking when hungry. Once a sea serpent attacks, however, it is fearless and relentless and will fight to the death. Sea serpents are capable of diving to great depths and staying underwater for long periods of time. Sea serpents only lair in caves in very deep water and tend to be solitary or, at most, a mated pair.",
+      "treasure": "None"
+    },
+    {
       "name": "Shadow",
       "category": "Undead",
       "turnResistance": 4,
@@ -5898,6 +9555,35 @@ export const MONSTER_MANUAL = {
       "description": "Shadows are undead creatures that drain random attributes (Str, Dex, or Con) with each hit. Victims reduced to zero become shadows under the control of their killer. Drained points return after an hour if not reduced to zero. They can only be hit by magic weapons and are immune to cold, mind-affecting spells, and most detection methods."
     },
     {
+      "name": "Shambling Mound",
+      "category": "Monster",
+      "frequency": "Rare",
+      "numberAppearing": "1d3",
+      "size": "Large",
+      "move": "60 ft",
+      "armorClass": 0,
+      "hitDice": "8 to 11",
+      "attacks": 2,
+      "damage": "2d8/2d8",
+      "specialAttacks": "Suffocation",
+      "specialDefenses": "See below",
+      "magicResistance": "See below",
+      "lairProbability": "30%",
+      "intelligence": "Low",
+      "alignment": "Neutral",
+      "levelXP": "Variable according to hit dice",
+      "description": "Shambling mounds appear to be piles of rotting vegetation. They are a type of intelligent plant. They dwell deep underground and in swamps, wherever there is ample moisture and decay. Shambling mounds will eat anything organic. They feed by wrapping their roots around their prey and absorbing the nutrients as the material rots. When attacking, the shambling mound swings its arms around wildly. If both arms strike the same target within the same round, that target has become tangled up inside the creature. The victim will be smothered in 2d4 rounds unless the monster can be killed. These things are rugged since the actual creature is surrounded by layers upon layers of rotting material. Fire has no effect as they are so wet, nothing will burn. Electricity will actually cause the shambling mound to grow, add an additional hit die. Cold based attacks do no damage if the creature makes it save, half if it does. Weapons only do half damage as well. Shambling mounds are vulnerable to spells that affect plants such as plant control or charm plant.",
+      "treasure": {
+        "cp": { "amount": "1d8×1,000", "chance": "50%" },
+        "sp": { "amount": "1d6×1,000", "chance": "25%" },
+        "ep": { "amount": "1d4×1,000", "chance": "25%" },
+        "gp": { "amount": "1d3×1,000", "chance": "25%" },
+        "gems": { "amount": "1d8", "chance": "30%" },
+        "jewellery": { "amount": "1d4", "chance": "20%" },
+        "magic_items": { "amount": "sword, armour, or misc. weapon + 1d4 scrolls + 1 misc. magic item + 1 potion", "chance": "60%" }
+      }
+    },
+    {
       "name": "Shark",
       "category": "Animal",
       "frequency": "Common",
@@ -5917,6 +9603,54 @@ export const MONSTER_MANUAL = {
       "levelXP": "3/50 + 2/hp or more",
       "treasure": "None",
       "description": "Sharks are vicious sea scavengers attracted to splashing, movement, and especially blood in water. When feeding, they enter a frenzy attacking everything, sometimes even each other. Sharks have two notable weaknesses: they must remain in constant motion to breathe (immobilization causes drowning), and they can be killed instantly by a well-placed blunt force blow to their side."
+    },
+    {
+      "name": "Shedu",
+      "category": "Monster",
+      "frequency": "Rare",
+      "numberAppearing": "2d4",
+      "size": "Large",
+      "move": "120 ft; 240 ft flying (AA:IV)",
+      "armorClass": 4,
+      "hitDice": "9+9",
+      "attacks": 2,
+      "damage": "1d6/1d6",
+      "specialAttacks": "See below",
+      "specialDefenses": "See below",
+      "magicResistance": "25%",
+      "lairProbability": "25%",
+      "intelligence": "Exceptional",
+      "alignment": "Lawful good",
+      "levelXP": "7/1,950 + 14/hp",
+      "description": "Shedu are winged bulls with human heads. They wander endlessly battling evil and chaos. They will aid anyone of good alignment, who is in need. They are powerful magic users who cast with a 9th level ability. If attacked, they will defend themselves with their front hooves. Shedu not only travel the material plane but the æthereal and astral planes as well. They can become æthereal at will. Shedu speak their own language, using their telepathy to communicate with others.",
+      "treasure": {
+        "gp": { "amount": "10d4×1,000", "chance": "50%" },
+        "pp": { "amount": "1d20×100", "chance": "50%" },
+        "gems": { "amount": "5d4", "chance": "30%" },
+        "jewellery": { "amount": "1d10", "chance": "25%" },
+        "magic_items": { "amount": "any 4 magic item + 1 scroll", "chance": "35%" }
+      }
+    },
+    {
+      "name": "Shrieker",
+      "category": "Monster",
+      "frequency": "Common",
+      "numberAppearing": "2d4",
+      "size": "Small to large",
+      "move": "10 ft",
+      "armorClass": 7,
+      "hitDice": 3,
+      "attacks": "None",
+      "damage": "Nil",
+      "specialAttacks": "Nil",
+      "specialDefenses": "Noise",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Non-",
+      "alignment": "Neutral",
+      "levelXP": "3/50 + 2/hp",
+      "description": "Shriekers are mobile fungi that wander around quietly underground soaking up moisture. They are the favourite food of purple worms and shambling mounds. They give off an ear-piercing shriek whenever they detect light within 30 ft or movement within 10 ft. Shriekers will continue to shriek for 1d3 rounds, with a 50% chance to attract a wandering monster each round.",
+      "treasure": "None"
     },
     {
       "name": "Skeleton",
@@ -5940,13 +9674,197 @@ export const MONSTER_MANUAL = {
       "treasure": "None",
       "description": "Animated fleshless remains created by evil magic. They mindlessly obey simple commands. All attacks deal 1d6 damage regardless of weapon. Immune to cold and mind-affecting spells. Take half damage from edged/cutting weapons and minimal damage from piercing weapons. Holy water inflicts 2d4 damage per vial."
     },
-
     {
-      "name": "Men, Soldiery",
+      "name": "Skeleton Warrior",
+      "category": "Monster",
+      "frequency": "Very rare",
+      "numberAppearing": "1",
+      "size": "Man-sized",
+      "move": "60 ft",
+      "armorClass": 2,
+      "hitDice": "9+2 or higher",
+      "attacks": 1,
+      "damage": "By weapon (+3 to hit)",
+      "specialAttacks": "See below",
+      "specialDefenses": "See below",
+      "magicResistance": "90%",
+      "lairProbability": "5%",
+      "intelligence": "Exceptional",
+      "alignment": "Neutral evil",
+      "levelXP": "7/2,000+16/hp",
+      "description": "Skeleton Warriors are the unfortunate victims of powerful magic; in life they were fighters of great prowess and likely lords in their own right. In death they have become abominations, compelled by evil sorcery to serve any who possess the golden circlets that contain their souls. Skeleton Warriors desire above all else to gain possession of their own circlet and to be revenged upon any who have possessed and used it in the past. The appearance of a Skeleton Warrior is terrifying and creatures with less than five HD will panic and flee from its presence. A visage of desiccated and decaying flesh hanging from exposed bone is perhaps fearsome enough, but the flame red-eyes that stare forth from black sockets are said to haunt the dreams of those upon whom they look. They are generally armed and armoured with the remains of what they wore in life, or their grave goods. A character in possession of the circlet of a Skeleton Warrior and within 240 ft may attempt to dominate it. The circlet must be worn on the attempting character's head in order to do this; it cannot be used whilst wearing a helmet or similar headgear. On the first attempt at domination, the character has a chance of success equal to his or her Wisdom score × 5, but he or she must be able to see his or her victim and have the freedom to concentrate for one round. If the attempt fails, it may be attempted again on the following round. If concentration is interrupted before domination is achieved, such as by an attack, the character must concentrate for a further three rounds. During this time, the Skeleton Warrior will attempt to kill its would-be master and take possession of the circlet if such is at all possible. In the event of successful domination, the Skeleton Warrior is rendered inert for as long as the character remains in possession of the circlet. Additionally, whenever they are within 240 ft of one another and the character wears the circlet without helmet as described above, the user may take control of the Skeleton Warrior, being able to see through its eyes and direct its actions as he or she desires; whilst controlling the actions of the Skeleton Warrior, the user may not act him- or herself. Should the user lose possession of the circlet for any reason, the Skeleton Warrior will seek him or her out and slay him or her, moving at double its usual movement rate. In the event that the Skeleton Warrior ever regains possession of its circlet, it will place it upon its head and as a result both will turn to dust. Skeleton Warriors are powerful combatants, may use any weapon and always have a +3 bonus to hit; they can only be harmed by magical weapons. The lair of a Skeleton Warrior is normally a richly adorned tomb filled with considerable treasure. However, because they are usually either seeking the current possessor of their circlet or else in the unwilling service of said possessor, they are rarely found in their lairs. Contrary to appearances, the Skeleton Warrior is not undead in the conventional sense. It cannot be turned, is unaffected by a scroll of protection from undead, etc.",
+      "treasure": {
+        "cp": { "amount": "1d8×1,000", "chance": "50%" },
+        "sp": { "amount": "1d6×1,000", "chance": "25%" },
+        "ep": { "amount": "1d4×1,000", "chance": "25%" },
+        "gp": { "amount": "1d3×1,000", "chance": "25%" },
+        "gems": { "amount": "1d8", "chance": "30%" },
+        "jewellery": { "amount": "1d4", "chance": "20%" },
+        "magic_items": { "amount": "sword, armour, or misc. weapon + 1d4 scrolls + 1 misc. magic item + 1 potion", "chance": "60%" }
+      }
+    },
+    {
+      "name": "Slithering Tracker",
+      "category": "Monster",
+      "frequency": "Rare",
+      "numberAppearing": "1",
+      "size": "Small",
+      "move": "120 ft",
+      "armorClass": 5,
+      "hitDice": 5,
+      "attacks": "None",
+      "damage": "None",
+      "specialAttacks": "See below",
+      "specialDefenses": "See below",
+      "magicResistance": "Standard",
+      "lairProbability": "10%",
+      "intelligence": "Average",
+      "alignment": "Neutral",
+      "levelXP": "3/250+5/hp",
+      "description": "Slithering trackers live in dungeons, ruins and dark places. They are transparent and if not in natural sunlight are almost impossible to see (1 in 20 chance of spotting). They almost never attack their prey immediately, instead following and waiting until their target is asleep. They can follow through almost anything, being amorphous in shape and capable of seeping through tiny gaps, such as door jambs or cracks in stonework. If a slithering tracker catches its victim asleep, it will touch it, forcing the victim to roll a saving throw vs paralysation or be totally paralysed for 1d6 hours. The tracker will then feed directly on its victim's life energy, killing it in 1 hour.",
+      "treasure": {
+        "lair": {
+          "cp": { "amount": "1d10×1,000", "chance": "20%" },
+          "sp": { "amount": "1d6×1,000", "chance": "25%" },
+          "ep": { "amount": "1d3×1,000", "chance": "10%" },
+          "gems": { "amount": "1d4", "chance": "20%" },
+          "jewellery": { "amount": "1d2", "chance": "20%" },
+          "magic_items": { "amount": "any two", "chance": "5%" }
+        }
+      }
+    },
+    {
+      "name": "Slime, Green",
+      "category": "Monster",
+      "frequency": "Rare",
+      "numberAppearing": "1d4",
+      "size": "Small",
+      "move": "None",
+      "armorClass": 10,
+      "hitDice": 2,
+      "attacks": "None",
+      "damage": "Nil",
+      "specialAttacks": "See below",
+      "specialDefenses": "See below",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Non-",
+      "alignment": "Neutral",
+      "levelXP": "2/20+2/hp",
+      "description": "Green slime is an occasional dungeon hazard. Sages debate whether it is vegetable or fungoid in nature. It grows over the ceiling of an area until a pendulous bulb of slime is almost ready to drop. The vibrations from passing creatures cause these bulbs to fall. If a bulb strikes exposed flesh, it will convert the flesh rapidly to green slime. It can also eat through wood (slowly) and metal (quickly—a metal item will be consumed in 1d6 rounds). Only stone can stop it. Green slime is unharmed by most weapons or spells. It does take damage from cold or fire, and can be killed by a cure disease spell. Failing that, a creature with green slime on it must cut away the affected area, amputate the affected limb, or die in 1d4 rounds (after which it will be converted to green slime and cannot be raised or resurrected).",
+      "treasure": "None"
+    },
+    {
+      "name": "Slug, Giant",
+      "category": "Monster",
+      "frequency": "Uncommon",
+      "numberAppearing": "1",
+      "size": "Large",
+      "move": "60 ft",
+      "armorClass": 8,
+      "hitDice": 12,
+      "attacks": 1,
+      "damage": "1d12",
+      "specialAttacks": "Spit acid",
+      "specialDefenses": "See below",
+      "magicResistance": "Standard",
+      "lairProbability": "Nil",
+      "intelligence": "Non-",
+      "alignment": "Neutral",
+      "levelXP": "7/2,000+16/hp",
+      "description": "Giant slugs live in dungeons and other underground complexes where they can avoid sunlight. Since these creatures are boneless they can squeeze through narrow openings and navigate around most obstructions. They use their sharp tongues to burrow through wood and hard ground. Giant slugs have a nasty bite, but their most effective weapon is their ability to spit acid up to 100 ft away. The first shot is almost always a miss (only 10% chance to hit), but this attack serves to approximate distance. After the first shot the chance hitting is base 100%, going down 10% for every 10 ft distance from giant slug; thus at 20 ft away the chance to hit is 80%, at 70 ft away 30%, etc. Because of their tough, flexible bodies, non-magical blunt weapons do no damage against giant slugs—only edged, piercing, or magical blunt weapons can harm them. These creatures are usually a pale light grey with a white belly, but can be brown or black.",
+      "treasure": "None"
+    },
+    {
+      "name": "Snake, Giant",
+      "category": "Monster",
+      "variants": [
+        {
+          "name": "Boa",
+          "frequency": "Uncommon",
+          "numberAppearing": "1d2",
+          "size": "Large",
+          "move": "90 ft",
+          "armorClass": 5,
+          "hitDice": "6 + 1",
+          "attacks": 2,
+          "damage": "1d4/2d4",
+          "specialAttacks": "Constriction",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "Nil",
+          "intelligence": "Animal",
+          "alignment": "Neutral",
+          "levelXP": "5/345+8/hp",
+          "description": "Boas will drop on its prey from above, coiling its long body around the chosen target victim and attacking by both biting and squeezing for 2d4 points of damage. Once a snake has a victim within its coils it is quite difficult to release him or her. Several strong creatures creatures can grasp each end of the snake and uncoil the victim in 1d4+1 segments. Four very strong humans, 16 or greater strength each, should be able to accomplish this task. Attacks directed against a snake will also affect the victim trapped within the snake coils, though the GM may allow certain types of attacks to not do so."
+        },
+        {
+          "name": "Adder",
+          "frequency": "Uncommon",
+          "numberAppearing": "1d6",
+          "size": "Large",
+          "move": "150 ft",
+          "armorClass": 5,
+          "hitDice": "4 + 2",
+          "attacks": 1,
+          "damage": "1d4",
+          "specialAttacks": "Poison",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "Nil",
+          "intelligence": "Animal",
+          "alignment": "Neutral",
+          "levelXP": "4/155+4/hp",
+          "description": "Adder is the common name for giant poisonous snakes and they come in a variety of species. The poisons are usually negated by a saving throw but some types of adders have a powerful poison which, even if saved against, causes 3d6 points of damage to the victim."
+        },
+        {
+          "name": "Cobra",
+          "frequency": "Rare",
+          "numberAppearing": "1d4",
+          "size": "Large",
+          "move": "120 ft",
+          "armorClass": 5,
+          "hitDice": "4 + 2",
+          "attacks": 1,
+          "damage": "1d4",
+          "specialAttacks": "See below",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "Nil",
+          "intelligence": "Animal",
+          "alignment": "Neutral",
+          "levelXP": "4/190+4/hp",
+          "description": "Cobras are hooded giant snakes with the ability to spit poison at a single target up to 30 ft distant. The bite of the giant cobra is also quite poisonous. In either case, the victim gets a saving throw to negate the poison."
+        },
+        {
+          "name": "Amphisbaena",
+          "frequency": "Very rare",
+          "numberAppearing": "1d3",
+          "size": "Medium (6 ft long)",
+          "move": "120 ft",
+          "armorClass": 3,
+          "hitDice": 6,
+          "attacks": 2,
+          "damage": "1d4/1d4",
+          "specialAttacks": "Poison",
+          "specialDefenses": "None",
+          "magicResistance": "Standard",
+          "lairProbability": "Nil",
+          "intelligence": "Animal",
+          "alignment": "Neutral",
+          "levelXP": "5/475+6/hp",
+          "description": "Amphisbaena are 6 ft long snakes with a head at both ends of its body. Both heads are capable of delivering a poisonous bite and victims must save vs poison or die instantly. Its method of travel is as bizarre as the creature's appearance, one head of this unusual snake will grab the neck of the other and the creature then rolls like a hoop upon the ground! Amphisbaena are carnivorous and like most other reptiles, are cold-blooded and prefer warmer climes. Oddly enough, the amphisbaena is immune to cold based attacks, though the sages are at a loss as to why this is so."
+        }
+      ],
+      "description": "All giant snakes are carnivorous and can be found in every type of climate except for the coldest. NB: For giant sea snakes see the listing for sea serpent.",
+      "treasure": "None (for all giant snakes)"
+    },
+    {
+      "name": "Soldiery, Men",
       "category": "Men",
       "name_variants": "Mercenary Company, Infantry Company",
       "frequency": "Uncommon",
-      "numberAppearing": "150d1+50",  // 150–200 total
+      "numberAppearing": "140+10d6",  // 150–200 total
       "size": "Man-sized",
       "move": "120 ft (afoot), 180 ft (mounted leaders)",
       "armorClass": "2 (commander), 3 (lieutenants), 4 (serjeants), 5–6 (soldiers)",
