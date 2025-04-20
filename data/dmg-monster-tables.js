@@ -2633,6 +2633,7 @@ export const rollOnSubtable = (subtableName, roll, subtableSet = TEMPERATE_SUBTA
   export default {
     DMG_MONSTER_LEVEL_TABLES,
     DMG_HUMAN_SUBTABLE,
+    MM_HUMAN_TABLES,
     DMG_CHARACTER_SUBTABLE,
     DMG_DUNGEON_MONSTER_LEVEL_MATRIX,
     ARCTIC_CONDITIONS_TABLE,
