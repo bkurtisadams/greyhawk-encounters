@@ -71,13 +71,118 @@ export const DEMI_HUMAN_SUBTABLE = {
     // Add other terrain types
   };
   
+  // Add these level-specific dragon subtables to your dmg-dungeon-tables.js file
+
+export const DRAGON_SUBTABLE_LEVEL3 = [
+  { min: 1, max: 28, encounter: "Black Dragon", number: "1", notes: "Very young (1 hp/die)" },
+  { min: 29, max: 62, encounter: "Brass Dragon", number: "1", notes: "Very young (1 hp/die)" },
+  { min: 63, max: 100, encounter: "White Dragon", number: "1", notes: "Very young (1 hp/die)" }
+];
+
+export const DRAGON_SUBTABLE_LEVEL4 = [
+  { min: 1, max: 9, encounter: "Black Dragon", number: "1", notes: "Young/sub-adult (2/3 hp/die)" },
+  { min: 10, max: 20, encounter: "Blue Dragon", number: "1", notes: "Very young/young (1/2 hp/die)" },
+  { min: 21, max: 30, encounter: "Brass Dragon", number: "1", notes: "Young/sub-adult (2/3 hp/die)" },
+  { min: 31, max: 37, encounter: "Bronze Dragon", number: "1", notes: "Very young/young (1/2 hp/die)" },
+  { min: 38, max: 50, encounter: "Copper Dragon", number: "1", notes: "Very young/young (1/2 hp/die)" },
+  { min: 51, max: 54, encounter: "Gold Dragon", number: "1", notes: "Very young/young (1/2 hp/die)" },
+  { min: 55, max: 70, encounter: "Green Dragon", number: "1", notes: "Very young/young (1/2 hp/die)" },
+  { min: 71, max: 80, encounter: "Red Dragon", number: "1", notes: "Very young/young (1/2 hp/die)" },
+  { min: 81, max: 88, encounter: "Silver Dragon", number: "1", notes: "Very young/young (1/2 hp/die)" },
+  { min: 89, max: 100, encounter: "White Dragon", number: "1", notes: "Young/sub-adult (2/3 hp/die)" }
+];
+
+export const DRAGON_SUBTABLE_LEVEL5 = [
+  { min: 1, max: 8, encounter: "Black Dragon", number: "1", notes: "Young adult/adult (4/5 hp/die)" },
+  { min: 9, max: 20, encounter: "Blue Dragon", number: "1", notes: "Sub-adult/young adult (3/4 hp/die)" },
+  { min: 21, max: 30, encounter: "Brass Dragon", number: "1", notes: "Young adult/adult (4/5 hp/die)" },
+  { min: 31, max: 37, encounter: "Bronze Dragon", number: "1", notes: "Sub-adult/young adult (3/4 hp/die)" },
+  { min: 38, max: 50, encounter: "Copper Dragon", number: "1", notes: "Sub-adult/young adult (3/4 hp/die)" },
+  { min: 51, max: 54, encounter: "Gold Dragon", number: "1", notes: "Sub-adult/young adult (3/4 hp/die)" },
+  { min: 55, max: 70, encounter: "Green Dragon", number: "1", notes: "Sub-adult/young adult (3/4 hp/die)" },
+  { min: 71, max: 80, encounter: "Red Dragon", number: "1", notes: "Sub-adult/young adult (3/4 hp/die)" },
+  { min: 81, max: 88, encounter: "Silver Dragon", number: "1", notes: "Sub-adult/young adult (3/4 hp/die)" },
+  { min: 89, max: 100, encounter: "White Dragon", number: "1", notes: "Young adult/adult (4/5 hp/die)" }
+];
+
+export const DRAGON_SUBTABLE_LEVEL6 = [
+  { min: 1, max: 8, encounter: "Black Dragon", number: "1", notes: "Old (6 hp/die)" },
+  { min: 9, max: 19, encounter: "Blue Dragon", number: "1", notes: "Adult (5 hp/die)" },
+  { min: 20, max: 29, encounter: "Brass Dragon", number: "1", notes: "Old (6 hp/die)" },
+  { min: 30, max: 36, encounter: "Bronze Dragon", number: "1", notes: "Adult (5 hp/die)" },
+  { min: 37, max: 48, encounter: "Copper Dragon", number: "1", notes: "Adult (5 hp/die)" },
+  { min: 49, max: 52, encounter: "Gold Dragon", number: "1", notes: "Adult (5 hp/die)" },
+  { min: 53, max: 65, encounter: "Green Dragon", number: "1", notes: "Adult (5 hp/die)" },
+  { min: 66, max: 78, encounter: "Red Dragon", number: "1", notes: "Adult (5 hp/die)" },
+  { min: 79, max: 87, encounter: "Silver Dragon", number: "1", notes: "Adult (5 hp/die)" },
+  { min: 88, max: 100, encounter: "White Dragon", number: "1", notes: "Old (6 hp/die)" }
+];
+
+export const DRAGON_SUBTABLE_LEVEL7 = [
+  { min: 1, max: 10, encounter: "Black Dragon", number: "1", notes: "Very old (7 hp/die)" },
+  { min: 11, max: 21, encounter: "Blue Dragon", number: "1", notes: "Old (6 hp/die)" },
+  { min: 22, max: 29, encounter: "Brass Dragon", number: "1", notes: "Very old (7 hp/die)" },
+  { min: 30, max: 36, encounter: "Bronze Dragon", number: "1", notes: "Old (6 hp/die)" },
+  { min: 37, max: 48, encounter: "Copper Dragon", number: "1", notes: "Old (6 hp/die)" },
+  { min: 49, max: 52, encounter: "Gold Dragon", number: "1", notes: "Old (6 hp/die)" },
+  { min: 53, max: 66, encounter: "Green Dragon", number: "1", notes: "Old (6 hp/die)" },
+  { min: 67, max: 80, encounter: "Red Dragon", number: "1", notes: "Old (6 hp/die)" },
+  { min: 81, max: 87, encounter: "Silver Dragon", number: "1", notes: "Old (6 hp/die)" },
+  { min: 88, max: 100, encounter: "White Dragon", number: "1", notes: "Very old (7 hp/die)" }
+];
+
+export const DRAGON_SUBTABLE_LEVEL8 = [
+  { min: 1, max: 13, encounter: "Black Dragon", number: "1", notes: "Ancient (8 hp/die)" },
+  { min: 14, max: 24, encounter: "Blue Dragon", number: "1", notes: "Very old (7 hp/die)" },
+  { min: 25, max: 31, encounter: "Brass Dragon", number: "1", notes: "Ancient (8 hp/die)" },
+  { min: 32, max: 35, encounter: "Bronze Dragon", number: "1", notes: "Very old (7 hp/die)" },
+  { min: 36, max: 43, encounter: "Copper Dragon", number: "1", notes: "Very old (7 hp/die)" },
+  { min: 44, max: 47, encounter: "Gold Dragon", number: "1", notes: "Very old (7 hp/die)" },
+  { min: 48, max: 62, encounter: "Green Dragon", number: "1", notes: "Very old (7 hp/die)" },
+  { min: 63, max: 78, encounter: "Red Dragon", number: "1", notes: "Very old (7 hp/die)" },
+  { min: 79, max: 82, encounter: "Silver Dragon", number: "1", notes: "Very old (7 hp/die)" },
+  { min: 83, max: 100, encounter: "White Dragon", number: "1", notes: "Ancient (8 hp/die)" }
+];
+
+export const DRAGON_SUBTABLE_LEVEL9 = [
+  { min: 1, max: 10, encounter: "Black Dragon", number: "2", notes: "Ancient & Old (8 & 6 hp/die)" },
+  { min: 11, max: 22, encounter: "Blue Dragon", number: "1", notes: "Ancient (8 hp/die)" },
+  { min: 23, max: 31, encounter: "Brass Dragon", number: "2", notes: "Ancient & Old (8 & 6 hp/die)" },
+  { min: 32, max: 34, encounter: "Bronze Dragon", number: "1", notes: "Ancient (8 hp/die)" },
+  { min: 35, max: 42, encounter: "Copper Dragon", number: "1", notes: "Ancient (8 hp/die)" },
+  { min: 43, max: 46, encounter: "Gold Dragon", number: "1", notes: "Ancient (8 hp/die)" },
+  { min: 47, max: 62, encounter: "Green Dragon", number: "1", notes: "Ancient (8 hp/die)" },
+  { min: 63, max: 78, encounter: "Red Dragon", number: "1", notes: "Ancient (8 hp/die)" },
+  { min: 79, max: 82, encounter: "Silver Dragon", number: "1", notes: "Ancient (8 hp/die)" },
+  { min: 83, max: 100, encounter: "White Dragon", number: "2", notes: "Ancient & Very old (8 & 7 hp/die)" }
+];
+
+export const DRAGON_SUBTABLE_LEVEL10 = [
+  { min: 1, max: 20, encounter: "Blue Dragon", number: "2", notes: "Ancient & Very old (8 & 7 hp/die)" },
+  { min: 21, max: 26, encounter: "Bronze Dragon", number: "2", notes: "Ancient & Very old (8 & 7 hp/die)" },
+  { min: 27, max: 33, encounter: "Copper Dragon", number: "2", notes: "Ancient & Very old (8 & 7 hp/die)" },
+  { min: 34, max: 35, encounter: "Chromatic Dragon (Tiamat)", number: "1", notes: "Unique" },
+  { min: 36, max: 40, encounter: "Gold Dragon", number: "2", notes: "Ancient & Old (8 & 6 hp/die)" },
+  { min: 41, max: 60, encounter: "Green Dragon", number: "2", notes: "Ancient & Very old (8 & 7 hp/die)" },
+  { min: 61, max: 63, encounter: "Platinum Dragon (Bahamut)", number: "1", notes: "Unique" },
+  { min: 64, max: 94, encounter: "Red Dragon", number: "2", notes: "Ancient & Old (8 & 6 hp/die)" },
+  { min: 95, max: 100, encounter: "Silver Dragon", number: "2", notes: "Ancient & Old (8 & 6 hp/die)" }
+];
+
   // Add additional subtables as needed
   
   export default {
     DEMI_HUMAN_SUBTABLE,
     DRAGON_SUBTABLE,
+    DRAGON_SUBTABLE_LEVEL3,
+    DRAGON_SUBTABLE_LEVEL4,
+    DRAGON_SUBTABLE_LEVEL5,
+    DRAGON_SUBTABLE_LEVEL6,
+    DRAGON_SUBTABLE_LEVEL7,
+    DRAGON_SUBTABLE_LEVEL8,
+    DRAGON_SUBTABLE_LEVEL9,
+    DRAGON_SUBTABLE_LEVEL10,
     GIANT_SUBTABLE,
     HUMANOID_SUBTABLE,
     MEN_SUBTABLE
-    // Add additional exports as needed
   };

@@ -377,6 +377,11 @@ export class GreyhawkEncounterRoller extends Application {
     if (system === 'wog' && savedSettings.wogEncounterType === 'regional') {
       this._updateRegionList(savedSettings.regionType || 'political', html);
     }
+
+    if (savedSettings.region) {
+      html.find('select[name="region"]').val(savedSettings.region);
+    }
+    
   }
 
   _updateDmgOptions(encounterType, html) {
@@ -480,6 +485,11 @@ export class GreyhawkEncounterRoller extends Application {
           
           // Get the regions select dropdown
           const regionsSelect = html.find('select[name="region"]');
+          
+          // Important: Store current selection before clearing dropdown
+          const currentValue = regionsSelect.val();
+          
+          // Clear existing options
           regionsSelect.empty();
           
           // Find the region type in our data
@@ -498,15 +508,37 @@ export class GreyhawkEncounterRoller extends Application {
                 regionsSelect.append(`<option value="${value}">${label}</option>`);
               }
             }
+            
+            // Restore the previous selection if it exists in the new list
+            if (currentValue) {
+              // Check if the option exists in the rebuilt dropdown
+              if (regionsSelect.find(`option[value="${currentValue}"]`).length > 0) {
+                regionsSelect.val(currentValue);
+              } else {
+                // If not, get the saved settings and check there
+                const savedSettings = game.settings.get('greyhawk-encounters', 'lastUsedSettings');
+                if (savedSettings && savedSettings.region) {
+                  if (regionsSelect.find(`option[value="${savedSettings.region}"]`).length > 0) {
+                    regionsSelect.val(savedSettings.region);
+                  }
+                }
+              }
+            }
+            
             console.log(`Added ${regionTypeData.regions.length} regions to dropdown`);
           } else {
             console.error(`Region type ${regionType} not found in data`);
           }
+          
+          // After updating the dropdown, save the current selection to settings
+          this._saveCurrentFormValues();
         }
     
         async _rollEncounter(html) {
           try {
             const system = html.find('select[name="encounterSystem"]').val();
+            // Store the current region selection
+            const currentRegion = html.find('select[name="region"]').val();
         
             // 🧭 Shared values used by both DMG and WoG
             const terrain = html.find('select[name="terrain"]').val() || 'plain';
@@ -669,6 +701,10 @@ export class GreyhawkEncounterRoller extends Application {
                 } else {
                   ui.notifications.warn(`No encounter generated for ${region}`);
                 }
+                
+                // restore the selected region after encounter generation
+                html.find('select[name="region"]').val(region);
+
               } catch (error) {
                 console.error("Error rolling WoG regional encounter:", error);
                 ui.notifications.error(`Error generating encounter for ${region}`);
@@ -678,6 +714,13 @@ export class GreyhawkEncounterRoller extends Application {
           } catch (error) {
             console.error("❌ Error in _rollEncounter:", error);
             ui.notifications.error("Encounter generation failed.");
+            
+            // Also restore from the catch block, even though currentRegion is out of scope
+            // You'll need to get it again
+            const selectedRegion = html.find('select[name="region"]').val();
+            if (selectedRegion) {
+              html.find('select[name="region"]').val(selectedRegion);
+            }
           }
         }
     

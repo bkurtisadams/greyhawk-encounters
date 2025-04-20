@@ -2629,25 +2629,40 @@ export const rollOnSubtable = (subtableName, roll, subtableSet = TEMPERATE_SUBTA
     return { creature: "Unknown (entry not found in subtable)" };
   };
   
-  // Export all in a default object for easier importing
-  export default {
-    DMG_MONSTER_LEVEL_TABLES,
-    DMG_HUMAN_SUBTABLE,
-    MM_HUMAN_TABLES,
-    DMG_CHARACTER_SUBTABLE,
-    DMG_DUNGEON_MONSTER_LEVEL_MATRIX,
-    ARCTIC_CONDITIONS_TABLE,
-    SUBARCTIC_CONDITIONS_TABLE,
-    //TEMPERATE_TABLES,
-    TEMPERATE_UNINHABITED_TABLES,
-    TEMPERATE_INHABITED_TABLES,
-    TEMPERATE_SUBTABLES,
-    TROPICAL_SUBTABLES,
-    TROPICAL_UNINHABITED_TABLES,
-    DMG_TERRAIN_SUBTABLES, // Add this!
-    rollOnOutdoorTable,
-    rollNumberFromPattern
-    //rollOnTemperateTable,
-    //rollOnSubtable,
-    //generateCharacterEncounter
-  };
+// Create separate dragon subtables outside of DMG_MONSTER_LEVEL_TABLES
+export const DRAGON_SUBTABLE_LEVEL3 = DMG_MONSTER_LEVEL_TABLES[3].dragon_level3;
+export const DRAGON_SUBTABLE_LEVEL4 = DMG_MONSTER_LEVEL_TABLES[4].dragon_level4;
+export const DRAGON_SUBTABLE_LEVEL5 = DMG_MONSTER_LEVEL_TABLES[5].dragon_level5;
+export const DRAGON_SUBTABLE_LEVEL6 = DMG_MONSTER_LEVEL_TABLES[6].dragon_level6;
+export const DRAGON_SUBTABLE_LEVEL7 = DMG_MONSTER_LEVEL_TABLES[7].dragon_level7;
+export const DRAGON_SUBTABLE_LEVEL8 = DMG_MONSTER_LEVEL_TABLES[8].dragon_level8;
+export const DRAGON_SUBTABLE_LEVEL9 = DMG_MONSTER_LEVEL_TABLES[9].dragon_level9;
+export const DRAGON_SUBTABLE_LEVEL10 = DMG_MONSTER_LEVEL_TABLES[10].dragon_level10;
+
+// Then update your default export to include these
+export default {
+  DMG_MONSTER_LEVEL_TABLES,
+  DMG_HUMAN_SUBTABLE,
+  MM_HUMAN_TABLES,
+  DMG_CHARACTER_SUBTABLE,
+  DMG_DUNGEON_MONSTER_LEVEL_MATRIX,
+  ARCTIC_CONDITIONS_TABLE,
+  SUBARCTIC_CONDITIONS_TABLE,
+  TEMPERATE_UNINHABITED_TABLES,
+  TEMPERATE_INHABITED_TABLES,
+  TEMPERATE_SUBTABLES,
+  TROPICAL_SUBTABLES,
+  TROPICAL_UNINHABITED_TABLES,
+  DMG_TERRAIN_SUBTABLES,
+  // Add the dragon subtables
+  DRAGON_SUBTABLE_LEVEL3,
+  DRAGON_SUBTABLE_LEVEL4,
+  DRAGON_SUBTABLE_LEVEL5,
+  DRAGON_SUBTABLE_LEVEL6,
+  DRAGON_SUBTABLE_LEVEL7,
+  DRAGON_SUBTABLE_LEVEL8,
+  DRAGON_SUBTABLE_LEVEL9,
+  DRAGON_SUBTABLE_LEVEL10,
+  rollOnOutdoorTable,
+  rollNumberFromPattern
+};
