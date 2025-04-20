@@ -1467,7 +1467,795 @@ export const MONSTER_MANUAL = {
       "treasure": "None",
       "description": "War dogs are large, fearsome canines (like mastiffs or pit bulls) trained for combat and typically armored in leather. They remain loyal unto death. Wild dogs roam in packs, competing with wolves and sometimes refugees for food. They avoid conflict when well-fed but attack when hungry. They can be tamed if removed from their pack."
     },
+    
+    {
+      "name": "Black Dragon",
+      "category": "Dragons",
+      "name_variants": "",
+      "frequency": "Uncommon",
+      "numberAppearing": "1d4",
+      "size": "L (30' long)",
+      "move": "12\"; 24\" flying (AA:II)",
+      "armorClass": 3,
+      "hitDice": "6–8",
+      "attacks": 3,
+      "damage": "1d4/1d4/3d6",
+      "specialAttacks": "Acid breath (50' stream x 5'), 3x/day",
+      "specialDefenses": "Standard; save vs breath weapon for half",
+      "magicResistance": "Standard",
+      "lairProbability": "30%",
+      "intelligence": "Average",
+      "alignment": "Chaotic evil",
+      "levelXP": "Varies by age and HD",
+      "description": "Black dragons haunt swamps and dark caves, exuding cruelty and malice. Their breath is a corrosive acid stream, deadly even to those who survive the initial blast. They are often found sleeping but may feign sleep to ambush prey.",
+      "specialAbilities": {
+        "breathWeapon": "Acid stream (50 ft x 5 ft), damage = HP, save for half, usable 3/day",
+        "spells": {
+          "casterLevel": "Half age category (if spellcaster)",
+          "castingChance": "10%"
+        },
+        "sleepChance": "50%, with 1-in-6 chance of waking if adventurers are nearby",
+        "speakingChance": "30%",
+        "feignSleep": true
+      },
+      "treasure": "5d6×1,000 cp (25%), 1d100×1,000 sp (40%), 1d4×10,000 ep (40%), 1d6×10,000 gp (55%), 5d10×100 pp (25%), 1d100 gems (50%), 1d4×10 jewellery (50%), 4 magic items plus 1 potion and 1 scroll (15%)",
+      "habitats": [
+        {
+          "type": "Swamps",
+          "chance": "60%"
+        },
+        {
+          "type": "Marshes",
+          "chance": "30%"
+        },
+        {
+          "type": "Dark Caves",
+          "chance": "10%"
+        }
+      ],
+      "ageCategories": [
+        {
+          "age": "Young",
+          "hitDice": 6,
+          "hpPerDie": 1,
+          "casterLevel": 0,
+          "saveBonus": 0
+        },
+        {
+          "age": "Juvenile",
+          "hitDice": 6,
+          "hpPerDie": 3,
+          "casterLevel": 0,
+          "saveBonus": 0
+        },
+        {
+          "age": "Adult",
+          "hitDice": 7,
+          "hpPerDie": 5,
+          "casterLevel": 2,
+          "saveBonus": 1
+        },
+        {
+          "age": "Old",
+          "hitDice": 8,
+          "hpPerDie": 6,
+          "casterLevel": 3,
+          "saveBonus": 2
+        },
+        {
+          "age": "Ancient",
+          "hitDice": 8,
+          "hpPerDie": 8,
+          "casterLevel": 4,
+          "saveBonus": 4
+        }
+      ]
+    },
+    {
+      "name": "Blue Dragon",
+      "category": "Dragons",
+      "name_variants": "",
+      "frequency": "Rare",
+      "numberAppearing": "1d4",
+      "size": "L (42' long)",
+      "move": "9\"; 24\" flying (AA:II)",
+      "armorClass": 2,
+      "hitDice": "8–10",
+      "attacks": 3,
+      "damage": "1d6/1d6/3d8",
+      "specialAttacks": "Lightning breath (100' x 5') for full HP damage, 3x/day",
+      "specialDefenses": "Standard; save vs breath weapon for half",
+      "magicResistance": "Standard",
+      "lairProbability": "50%",
+      "intelligence": "Very",
+      "alignment": "Lawful evil",
+      "levelXP": "Varies by age and HD",
+      "description": "Deadly dragons of the desert, blue dragons dwell in vast arid caverns. They breathe lightning bolts up to 100 feet long, and may cast spells if intelligent enough. Known for cruelty and arrogance, they are powerful foes even for experienced parties.",
+      "specialAbilities": {
+        "breathWeapon": "Lightning bolt (100 ft x 5 ft), damage = HP, save for half, usable 3/day",
+        "spells": {
+          "casterLevel": "Equal to age category (if spellcaster)",
+          "castingChance": "30%"
+        },
+        "sleepChance": "30%, with 1-in-6 chance of waking if adventurers are nearby",
+        "speakingChance": "60%",
+        "feignSleep": true
+      },
+      "treasure": "5d6×1,000 cp (25%), 1d100×1,000 sp (40%), 1d4×10,000 ep (40%), 1d6×10,000 gp (55%), 5d10×100 pp (25%), 1d100 gems (50%), 1d4×10 jewellery (50%), 4 magic items plus 1 potion and 1 scroll (15%), 2d4 potions (40%)",
+      "habitats": [
+        {
+          "type": "Deserts",
+          "chance": "90%"
+        },
+        {
+          "type": "Arid Caverns",
+          "chance": "10%"
+        }
+      ],
+      "ageCategories": [
+        {
+          "age": "Young",
+          "hitDice": 8,
+          "hpPerDie": 1,
+          "casterLevel": 0,
+          "saveBonus": 0
+        },
+        {
+          "age": "Juvenile",
+          "hitDice": 8,
+          "hpPerDie": 3,
+          "casterLevel": 0,
+          "saveBonus": 0
+        },
+        {
+          "age": "Adult",
+          "hitDice": 9,
+          "hpPerDie": 5,
+          "casterLevel": 4,
+          "saveBonus": 1
+        },
+        {
+          "age": "Old",
+          "hitDice": 10,
+          "hpPerDie": 6,
+          "casterLevel": 5,
+          "saveBonus": 2
+        },
+        {
+          "age": "Ancient",
+          "hitDice": 10,
+          "hpPerDie": 8,
+          "casterLevel": 8,
+          "saveBonus": 4
+        }
+      ]
+    },
 
+    {
+      "name": "Brass Dragon",
+      "category": "Dragons",
+      "name_variants": "",
+      "frequency": "Uncommon",
+      "numberAppearing": "1d4",
+      "size": "L (30' long)",
+      "move": "12\"; 24\" flying (AA:II)",
+      "armorClass": 3,
+      "hitDice": "6–8",
+      "attacks": 3,
+      "damage": "1d4/1d4/4d4",
+      "specialAttacks": "Cone of sleep gas (70'x20') or cone of fear gas (40'x50'x20'), 3x/day",
+      "specialDefenses": "Standard; saves against breath vary by size",
+      "magicResistance": "Standard",
+      "lairProbability": "25%",
+      "intelligence": "High",
+      "alignment": "Chaotic good or chaotic neutral",
+      "levelXP": "Varies by age and HD",
+      "description": "Brass dragons are desert-dwelling and social, known for their talkativeness and curiosity. Unlike their more violent cousins, they prefer conversation to combat, though their breath weapons can be formidable.",
+      "specialAbilities": {
+        "breathWeapon": "Cone of sleep gas (70'x20') or cone of fear gas (40'x50'x20'); 3/day",
+        "spells": {
+          "casterLevel": "1/2 age category",
+          "castingChance": "30%"
+        },
+        "sleepChance": "50%, 1-in-6 chance to wake if adventurers nearby",
+        "speakingChance": "30%",
+        "feignSleep": true
+      },
+      "treasure": "5d6×1,000 cp (25%), 1d100×1,000 sp (40%), 1d4×10,000 ep (40%), 1d6×10,000 gp (55%), 5d10×100 pp (25%), 1d100 gems (50%), 1d4×10 jewellery (50%), 4 magic items + 1 potion + 1 scroll (15%)",
+      "habitats": [
+        {
+          "type": "Desert caves",
+          "chance": "100%"
+        }
+      ],
+      "ageCategories": [
+        {
+          "age": "Young",
+          "hitDice": 6,
+          "hpPerDie": 1,
+          "casterLevel": 0,
+          "saveBonus": 0
+        },
+        {
+          "age": "Juvenile",
+          "hitDice": 6,
+          "hpPerDie": 3,
+          "casterLevel": 1,
+          "saveBonus": 0
+        },
+        {
+          "age": "Adult",
+          "hitDice": 7,
+          "hpPerDie": 5,
+          "casterLevel": 2,
+          "saveBonus": 1
+        },
+        {
+          "age": "Old",
+          "hitDice": 8,
+          "hpPerDie": 6,
+          "casterLevel": 3,
+          "saveBonus": 2
+        },
+        {
+          "age": "Ancient",
+          "hitDice": 8,
+          "hpPerDie": 8,
+          "casterLevel": 4,
+          "saveBonus": 4
+        }
+      ]
+    },
+
+    {
+      "name": "Bronze Dragon",
+      "category": "Dragons",
+      "name_variants": "",
+      "frequency": "Rare",
+      "numberAppearing": "1d4",
+      "size": "L (42' long)",
+      "move": "9\"; 24\" flying (AA:II)",
+      "armorClass": 2,
+      "hitDice": "8–10",
+      "attacks": 3,
+      "damage": "1d6/1d6/4d6",
+      "specialAttacks": "Breath weapon: lightning bolt (100' x 5') or repulsion gas cloud (20'x30'x30'), 3x/day",
+      "specialDefenses": "Standard",
+      "magicResistance": "Standard",
+      "lairProbability": "45%",
+      "intelligence": "Exceptional",
+      "alignment": "Lawful good",
+      "levelXP": "Varies by age and HD",
+      "description": "Reclusive and noble, bronze dragons dwell near water in temperate zones. Curious about humans, they sometimes assume humanoid form to observe or help. Their breath can blast with lightning or drive foes away with a gas cloud.",
+      "specialAbilities": {
+        "breathWeapon": "Lightning bolt (100'x5') or repulsion gas (20'x30'x30'); 3/day",
+        "spells": {
+          "casterLevel": "Equal to age category",
+          "castingChance": "60%"
+        },
+        "sleepChance": "25%, 1-in-6 chance to awaken if disturbed",
+        "speakingChance": "60%",
+        "feignSleep": true
+      },
+      "treasure": "5d6×1,000 cp (25%), 1d100×1,000 sp (40%), 1d4×10,000 ep (40%), 1d6×10,000 gp (55%), 5d10×100 pp (25%), 1d100 gems (50%), 1d4×10 jewellery (50%), 4 magic items + 1 potion + 1 scroll (15%), 2d4 potions (40%), 1d4 scrolls (50%)",
+      "habitats": [
+        {
+          "type": "Coastal cliffs, underwater caves, or lakefront caverns",
+          "chance": "100%"
+        }
+      ],
+      "ageCategories": [
+        {
+          "age": "Young",
+          "hitDice": 8,
+          "hpPerDie": 1,
+          "casterLevel": 1,
+          "saveBonus": 0
+        },
+        {
+          "age": "Juvenile",
+          "hitDice": 8,
+          "hpPerDie": 3,
+          "casterLevel": 3,
+          "saveBonus": 0
+        },
+        {
+          "age": "Adult",
+          "hitDice": 9,
+          "hpPerDie": 5,
+          "casterLevel": 5,
+          "saveBonus": 1
+        },
+        {
+          "age": "Old",
+          "hitDice": 10,
+          "hpPerDie": 6,
+          "casterLevel": 7,
+          "saveBonus": 2
+        },
+        {
+          "age": "Ancient",
+          "hitDice": 10,
+          "hpPerDie": 8,
+          "casterLevel": 10,
+          "saveBonus": 4
+        }
+      ]
+    },
+
+        {
+      "name": "Copper Dragon",
+      "category": "Dragons",
+      "name_variants": "",
+      "frequency": "Uncommon to Rare",
+      "numberAppearing": "1d4",
+      "size": "L (36' long)",
+      "move": "9\"; 24\" flying (AA:II)",
+      "armorClass": 1,
+      "hitDice": "7–9",
+      "attacks": 3,
+      "damage": "1d4/1d4/3d6+2",
+      "specialAttacks": "Breath weapon: acid (stream, hp damage) or slowing gas (20'x30'x30'), 3x/day",
+      "specialDefenses": "Standard",
+      "magicResistance": "Standard",
+      "lairProbability": "35%",
+      "intelligence": "High",
+      "alignment": "Chaotic good",
+      "levelXP": "Varies by age and HD",
+      "description": "Copper dragons are witty and whimsical creatures that prefer rocky hills and arid lands. They can breathe either acid or slowing gas and are known to use their magic to toy with or help adventurers. Despite their good nature, they can be vain and greedy.",
+      "specialAbilities": {
+        "breathWeapon": "Acid stream (hp damage) or slowing gas cloud (20'x30'x30'); 3/day",
+        "spells": {
+          "casterLevel": "Equal to age category",
+          "castingChance": "40%"
+        },
+        "sleepChance": "40%, 1-in-6 chance to awaken if disturbed",
+        "speakingChance": "45%",
+        "feignSleep": true
+      },
+      "treasure": "5d6×1,000 cp (25%), 1d100×1,000 sp (40%), 1d4×10,000 ep (40%), 1d6×10,000 gp (55%), 5d10×100 pp (25%), 1d100 gems (50%), 1d4×10 jewellery (50%), 4 magic items + 1 potion + 1 scroll (15%), 2d4 potions (40%)",
+      "habitats": [
+        {
+          "type": "Arid hills, rocky uplands, or desert cliffs",
+          "chance": "100%"
+        }
+      ],
+      "ageCategories": [
+        {
+          "age": "Young",
+          "hitDice": 7,
+          "hpPerDie": 1,
+          "casterLevel": 1,
+          "saveBonus": 0
+        },
+        {
+          "age": "Juvenile",
+          "hitDice": 7,
+          "hpPerDie": 3,
+          "casterLevel": 3,
+          "saveBonus": 0
+        },
+        {
+          "age": "Adult",
+          "hitDice": 8,
+          "hpPerDie": 5,
+          "casterLevel": 5,
+          "saveBonus": 1
+        },
+        {
+          "age": "Old",
+          "hitDice": 9,
+          "hpPerDie": 6,
+          "casterLevel": 7,
+          "saveBonus": 2
+        },
+        {
+          "age": "Ancient",
+          "hitDice": 9,
+          "hpPerDie": 8,
+          "casterLevel": 9,
+          "saveBonus": 4
+        }
+      ]
+    },
+
+    {
+      "name": "Gold Dragon",
+      "category": "Dragons",
+      "name_variants": "",
+      "frequency": "Very Rare",
+      "numberAppearing": "1d3",
+      "size": "L (54' long)",
+      "move": "12\"; 30\" flying (AA:II)",
+      "armorClass": -2,
+      "hitDice": "10–12",
+      "attacks": 3,
+      "damage": "1d8/1d8/6d6",
+      "specialAttacks": "Breath weapon: fire cone (90' long, 15' radius) or poisonous gas cloud (save or die), 3x/day",
+      "specialDefenses": "Standard",
+      "magicResistance": "Standard",
+      "lairProbability": "65%",
+      "intelligence": "Genius",
+      "alignment": "Lawful good",
+      "levelXP": "Varies by age and HD",
+      "description": "Gold dragons are the most powerful and majestic of the metallic dragons. Noble, wise, and just, they are often protectors of the innocent and champions of justice. They may assume human or animal form and prefer lairs hidden in remote lakes or deep mountain valleys.",
+      "specialAbilities": {
+        "breathWeapon": "Cone of fire (90' long, 15' radius at base) or poisonous gas cloud (save or die); 3/day",
+        "spells": {
+          "casterLevel": "Equal to age category",
+          "castingChance": "100% if speaking (which is 90% likely)"
+        },
+        "sleepChance": "10%, 1-in-6 chance to awaken if disturbed",
+        "speakingChance": "90%",
+        "feignSleep": true,
+        "shapeChange": "Can take human or animal form to observe mortals"
+      },
+      "treasure": "5d6×1,000 cp (25%), 1d100×1,000 sp (40%), 1d4×10,000 ep (40%), 2d6×10,000 gp (55%), 10d10×100 pp (25%), 7d20 gems (50%), 1d6×10 jewellery (50%), 4 magic items + 1 potion + 1 scroll (15%), 2d4 potions (40%), 1d4 scrolls (50%)",
+      "habitats": [
+        {
+          "type": "Remote mountains, lakes, or secluded caverns",
+          "chance": "100%"
+        }
+      ],
+      "ageCategories": [
+        {
+          "age": "Young",
+          "hitDice": 10,
+          "hpPerDie": 1,
+          "casterLevel": 1,
+          "saveBonus": 0
+        },
+        {
+          "age": "Juvenile",
+          "hitDice": 10,
+          "hpPerDie": 3,
+          "casterLevel": 3,
+          "saveBonus": 0
+        },
+        {
+          "age": "Adult",
+          "hitDice": 11,
+          "hpPerDie": 5,
+          "casterLevel": 5,
+          "saveBonus": 1
+        },
+        {
+          "age": "Old",
+          "hitDice": 12,
+          "hpPerDie": 6,
+          "casterLevel": 7,
+          "saveBonus": 2
+        },
+        {
+          "age": "Ancient",
+          "hitDice": 12,
+          "hpPerDie": 8,
+          "casterLevel": 9,
+          "saveBonus": 4
+        }
+      ]
+    },
+    
+    {
+      "name": "Green Dragon",
+      "category": "Dragons",
+      "name_variants": "",
+      "frequency": "Rare",
+      "numberAppearing": "1d4",
+      "size": "L (36' long)",
+      "move": "9\"; 24\" flying (AA:II)",
+      "armorClass": 2,
+      "hitDice": "7–9",
+      "attacks": 3,
+      "damage": "1d6/1d6/2d10",
+      "specialAttacks": "Poison gas breath (50' × 40' × 30'), 3x/day",
+      "specialDefenses": "Standard; save vs breath weapon for half",
+      "magicResistance": "Standard",
+      "lairProbability": "40%",
+      "intelligence": "Average to very",
+      "alignment": "Lawful evil",
+      "levelXP": "Varies by age and HD",
+      "description": "Green dragons are known for their foul temperament and malicious cunning. They prefer wooded lairs and have a breath weapon of deadly poisonous gas. They may cast spells and speak, but are often found feigning sleep to ambush intruders.",
+      "specialAbilities": {
+        "breathWeapon": "Poison gas cloud (50' long, 40' wide, 30' high), damage = HP, save for half, 3/day",
+        "spells": {
+          "casterLevel": "Equal to age category (if spellcaster)",
+          "castingChance": "20%"
+        },
+        "sleepChance": "40%, with 1-in-6 chance of waking if adventurers are nearby",
+        "speakingChance": "45%",
+        "feignSleep": true
+      },
+      "treasure": "5d6×1,000 cp (25%), 1d100×1,000 sp (40%), 1d4×10,000 ep (40%), 1d6×10,000 gp (55%), 5d10×100 pp (25%), 1d100 gems (50%), 1d4×10 jewellery (50%), 4 magic items plus 1 potion and 1 scroll (15%), 2d4 potions (40%), 1d4 scrolls (50%)",
+      "habitats": [
+        {
+          "type": "Forests",
+          "chance": "80%"
+        },
+        {
+          "type": "Ruins or caverns near forests",
+          "chance": "20%"
+        }
+      ],
+      "ageCategories": [
+        {
+          "age": "Young",
+          "hitDice": 7,
+          "hpPerDie": 1,
+          "casterLevel": 0,
+          "saveBonus": 0
+        },
+        {
+          "age": "Juvenile",
+          "hitDice": 7,
+          "hpPerDie": 3,
+          "casterLevel": 0,
+          "saveBonus": 0
+        },
+        {
+          "age": "Adult",
+          "hitDice": 8,
+          "hpPerDie": 5,
+          "casterLevel": 5,
+          "saveBonus": 1
+        },
+        {
+          "age": "Old",
+          "hitDice": 9,
+          "hpPerDie": 6,
+          "casterLevel": 6,
+          "saveBonus": 2
+        },
+        {
+          "age": "Ancient",
+          "hitDice": 9,
+          "hpPerDie": 8,
+          "casterLevel": 9,
+          "saveBonus": 4
+        }
+      ]
+    },
+
+    {
+      "name": "Red Dragon",
+      "category": "Dragons",
+      "name_variants": "",
+      "frequency": "Rare",
+      "numberAppearing": "1d4",
+      "size": "L (48' long)",
+      "move": "9\"; 24\" flying (AA:II)",
+      "armorClass": -1,
+      "hitDice": "9–11",
+      "attacks": 3,
+      "damage": "1d8/1d8/3d10",
+      "specialAttacks": "Fire breath (cone 90' long, 15' radius base), 3x/day",
+      "specialDefenses": "Standard; save vs breath weapon for half",
+      "magicResistance": "Standard",
+      "lairProbability": "60%",
+      "intelligence": "Exceptional",
+      "alignment": "Chaotic evil",
+      "levelXP": "Varies by age and HD",
+      "description": "Red dragons are the most fearsome and iconic of all dragons—greedy, arrogant, and overwhelmingly powerful. They hoard treasure obsessively and attack without provocation. Their fiery breath is devastating, and they are often encountered in mountainous lairs.",
+      "specialAbilities": {
+        "breathWeapon": "Cone of fire (90' long, 15' radius), damage = HP, save for half, 3/day",
+        "spells": {
+          "casterLevel": "Equal to age category (if spellcaster)",
+          "castingChance": "40%"
+        },
+        "sleepChance": "20%, 1-in-6 chance to wake if adventurers nearby",
+        "speakingChance": "80%",
+        "feignSleep": true
+      },
+      "treasure": "5d6×1,000 cp (25%), 1d100×1,000 sp (40%), 1d4×10,000 ep (40%), 1d6×10,000 gp (55%), 5d10×100 pp (25%), 1d100 gems (50%), 1d4×10 jewellery (50%), 4 magic items + 1 potion + 1 scroll (15%), 2d4 potions (40%), 1d4 scrolls (50%)",
+      "habitats": [
+        {
+          "type": "Mountain peaks and volcanoes",
+          "chance": "90%"
+        },
+        {
+          "type": "Remote caverns",
+          "chance": "10%"
+        }
+      ],
+      "ageCategories": [
+        {
+          "age": "Young",
+          "hitDice": 9,
+          "hpPerDie": 1,
+          "casterLevel": 0,
+          "saveBonus": 0
+        },
+        {
+          "age": "Juvenile",
+          "hitDice": 9,
+          "hpPerDie": 3,
+          "casterLevel": 0,
+          "saveBonus": 0
+        },
+        {
+          "age": "Adult",
+          "hitDice": 10,
+          "hpPerDie": 5,
+          "casterLevel": 5,
+          "saveBonus": 1
+        },
+        {
+          "age": "Old",
+          "hitDice": 11,
+          "hpPerDie": 6,
+          "casterLevel": 6,
+          "saveBonus": 2
+        },
+        {
+          "age": "Ancient",
+          "hitDice": 11,
+          "hpPerDie": 8,
+          "casterLevel": 8,
+          "saveBonus": 4
+        }
+      ]
+    },
+
+    {
+      "name": "Silver Dragon",
+      "category": "Dragons",
+      "name_variants": "",
+      "frequency": "Very rare",
+      "numberAppearing": "1d4",
+      "size": "L (48' long)",
+      "move": "9\"; 24\" flying (AA:II)",
+      "armorClass": -1,
+      "hitDice": "9–11",
+      "attacks": 3,
+      "damage": "1d6/1d6/5d6",
+      "specialAttacks": "Frost or paralysing gas breath, 3x/day",
+      "specialDefenses": "Standard; breath save for half or paralysis",
+      "magicResistance": "Standard",
+      "lairProbability": "55%",
+      "intelligence": "Exceptional",
+      "alignment": "Lawful good",
+      "levelXP": "Varies by age and HD",
+      "description": "Silver dragons are noble and benevolent creatures found in high mountains and cloud-covered peaks. They often take human form to observe and aid humankind, guided by a strong moral compass. Though peaceful by nature, they are powerful defenders of good.",
+      "specialAbilities": {
+        "breathWeapon": "Cone of frost (50' long, 25' diameter) or cloud of paralysing gas (save or paralyzed for 3d4 turns), 3/day",
+        "spells": {
+          "casterLevel": "Equal to age category",
+          "castingChance": "75%"
+        },
+        "sleepChance": "15%, 1-in-6 chance to wake if adventurers nearby",
+        "speakingChance": "75%",
+        "feignSleep": true
+      },
+      "treasure": "5d6×1,000 cp (25%), 1d100×1,000 sp (40%), 1d4×10,000 ep (40%), 1d6×10,000 gp (55%), 5d10×100 pp (25%), 1d100 gems (50%), 1d4×10 jewellery (50%), 4 magic items + 1 potion + 1 scroll (15%), 1d4 scrolls (50%)",
+      "habitats": [
+        {
+          "type": "Mountain peaks",
+          "chance": "70%"
+        },
+        {
+          "type": "Cloud islands",
+          "chance": "30%"
+        }
+      ],
+      "ageCategories": [
+        {
+          "age": "Young",
+          "hitDice": 9,
+          "hpPerDie": 1,
+          "casterLevel": 0,
+          "saveBonus": 0
+        },
+        {
+          "age": "Juvenile",
+          "hitDice": 9,
+          "hpPerDie": 3,
+          "casterLevel": 0,
+          "saveBonus": 0
+        },
+        {
+          "age": "Adult",
+          "hitDice": 10,
+          "hpPerDie": 5,
+          "casterLevel": 5,
+          "saveBonus": 1
+        },
+        {
+          "age": "Old",
+          "hitDice": 11,
+          "hpPerDie": 6,
+          "casterLevel": 6,
+          "saveBonus": 2
+        },
+        {
+          "age": "Ancient",
+          "hitDice": 11,
+          "hpPerDie": 8,
+          "casterLevel": 8,
+          "saveBonus": 4
+        }
+      ]
+    },
+
+    {
+      "name": "White Dragon",
+      "category": "Dragons",
+      "name_variants": "",
+      "frequency": "Uncommon",
+      "numberAppearing": "1d4",
+      "size": "L (24' long)",
+      "move": "12\"; 30\" flying (AA:II)",
+      "armorClass": 3,
+      "hitDice": "5–7",
+      "attacks": 3,
+      "damage": "1d4/1d4/2d8",
+      "specialAttacks": "Cone of frost (50' long, 25' base), 3x/day",
+      "specialDefenses": "Standard; save vs breath weapon for half damage",
+      "magicResistance": "Standard",
+      "lairProbability": "30%",
+      "intelligence": "Low",
+      "alignment": "Chaotic evil",
+      "levelXP": "Varies by age and HD",
+      "description": "White dragons are cruel and unintelligent predators dwelling in arctic and mountainous regions. Though less cunning than their chromatic cousins, they are vicious foes and masters of frigid breath attacks.",
+      "specialAbilities": {
+        "breathWeapon": "Cone of frost, 50' long and 25' wide at the base; damage equals current HP, 3/day",
+        "spells": {
+          "casterLevel": "1/2 age category (only 5% chance)",
+          "castingChance": "5%"
+        },
+        "sleepChance": "60%, 1-in-6 chance to wake if adventurers nearby",
+        "speakingChance": "20%",
+        "feignSleep": true
+      },
+      "treasure": "1d12×1,000 cp (15%), 1d20×1,000 sp (25%), 1d6×1,000 ep (25%), 1d8×1,000 gp (25%), 1d12 gems (15%), 1d8 jewellery (10%), 3 magic items + 2d4 potions + 1 scroll (25%)",
+      "habitats": [
+        {
+          "type": "Frozen tundra",
+          "chance": "50%"
+        },
+        {
+          "type": "Icy mountain lairs",
+          "chance": "50%"
+        }
+      ],
+      "ageCategories": [
+        {
+          "age": "Young",
+          "hitDice": 5,
+          "hpPerDie": 1,
+          "casterLevel": 0,
+          "saveBonus": 0
+        },
+        {
+          "age": "Juvenile",
+          "hitDice": 5,
+          "hpPerDie": 3,
+          "casterLevel": 0,
+          "saveBonus": 0
+        },
+        {
+          "age": "Adult",
+          "hitDice": 6,
+          "hpPerDie": 5,
+          "casterLevel": 3,
+          "saveBonus": 1
+        },
+        {
+          "age": "Old",
+          "hitDice": 7,
+          "hpPerDie": 6,
+          "casterLevel": 4,
+          "saveBonus": 2
+        },
+        {
+          "age": "Ancient",
+          "hitDice": 7,
+          "hpPerDie": 8,
+          "casterLevel": 4,
+          "saveBonus": 4
+        }
+      ]
+    },
+    
     {
       "name": "Dwarf",
       "category": "Demi-Human",
