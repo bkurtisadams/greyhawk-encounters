@@ -15,7 +15,7 @@ export const GREYHAWK_REGIONAL_TABLES = {
     { "min": 34, "max": 50, "encounter": "Men, Brigand" },
     { "min": 51, "max": 55, "encounter": "Men, Merchant" },
     { "min": 56, "max": 59, "encounter": "Soldiery" },
-    { "min": 60, "max": 100, "encounter": "Use Standard encounter Tables", useStandar: true }
+    { "min": 60, "max": 100, "encounter": "Use Standard encounter Tables", useStandard: true }
   ],
   
   "horned_society":
@@ -36,7 +36,7 @@ export const GREYHAWK_REGIONAL_TABLES = {
     { "min": 46, "max": 48, "encounter": "Qullan" },
     { "min": 49, "max": 53, "encounter": "Soldiery" },
     { "min": 54, "max": 55, "encounter": "Troll" },
-    { "min": 56, "max": 100, "encounter": "Use Standard encounter Tables", useStandar: true }
+    { "min": 56, "max": 100, "encounter": "Use Standard encounter Tables", useStandard: true }
   ],
   "iuz": [
     { "min": 1, "max": 3, "encounter": "Bugbear" },
@@ -57,7 +57,7 @@ export const GREYHAWK_REGIONAL_TABLES = {
   { "min": 46, "max": 48, "encounter": "Qullan" },
   { "min": 49, "max": 53, "encounter": "Soldiery" },
   { "min": 54, "max": 55, "encounter": "Troll" },
-  { "min": 56, "max": 100, "encounter": "Use Standard encounter Tables", useStandar: true }
+  { "min": 56, "max": 100, "encounter": "Use Standard encounter Tables", useStandard: true }
   ],
   "rovers_of_the_barrens": [
     { "min": 1, "max": 6, "encounter": "Centaur" },
@@ -69,7 +69,7 @@ export const GREYHAWK_REGIONAL_TABLES = {
   { "min": 41, "max": 45, "encounter": "Men, Raider" },
   { "min": 46, "max": 53, "encounter": "Men, Tribesmen", "note": "Found in hills or woods in the Barrens" },
   { "min": 54, "max": 55, "encounter": "Qullan" },
-  { "min": 56, "max": 100, "encounter": "Use Standard encounter Tables", useStandar: true }
+  { "min": 56, "max": 100, "encounter": "Use Standard encounter Tables", useStandard: true }
   ],
 
   "bissel_gran_march_keoland": [

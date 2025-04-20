@@ -613,7 +613,15 @@ export class GreyhawkEncounterRoller extends Application {
                   }
         
                   options = { ...options, terrain, population, climate, timeOfDay, isWarZone, forceEncounter };
-                  break;
+
+                  result = await this.rollOutdoorEncounter(/* params */);
+      
+                  // Add this line to preserve the original roll from regional tables
+                  if (options.originalRegionalRoll) {
+                    result.roll = options.originalRegionalRoll;
+                  }
+                  
+                  break;  // end of 'outdoor' case
                 }
         
                 case 'underwater': {

@@ -11,9 +11,10 @@ import { rollOnTemperateTable } from '../data/dmg-monster-tables.js';
 import { rollWaterborneEncounter } from '../data/dmg-waterborne-tables.js';
 import { rollAirborneEncounter } from '../data/dmg-airborne-tables.js';
 import { rollCityEncounter } from '../data/dmg-city-tables.js';
-import { rollNumberFromPattern } from '../utils/utility.js';
+//import { rollNumberFromPattern } from '../utils/utility.js';
 import { rollPlanarEncounter } from '../data/dmg-planar-tables.js';
 import { MONSTER_MANUAL } from '../data/monster-manual.js';
+import { findMonsterByName, rollNumberFromPattern } from '../utils/utility.js';
 
 
 const TERRAIN_CHECK_TIMES = {
@@ -26,7 +27,7 @@ const TERRAIN_CHECK_TIMES = {
   marsh: ['morning', 'noon', 'evening', 'night', 'midnight', 'pre-dawn']
 };
 
-function findMonsterByName(name) {
+/* function findMonsterByName(name) {
   const normalized = name.toLowerCase().trim();
 
   return MONSTER_MANUAL.monsters.find(mon => {
@@ -61,7 +62,7 @@ function findMonsterByName(name) {
 
     return false;
   });
-}
+} */
 
 function normalizeEncounterName(name) {
   return name
@@ -917,7 +918,7 @@ export class GreyhawkEncounters {
       }
       content += `</ul>`;
     }
-    
+
     content += `</div>`;
 
     const chatData = {
@@ -1130,6 +1131,9 @@ export class GreyhawkEncounters {
           fallbackText.includes("as per standard")
         )) {
           console.log(`↪️ Interpreting encounter text as standard redirect`);
+          // Save the original roll value before redirecting
+          const originalRoll = tableRollValue;
+
           return await this.rollEncounter({
             encounterType: 'outdoor',
             terrain: options.terrain,
@@ -1138,7 +1142,8 @@ export class GreyhawkEncounters {
             climate: options.climate,
             forceEncounter: true,
             regionFallback: true,
-            fromRegion: region
+            fromRegion: region,
+            originalRegionalRoll: originalRoll // Pass the original roll here
           });
         }
 
@@ -1432,6 +1437,12 @@ export class GreyhawkEncounters {
     encounterResult.initialRoll = initialRoll;
     encounterResult.dieSize = dieSize;
     encounterResult.encounterCheck = `Rolled ${initialRoll} on d${dieSize}`;
+
+    // Copy original regional roll into result if present
+    if (options.originalRegionalRoll !== undefined) {
+      encounterResult.roll = options.originalRegionalRoll;
+    }
+    
     return encounterResult;
   }
 
@@ -1769,11 +1780,13 @@ export class GreyhawkEncounters {
     }
 
     if (!encounter) {
-      return {
+      const result = {
         result: "Encounter",
         typeRoll: roll,
         encounter: "Unknown Creature"
       };
+      if (options.originalRegionalRoll !== undefined) result.roll = options.originalRegionalRoll;
+      return result;
     }
 
     // Handle subtables if needed
@@ -1823,7 +1836,8 @@ export class GreyhawkEncounters {
             subtableRoll: subtableRoll,
             number: number,
             distance: this._getEncounterDistance(dmgTerrain),
-            notes: subtableResult.notes || ""
+            notes: subtableResult.notes || "",
+            ...(options.originalRegionalRoll !== undefined && { roll: options.originalRegionalRoll })
           };
         }
       }
@@ -1880,13 +1894,22 @@ export class GreyhawkEncounters {
         result.notes = subtableResult.notes;
       }
 
+      if (options.originalRegionalRoll !== undefined) {
+        result.roll = options.originalRegionalRoll;
+      }
+
       return result;
     }
 
     // Handle direct Character encounters (not from subtable)
     if (encounter === "Character") {
       console.log("Direct Character encounter from table");
-      return this._generateCharacterEncounter(1, true); // true indicates wilderness encounter
+      return this._generateCharacterEncounter(1, true).then(result => {
+        if (options.originalRegionalRoll !== undefined) {
+          result.roll = options.originalRegionalRoll;
+        }
+        return result;
+      });
     }
 
     // Roll for number of creatures
@@ -1904,7 +1927,7 @@ export class GreyhawkEncounters {
     // Calculate encounter distance 
     const encounterDistance = this._getEncounterDistance(dmgTerrain);
 
-    return {
+    const result = {
       result: "Encounter",
       typeRoll: roll,
       encounter: encounter,
@@ -1912,9 +1935,41 @@ export class GreyhawkEncounters {
       climate: climate,
       terrain: dmgTerrain,
       population: population,
-      distance: encounterDistance,  // Add the calculated distance here
+      distance: encounterDistance,
       notes: isAirborne ? "Encountered while airborne" : ""
     };
+    
+    // ⬇️ Lookup from Monster Manual
+    const monsterData = findMonsterByName(encounter);
+    if (monsterData) {
+      result.monsterData = monsterData;
+    
+      // Roll number appearing if MM provides it
+      if (monsterData.numberAppearing && typeof result.number !== 'object') {
+        try {
+          result.number = rollNumberFromPattern(monsterData.numberAppearing);
+          console.log(`🎯 Number Appearing (MM): ${result.number.total} [${result.number.rolls.join(', ')}]`);
+        } catch (error) {
+          console.error("Error rolling Monster Manual number:", error);
+        }
+      }
+    
+      // Assign gear if number and equipment exist
+      if (monsterData.equipment && result.number?.total) {
+        try {
+          result.equipmentAssigned = GreyhawkEncounters.assignEquipment(monsterData, result.number.total, terrain);
+        } catch (err) {
+          console.warn("⚠️ Equipment assignment failed:", err);
+        }
+      }
+    }
+    
+    if (options.originalRegionalRoll !== undefined) {
+      result.roll = options.originalRegionalRoll;
+    }
+    
+    return result;
+    
   }
 
   static _generateMMHumanEncounter(humanType, options) {

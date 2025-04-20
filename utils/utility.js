@@ -1,5 +1,44 @@
 // utils/utility.js
 // Utility functions for the random encounter system
+import { MONSTER_MANUAL } from '../data/monster-manual.js'; // adjust path as needed
+
+
+export function findMonsterByName(name) {
+  const normalized = name.toLowerCase().trim();
+
+  return MONSTER_MANUAL.monsters.find(mon => {
+    // Step 1: Exact name match
+    if (mon.name?.toLowerCase() === normalized) return true;
+
+    // Step 2: Match against name_variants (comma-separated or array)
+    if (mon.name_variants) {
+      const variants = Array.isArray(mon.name_variants)
+        ? mon.name_variants
+        : mon.name_variants.split(",").map(v => v.trim().toLowerCase());
+
+      if (variants.includes(normalized)) return true;
+    }
+
+    // Step 3: Match against embedded structured variant types
+    if (Array.isArray(mon.variants)) {
+      for (const variant of mon.variants) {
+        const fullVariant = `${mon.name}, ${variant.type}`.toLowerCase();
+        if (fullVariant === normalized) {
+          mon._variant = variant; // Attach matched variant
+          return true;
+        }
+      }
+    }
+
+    // Step 4: Singular fallback (strip trailing 's' if needed)
+    if (normalized.endsWith("s")) {
+      const singular = normalized.slice(0, -1);
+      return findMonsterByName(singular);
+    }
+
+    return false;
+  });
+}
 
 /**
  * Rolls a random number according to a pattern like "1d6", "2d8+1", or "1-4"
