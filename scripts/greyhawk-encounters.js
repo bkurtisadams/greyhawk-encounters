@@ -663,6 +663,14 @@ export class GreyhawkEncounters {
         break;
       }
       case 'outdoor': {
+        // Add at the beginning of case 'outdoor':
+        console.log("📊 [displayResult] Encounter:", result.encounter);
+        console.log("📊 [displayResult] Number format:", typeof result.number);
+        console.log("📊 [displayResult] Number value:", result.number);
+        if (typeof result.number === 'object') {
+          console.log("📊 [displayResult] Number total:", result.number.total);
+          console.log("📊 [displayResult] Number has rolls:", Array.isArray(result.number.rolls));
+        }
         // Add the encounter chance roll information
         if (result.initialRoll !== undefined) {
           if (result.initialRoll === 1) {
@@ -762,6 +770,14 @@ export class GreyhawkEncounters {
 
           if (result.specialResult) {
             content += `<p>Specific Type: ${result.specialResult}</p>`;
+          }
+
+          console.log("🎯 [displayResult] About to display number");
+          console.log("🎯 [displayResult] Number format at display point:", typeof result.number);
+          console.log("🎯 [displayResult] Number value at display point:", result.number);
+          if (typeof result.number === 'object') {
+            console.log("🎯 [displayResult] Number total at display point:", result.number.total);
+            console.log("🎯 [displayResult] Number has rolls at display point:", Array.isArray(result.number.rolls));
           }
 
           if (typeof result.number === 'object') {
@@ -1034,7 +1050,13 @@ export class GreyhawkEncounters {
       }
   
       // Log the final result before returning
-      console.log("✅ [rollEncounter] Final result to return:", result);
+      // Add before the final return result line
+      console.log("🔢 [rollEncounter] Final result number format:", typeof result.number);
+      console.log("🔢 [rollEncounter] Final result number value:", result.number);
+      if (typeof result.number === 'object') {
+        console.log("🔢 [rollEncounter] Number total:", result.number.total);
+        console.log("🔢 [rollEncounter] Number has rolls:", Array.isArray(result.number.rolls));
+      }
       
       // Return the successful result
       return result;
@@ -1339,8 +1361,12 @@ export class GreyhawkEncounters {
    * Roll an outdoor encounter.
    */
   static async rollOutdoorEncounter(terrain, population, timeOfDay, options = {}) {
+    console.log(`🚀 [rollOutdoorEncounter] Starting with terrain=${terrain}, population=${population}, timeOfDay=${timeOfDay}`);
+    console.log(`📋 [rollOutdoorEncounter] Options:`, options);
+    
     // Check if this is a time we should be rolling encounters
     if (!this._shouldRollEncounterForTime(timeOfDay, terrain, options.partySize || 0)) {
+      console.log(`⛔ [rollOutdoorEncounter] Encounter skipped due to DMG terrain/time rule`);
       const msg = `🌄 <strong>No encounter check made</strong><br>
       <em>Reason:</em> According to DMG rules, encounters are not checked at <strong>${timeOfDay}</strong> in <strong>${terrain}</strong> terrain unless the party numbers over 100 creatures.`;
 
@@ -1377,19 +1403,22 @@ export class GreyhawkEncounters {
         checkValue = 1;
     }
 
+    console.log(`🎲 [rollOutdoorEncounter] Using d${dieSize} for encounter check (${population} area)`);
+
     // Roll for encounter
     const roll = await (new Roll(`1d${dieSize}`)).evaluate(); // ✅ correct
+    const initialRoll = roll.total;
+    console.log(`🎯 [rollOutdoorEncounter] Rolled ${initialRoll} on d${dieSize} for encounter check`);
 
     await roll.toMessage({
       flavor: `🌲 Encounter Check (${population} area)`,
       speaker: ChatMessage.getSpeaker(),
     });
 
-    const initialRoll = roll.total;
-
     // Check if encounter occurs (roll a 1 on the appropriate die)
     // OR force an encounter for testing
     if (!options.forceEncounter && initialRoll !== checkValue) {
+      console.log(`❌ [rollOutdoorEncounter] No encounter (${initialRoll} ≠ ${checkValue})`);
       return {
         result: "No encounter",
         initialRoll,
@@ -1397,6 +1426,8 @@ export class GreyhawkEncounters {
         encounterCheck: `Needed ${checkValue} on d${dieSize}`
       };
     }
+
+    console.log(`✅ [rollOutdoorEncounter] Encounter triggered! (${options.forceEncounter ? 'forced' : 'natural roll'})`);
 
     // Determine if this is a patrol encounter (for inhabited areas)
     // or a fortress encounter (for uninhabited areas)
@@ -1412,37 +1443,79 @@ export class GreyhawkEncounters {
       fortressChance *= 2;  // optionally 10% for fortresses if desired
     }
 
+    console.log(`👮 [rollOutdoorEncounter] Patrol chance: ${patrolChance}/20 (${isInhabited ? 'inhabited' : 'uninhabited'}, warzone: ${isWarZone})`);
+    console.log(`🏰 [rollOutdoorEncounter] Fortress chance: ${fortressChance}/20`);
+
     const specialRoll = Math.floor(Math.random() * 20) + 1;
+    console.log(`🎲 [rollOutdoorEncounter] Special roll: ${specialRoll}/20`);
 
     if (isInhabited && specialRoll <= patrolChance) {
+      console.log(`👮 [rollOutdoorEncounter] Patrol encounter triggered!`);
+      console.log(`👮 [rollOutdoorEncounter] Calling rollPatrolEncounter with type: ${population}`);
+      
       const patrolResult = await this.rollPatrolEncounter({ patrolType: population });
+      
+      console.log(`👮 [rollOutdoorEncounter] Patrol result:`, patrolResult);
+      console.log(`👮 [rollOutdoorEncounter] Adding encounter metadata`);
+      
       patrolResult.initialRoll = initialRoll;
       patrolResult.dieSize = dieSize;
       patrolResult.encounterCheck = `Rolled ${initialRoll} on d${dieSize}`;
       patrolResult.specialRoll = specialRoll;
       patrolResult.specialType = "Patrol";
+      
+      // Add original regional roll if present
+      if (options.originalRegionalRoll !== undefined) {
+        console.log(`👮 [rollOutdoorEncounter] Adding regional roll: ${options.originalRegionalRoll}`);
+        patrolResult.roll = options.originalRegionalRoll;
+      }
+      
+      console.log(`👮 [rollOutdoorEncounter] Final patrol result:`, patrolResult);
       return patrolResult;
     } else if (!isInhabited && specialRoll <= fortressChance) {
+      console.log(`🏰 [rollOutdoorEncounter] Fortress encounter triggered!`);
+      console.log(`🏰 [rollOutdoorEncounter] Calling _rollFortressEncounter`);
+      
       const fortressResult = await this._rollFortressEncounter(terrain, options);
+      
+      console.log(`🏰 [rollOutdoorEncounter] Fortress result:`, fortressResult);
+      console.log(`🏰 [rollOutdoorEncounter] Adding encounter metadata`);
+      
       fortressResult.initialRoll = initialRoll;
       fortressResult.dieSize = dieSize;
       fortressResult.encounterCheck = `Rolled ${initialRoll} on d${dieSize}`;
       fortressResult.specialRoll = specialRoll;
       fortressResult.specialType = "Fortress";
+      
+      // Add original regional roll if present
+      if (options.originalRegionalRoll !== undefined) {
+        console.log(`🏰 [rollOutdoorEncounter] Adding regional roll: ${options.originalRegionalRoll}`);
+        fortressResult.roll = options.originalRegionalRoll;
+      }
+      
+      console.log(`🏰 [rollOutdoorEncounter] Final fortress result:`, fortressResult);
       return fortressResult;
     }
 
+    console.log(`🦄 [rollOutdoorEncounter] Standard creature encounter - calling _rollDMGOutdoorEncounter`);
+    
     // Roll for standard outdoor encounter
     const encounterResult = await this._rollDMGOutdoorEncounter(terrain, population, options);
+    
+    console.log(`🦄 [rollOutdoorEncounter] Standard encounter result:`, encounterResult);
+    console.log(`🦄 [rollOutdoorEncounter] Adding encounter metadata`);
+    
     encounterResult.initialRoll = initialRoll;
     encounterResult.dieSize = dieSize;
     encounterResult.encounterCheck = `Rolled ${initialRoll} on d${dieSize}`;
 
     // Copy original regional roll into result if present
     if (options.originalRegionalRoll !== undefined) {
+      console.log(`🦄 [rollOutdoorEncounter] Adding regional roll: ${options.originalRegionalRoll}`);
       encounterResult.roll = options.originalRegionalRoll;
     }
     
+    console.log(`🦄 [rollOutdoorEncounter] Final standard encounter result:`, encounterResult);
     return encounterResult;
   }
 
