@@ -9860,7 +9860,7 @@ export const MONSTER_MANUAL = {
       "treasure": "None (for all giant snakes)"
     },
     {
-      "name": "Soldiery, Men",
+      "name": "Soldiery",
       "category": "Men",
       "name_variants": "Mercenary Company, Infantry Company",
       "frequency": "Uncommon",

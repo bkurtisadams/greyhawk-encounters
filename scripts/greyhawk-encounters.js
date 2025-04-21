@@ -955,11 +955,17 @@ export class GreyhawkEncounters {
               options: options
             };
           }
+          // Create a copy of the options object
+          const outdoorOptions = { ...options };
+
+          // Ensure forceEncounter is properly set as a boolean
+          outdoorOptions.forceEncounter = options.forceEncounter === true;
+
           result = await this.rollOutdoorEncounter(
             options.terrain,
             options.population,
             options.timeOfDay,
-            { forceEncounter: options.forceEncounter === true }
+            outdoorOptions
           );
           break;
         case 'dungeon':
