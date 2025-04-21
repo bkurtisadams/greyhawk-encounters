@@ -582,10 +582,13 @@ export class GreyhawkEncounters {
 
   // Roll a patrol encounter
   static async rollPatrolEncounter(options = {}) {
+    console.log(`🛡️ [rollPatrolEncounter] Starting with options:`, options);
     const patrolType = options.patrolType || "patrol_heavy";
+    console.log(`🛡️ [rollPatrolEncounter] Using patrol type: ${patrolType}`);
 
     // Use our new patrol encounter generator
     const patrolInfo = rollPatrolEncounter(patrolType);
+    console.log(`🛡️ [rollPatrolEncounter] Raw patrol info:`, patrolInfo);
 
     // Format leader information
     const leaderLevel = Math.floor(Math.random() * 3) + 6; // 6-8
@@ -613,17 +616,48 @@ export class GreyhawkEncounters {
       }
     }
 
-    return {
+    // Format patrol type name
+    let patrolTypeName = "Standard Patrol"; // Default
+    if (patrolInfo.name) {
+      patrolTypeName = patrolInfo.name;
+    } else if (patrolType === "patrol_light") {
+      patrolTypeName = "Light Patrol";
+    } else if (patrolType === "patrol_medium") {
+      patrolTypeName = "Medium Patrol";
+    } else if (patrolType === "patrol_heavy") {
+      patrolTypeName = "Heavy Patrol";
+    } else if (patrolType === "patrol_slaver") {
+      patrolTypeName = "Slaver Patrol";
+    } else if (patrolType === "patrol_knight") {
+      patrolTypeName = "Knight Patrol";
+    } else if (patrolType === "moderate") {
+      patrolTypeName = "Moderate Patrol";
+    } else if (patrolType === "dense") {
+      patrolTypeName = "Dense Patrol";
+    }
+
+    // Calculate total number of troops
+    const totalTroops = patrolInfo.totalTroops || 
+                        (3 + // Leader, Lieutenant, Sergeant
+                         (Math.floor(Math.random() * 2) + 3) + // First level fighters (3-4)
+                         (patrolInfo.troops || 20)); // Regular troops
+
+    const result = {
       result: "Patrol Encounter",
-      patrolType: patrolInfo.name,
+      encounter: patrolTypeName, // Add an encounter property for display
+      number: totalTroops, // Add a number property for display
+      patrolType: patrolTypeName,
       leader: { level: leaderLevel, class: "Fighter" },
       lieutenant: { level: lieutenantLevel, class: "Fighter" },
       sergeant: { level: sergeantLevel, class: "Fighter" },
       firstLevelFighters: Math.floor(Math.random() * 2) + 3, // 3-4
-      troops: patrolInfo.totalTroops,
+      troops: patrolInfo.totalTroops || 20,
       spellcaster: spellcaster,
       notes: patrolInfo.notes + " " + patrolInfo.equipment
     };
+    
+    console.log(`🛡️ [rollPatrolEncounter] Final patrol result:`, result);
+    return result;
   }
 
   // Get result from a table based on a roll
@@ -690,16 +724,64 @@ export class GreyhawkEncounters {
           content += `<p>Encounter Distance: ${result.distance}" (${result.distance * 10} yards)</p>`;
         }
 
+        console.log("🐛 [DEBUG] result object:", result);
+        console.log("🐛 [DEBUG] result.result value:", result.result);
+        console.log("🐛 [DEBUG] result.encounter value:", result.encounter);
+        console.log("🐛 [DEBUG] result.number value:", result.number);
+        console.log("🔍 [displayResult] result.result:", JSON.stringify(result.result));
         if (result.result === "No encounter" || result.result === "No encounter check needed at this time of day") {
           content += `<p>Time of Day: ${options.timeOfDay || 'Unknown'}</p>
                       <p>Result: ${result.result || 'Unknown'}</p>`;
         } else if (result.result === "Patrol Encounter") {
           // Your existing patrol encounter handling
           content += `<p>Result: Patrol Encounter</p>
+                      <p>Encounter: ${result.encounter || 'Standard Patrol'}</p>
+                      <p>Number: ${result.number || '0'} troops</p>
                       <p>Patrol Type: ${result.patrolType || 'Standard'}</p>`;
+          
+          // Add regional roll info if available
+          if (options.regionFallback && result.roll) {
+            content += `<p>Regional Table Roll: ${result.roll}</p>`;
+          }
+          
+          // Add leadership section with a header
+          content += `<hr><h4>Patrol Leadership</h4>`;
+          
+          // Leader information
           if (result.leader) {
             content += `<p>Leader: Level ${result.leader.level || '3'} ${result.leader.class || 'Fighter'}</p>`;
           }
+          
+          // Lieutenant information
+          if (result.lieutenant) {
+            content += `<p>Lieutenant: Level ${result.lieutenant.level || '2'} ${result.lieutenant.class || 'Fighter'}</p>`;
+          }
+          
+          // Sergeant information
+          if (result.sergeant) {
+            content += `<p>Sergeant: Level ${result.sergeant.level || '1'} ${result.sergeant.class || 'Fighter'}</p>`;
+          }
+          
+          // First level fighters
+          if (result.firstLevelFighters) {
+            content += `<p>First-Level Fighters: ${result.firstLevelFighters}</p>`;
+          }
+          
+          // Regular troops
+          if (result.troops) {
+            content += `<p>Regular Troops: ${result.troops}</p>`;
+          }
+          
+          // Spellcaster information
+          if (result.spellcaster) {
+            content += `<p>Spellcaster: Level ${result.spellcaster.level} ${result.spellcaster.class}</p>`;
+          }
+          
+          // Notes section if available
+          if (result.notes) {
+            content += `<hr><h4>Notes</h4><p>${result.notes}</p>`;
+          }
+        
           // Rest of patrol display code...
         } else if (result.result === "Fortress Encounter") {
           // Your existing fortress encounter handling
