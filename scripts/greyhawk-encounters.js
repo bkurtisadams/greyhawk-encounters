@@ -1023,236 +1023,197 @@ export class GreyhawkEncounters {
    */
   static async _rollRegionalEncounter(options) {
     const region = options.specificRegion?.trim().toLowerCase().replace(/[\s\-]/g, "_") || "greyhawk";
-    const table = GREYHAWK_REGIONAL_TABLES[region];
-
+    let table = GREYHAWK_REGIONAL_TABLES[region];
+  
     const isWarZone = options.isWarZone ?? false;
     const population = options.population || 'moderate';
     const forceEncounter = options.forceEncounter === true;
-
+  
     console.log(`🗺️ Regional Encounter Starting...`);
     console.log(`  ➤ Region: ${region}`);
     console.log(`  ➤ Population: ${population}`);
     console.log(`  ➤ Is War Zone: ${isWarZone}`);
-
-    // 🔹 Step 1: Roll to see if an encounter occurs based on DMG population rules
-    let dieSize = 12;
-    switch (population) {
-      case 'dense': dieSize = 20; break;
-      case 'uninhabited': dieSize = 10; break;
-    }
-
+  
+    // Step 1: Encounter Check
+    let dieSize = { dense: 20, uninhabited: 10 }[population] || 12;
     const roll = new Roll(`1d${dieSize}`);
-    await roll.evaluate(); // ✅ correct
-
-    // Extract the individual dice values
-    const encounterDiceResults = [];
-    roll.dice.forEach(die => {
-      die.results.forEach(r => encounterDiceResults.push(r.result));
-    });
-
+    await roll.evaluate();
+  
+    const encounterDiceResults = roll.dice.flatMap(die => die.results.map(r => r.result));
     await roll.toMessage({
       speaker: ChatMessage.getSpeaker(),
-      flavor: `🎲 Encounter Check (${population} area): 1 in d${dieSize}<br>
-               <em>Rolled:</em> ${encounterDiceResults.join(', ')} (Total: ${roll.total})`
+      flavor: `🎲 Encounter Check (${population} area): 1 in d${dieSize}<br><em>Rolled:</em> ${encounterDiceResults.join(', ')} (Total: ${roll.total})`
     });
-
+  
     console.log(`🎲 Encounter check: rolled ${roll.total} on d${dieSize} (success if 1)`);
-    console.log(`Individual dice: ${encounterDiceResults.join(', ')}`);
-
+  
     if (!forceEncounter && roll.total !== 1) {
-      console.log(`⛔ No encounter: result was ${roll.total}`);
-      return {
-        roll: roll.total,
-        encounter: `No encounter (rolled ${roll.total} on d${dieSize})`
-      };
+      console.log(`⛔ No encounter`);
+      return { roll: roll.total, encounter: `No encounter (rolled ${roll.total} on d${dieSize})` };
     } else if (forceEncounter) {
-      console.log(`⚠️ Forcing encounter due to test mode override.`);
+      console.log(`⚠️ Forcing encounter due to test mode`);
     }
-
-    // 🔹 Step 2: Resolve the proper encounter table
-    //let table = GreyhawkEncounters.resolveRegionalTable(region);
-    console.log(`📦 Table resolved via REGION_TABLE_MAP: ${!!table}`);
-
+  
+    // Step 2: Get Table (fallbacks)
     if (!table) {
-      const fallback = GREYHAWK_GEOGRAPHICAL_TABLES[region];
-      if (fallback) {
-        console.log(`🌄 Using fallback geographical table for ${region}`);
-        table = fallback;
-      }
+      table = GREYHAWK_GEOGRAPHICAL_TABLES[region];
+      console.log(`🌄 Using fallback geographical table: ${!!table}`);
     }
-
+  
     if (!table) {
       console.warn(`⚠️ No encounter table found for region: ${region}, using Greyhawk`);
       table = GREYHAWK_REGIONAL_TABLES['greyhawk'];
     }
-
-    // 🔹 Step 3: Roll 1d100 for the encounter table
+  
+    // Step 3: Roll Encounter
     const tableRoll = new Roll("1d100");
     await tableRoll.evaluate();
-
     const tableRollValue = tableRoll.total;
     console.log(`📜 Rolled ${tableRollValue} for encounter result on ${region} table`);
-    console.log(`Individual die result: ${tableRollValue}`);
-
+  
     for (const entry of table) {
-      if (entry.max === 0 && tableRollValue >= entry.min) {
-        console.log(`📌 Matched special range ${entry.min}+ → ${entry.encounter}`);
-        console.log("✅ Entry:", entry);
-        if (entry.useStandard) {
-          console.log(`↪️ Redirecting to standard encounter handler`);
-          console.log(`🌐 Fallback to DMG logic using terrain=${options.terrain}, timeOfDay=${options.timeOfDay}`);
-
-          return await this.rollEncounter({
-            encounterType: 'outdoor',
-            terrain: options.terrain || 'plain',
-            population: options.population || 'moderate',
-            timeOfDay: options.timeOfDay || 'noon',
-            climate: options.climate || 'temperate',
-            forceEncounter: true,
-            regionFallback: true,
-            fromRegion: region
-          });
-
-        } else {
-          return { roll: tableRollValue, encounter: entry.encounter };
-        }
-      } else if (tableRollValue >= entry.min && tableRollValue <= entry.max) {
-        console.log(`📌 Matched ${entry.min}-${entry.max} → ${entry.encounter}`);
-
-        let numberAppearing = null;
-        let breakdown = null;
-        let diceResults = [];
-
-        // 🧠 Dynamic fallback if entry text says to use standard tables
-        const fallbackText = entry.encounter?.toLowerCase();
-        if (!entry.useStandard && fallbackText && (
-          fallbackText.includes("use standard") ||
-          fallbackText.includes("standard encounter") ||
-          fallbackText.includes("as per standard")
-        )) {
-          console.log(`↪️ Interpreting encounter text as standard redirect`);
-          // Save the original roll value before redirecting
-          const originalRoll = tableRollValue;
-
-          return await this.rollEncounter({
-            encounterType: 'outdoor',
-            terrain: options.terrain,
-            population: options.population,
-            timeOfDay: options.timeOfDay,
-            climate: options.climate,
-            forceEncounter: true,
-            regionFallback: true,
-            fromRegion: region,
-            originalRegionalRoll: originalRoll // Pass the original roll here
-          });
-        }
-
-        // Normalize and attempt to find full monster data from Monster Manual
-        const rawName = entry.encounter;
-        const normalizedName = normalizeEncounterName(rawName);
-        let monsterData = findMonsterByName(normalizedName);
-        console.log(`🔍 Looking up encounter: "${rawName}" → normalized: "${normalizedName}"`);
-        console.log(`📖 Monster data found?`, !!monsterData);
-
-        // Fallback: try second part of comma-separated name
-        if (!monsterData && normalizedName.includes(",")) {
-          const alt = normalizedName.split(",")[1].trim();
-          monsterData = findMonsterByName(alt);
-        }
-
-        // Fallback: composite encounters like "Orcs and Ogrillons"
-        if (!monsterData && normalizedName.includes(" and ")) {
-          const parts = normalizedName.split(" and ").map(s => s.trim());
-          const found = parts.map(findMonsterByName).filter(Boolean);
-          if (found.length) monsterData = found[0]; // Use first match for now
-        }
-
-        // Merge in variant if defined
-        if (monsterData?._variant) {
-          monsterData = { ...monsterData, ...monsterData._variant };
-        }
-
-        // 🎲 Number Appearing
-        if (monsterData?.numberAppearing) {
-          const result = rollNumberFromPattern(monsterData.numberAppearing);
-          numberAppearing = result.total;
-          breakdown = result.rolls;
-
-          if (Array.isArray(result.rolls) && result.rolls.every(item => typeof item === 'number' || item.startsWith('+'))) {
-            diceResults = [...result.rolls];
-          }
-
-          console.log(`🎯 Number Appearing (from monster manual): ${numberAppearing} [${breakdown.join(', ')}]`);
-        }
-
-        const encounterText = numberAppearing
-          ? `${numberAppearing} ${entry.encounter}`
-          : entry.encounter;
-
-        // 🧭 Roll for % in Lair
-        let isLairEncounter = false;
-        const lairChance = parseInt(monsterData?.lairProbability || "0");
-        if (!isNaN(lairChance) && lairChance > 0) {
-          const lairRoll = Math.floor(Math.random() * 100) + 1;
-          isLairEncounter = lairRoll <= lairChance;
-          console.log(`🏰 Rolled ${lairRoll} for % in Lair (needed ≤ ${lairChance}) → ${isLairEncounter ? "LAIR" : "not lair"}`);
-        }
-
-        // 🛡️ Leaders, Special Members, Equipment
-        const specialMembers = monsterData?.leaders && numberAppearing
-          ? flattenLeaderData(monsterData.leaders, numberAppearing, isLairEncounter)
-          : [];
-        const equipmentAssigned = GreyhawkEncounters.assignEquipment(monsterData, numberAppearing, options.terrain || "");
-
-        const flavor = `📍 <strong>Greyhawk Encounter</strong>`;
-
-        let leaderBlock = "";
-        if (specialMembers?.length) {
-          leaderBlock = `<br><strong>Leaders & Special Members:</strong><ul style="margin-top: 0.25em;">`;
-          for (const leader of specialMembers) {
-            if (leader.notes) {
-              leaderBlock += `<li><em>${leader.role}</em>: ${leader.notes}</li>`;
-            } else {
-              leaderBlock += `<li><em>${leader.role}</em> — Level ${leader.level} ${leader.type}</li>`;
-            }
-          }
-          leaderBlock += `</ul>`;
-        }
-
-        const content = `
-          <strong>Region:</strong> ${region}<br>
-          <strong>Roll:</strong> ${tableRollValue}<br>
-          <strong>Encounter:</strong> ${encounterText}
-          ${breakdown ? `<br><em>Number Appearing:</em> ${numberAppearing} 
-            <em>(Dice: ${diceResults.join(', ')})</em>` : ""}
-          <br><strong>% In Lair:</strong> ${lairChance}% → <em>${isLairEncounter ? "Yes (lair encounter)" : "No"}</em>
-          ${leaderBlock}
-        `;
-
-        await ChatMessage.create({
-          speaker: ChatMessage.getSpeaker(),
-          flavor,
-          content,
-          type: CONST.CHAT_MESSAGE_STYLES.OTHER
+      const isMatch = (entry.max === 0 && tableRollValue >= entry.min) || (tableRollValue >= entry.min && tableRollValue <= entry.max);
+      if (!isMatch) continue;
+  
+      console.log(`📌 Matched ${entry.min}-${entry.max || "+"} → ${entry.encounter}`);
+  
+      const fallbackText = entry.encounter?.toLowerCase();
+      const isStandardRedirect = entry.useStandard || (
+        fallbackText?.includes("use standard") ||
+        fallbackText?.includes("standard encounter") ||
+        fallbackText?.includes("as per standard")
+      );
+  
+      if (isStandardRedirect) {
+        console.log(`↪️ Redirecting to standard encounter handler`);
+        return await this.rollEncounter({
+          encounterType: 'outdoor',
+          terrain: options.terrain || 'plain',
+          population,
+          timeOfDay: options.timeOfDay || 'noon',
+          climate: options.climate || 'temperate',
+          forceEncounter: true,
+          regionFallback: true,
+          fromRegion: region,
+          originalRegionalRoll: tableRollValue
         });
-
-        return {
-          roll: tableRollValue,
-          encounter: encounterText,
-          number: numberAppearing ?? null,
-          numberRolls: breakdown ?? [],
-          rawEncounter: entry.encounter,
-          alignment: monsterData?.alignment,
-          treasure: monsterData?.treasure,
-          description: monsterData?.description,
-          isLair: isLairEncounter,
-          specialMembers,
-          equipmentAssigned 
-        };
       }
+  
+      // Attempt to resolve encounter via monster data
+      const rawName = entry.encounter;
+      const normalizedName = normalizeEncounterName(rawName);
+      let monsterData = findMonsterByName(normalizedName);
+  
+      if (!monsterData && normalizedName.includes(",")) {
+        const alt = normalizedName.split(",")[1].trim();
+        monsterData = findMonsterByName(alt);
+      }
+  
+      if (!monsterData && normalizedName.includes(" and ")) {
+        const parts = normalizedName.split(" and ").map(s => s.trim());
+        const found = parts.map(findMonsterByName).filter(Boolean);
+        if (found.length) monsterData = found[0];
+      }
+  
+      if (monsterData?._variant) {
+        monsterData = { ...monsterData, ...monsterData._variant };
+      }
+  
+      // Number Appearing
+      let numberAppearing = null, breakdown = null, diceResults = [];
+      if (monsterData?.numberAppearing) {
+        const result = rollNumberFromPattern(monsterData.numberAppearing);
+        numberAppearing = result.total;
+        breakdown = result.rolls;
+        if (Array.isArray(result.rolls)) {
+          diceResults = [...result.rolls];
+        }
+        console.log(`🎯 Number Appearing: ${numberAppearing} [${breakdown.join(', ')}]`);
+      }
+  
+      // % in Lair
+      const lairChance = parseInt(monsterData?.lairProbability || "0");
+      const lairRoll = Math.floor(Math.random() * 100) + 1;
+      const isLairEncounter = lairRoll <= lairChance;
+      if (lairChance > 0) {
+        console.log(`🏰 Rolled ${lairRoll} for % in Lair (≤${lairChance}) → ${isLairEncounter ? "LAIR" : "not lair"}`);
+      }
+  
+      // Leaders & Equipment
+      const specialMembers = (monsterData?.leaders && numberAppearing)
+        ? flattenLeaderData(monsterData.leaders, numberAppearing, isLairEncounter)
+        : [];
+  
+      const equipmentAssigned = GreyhawkEncounters.assignEquipment(monsterData, numberAppearing, options.terrain || "");
+  
+      // Chat Content
+      const encounterText = numberAppearing ? `${numberAppearing} ${rawName}` : rawName;
+      let leaderBlock = "";
+  
+      if (specialMembers?.length) {
+        leaderBlock = `<br><strong>Leaders & Special Members:</strong><ul style="margin-top: 0.25em;">`;
+        for (const leader of specialMembers) {
+          leaderBlock += `<li><em>${leader.role}</em>: ${leader.notes || `Level ${leader.level} ${leader.type}`}</li>`;
+        }
+        leaderBlock += `</ul>`;
+      }
+  
+      const content = `
+        <strong>Region:</strong> ${region}<br>
+        <strong>Roll:</strong> ${tableRollValue}<br>
+        <strong>Encounter:</strong> ${encounterText}
+        ${breakdown ? `<br><em>Number Appearing:</em> ${numberAppearing} (Dice: ${diceResults.join(', ')})` : ""}
+        <br><strong>% In Lair:</strong> ${lairChance}% → <em>${isLairEncounter ? "Yes" : "No"}</em>
+        ${leaderBlock}
+      `;
+  
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker(),
+        flavor: `📍 <strong>Greyhawk Encounter</strong>`,
+        content,
+        type: CONST.CHAT_MESSAGE_STYLES.OTHER
+      });
+  
+      return {
+        roll: tableRollValue,
+        encounter: encounterText,
+        number: numberAppearing ?? null,
+        numberRolls: breakdown ?? [],
+        rawEncounter: rawName,
+        alignment: monsterData?.alignment,
+        treasure: monsterData?.treasure,
+        description: monsterData?.description,
+        isLair: isLairEncounter,
+        specialMembers,
+        equipmentAssigned
+      };
     }
 
-  }
+    // 🛑 No match found in the encounter table
+    console.warn(`⚠️ No valid encounter matched for roll ${tableRollValue} on region "${region}"`);
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker(),
+      flavor: `📍 <strong>Greyhawk Encounter</strong>`,
+      content: `<strong>Region:</strong> ${region}<br>
+                <strong>Roll:</strong> ${tableRollValue}<br>
+                <strong>Encounter:</strong> <em>N/A (no matching entry)</em>`,
+      type: CONST.CHAT_MESSAGE_STYLES.OTHER
+    });
+
+    return {
+      roll: tableRollValue,
+      encounter: "N/A (no matching entry found)",
+      number: null,
+      numberRolls: [],
+      rawEncounter: null,
+      isLair: false,
+      specialMembers: [],
+      equipmentAssigned: []
+    };
+
+
+  } // end of _rollRegionalEncounter()
+  
 
   // Add a new method for handling standard encounters from DMG Appendix C
   static _rollStandardEncounter(options) {

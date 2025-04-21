@@ -5,7 +5,7 @@ export const GREYHAWK_REGIONAL_TABLES = {
   // Political Regions
   "bandit_kingdoms": [
     { "min": 1, "max": 2, "encounter": "Bugbear" },
-    { "min": 3, "max": 4, "encounter": "Centaur" },
+    { "min": 3, "max": 4, "encounter": "Gnoll" },
     { "min": 5, "max": 5, "encounter": "Flinds" },
     { "min": 6, "max": 8, "encounter": "Giant" },
     { "min": 9, "max": 10, "encounter": "Gnoll" },
