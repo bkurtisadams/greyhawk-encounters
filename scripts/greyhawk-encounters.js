@@ -782,9 +782,197 @@ export class GreyhawkEncounters {
           } else {
             content += `<hr><h4>Notes</h4><p>Patrol is mounted unless terrain is prohibitive. Leaders ride warhorses.</p>`;
           }
-        } else {
+        } 
+        // Check for Monster Manual data in regional context
+        else if (result.monsterData && result.encounter) {
+          console.log("📚 [displayResult] Display Monster Manual data in regional context");
+          
+          content += `<p>Encounter: ${result.encounter || 'Unknown Creature'}</p>`;
+          
+          // Display number
+          if (typeof result.number === 'object') {
+            content += `<p>Number: ${result.number.total}</p>`;
+            if (Array.isArray(result.number.rolls)) {
+              content += `<p><em>(Rolled: ${result.number.rolls.join(', ')})</em></p>`;
+            }
+          } else {
+            content += `<p>Number: ${result.number || '1'}</p>`;
+          }
+          
+          // Display distance if available
+          if (result.distance !== undefined) {
+            content += `<p>Distance: ${result.distance} yards</p>`;
+          }
+          
+          // Display Monster Manual data in a special section
+          content += `<hr><h4>Monster Manual Data</h4>`;
+          
+          // Display basic monster info
+          if (result.monsterData.frequency) {
+            content += `<p>Frequency: ${result.monsterData.frequency}</p>`;
+          }
+          
+          if (result.monsterData.armorClass) {
+            content += `<p>Armor Class: ${result.monsterData.armorClass}</p>`;
+          }
+          
+          if (result.monsterData.hitDice) {
+            content += `<p>Hit Dice: ${result.monsterData.hitDice}</p>`;
+          }
+          
+          if (result.monsterData.move) {
+            content += `<p>Movement: ${result.monsterData.move}</p>`;
+          }
+          
+          if (result.monsterData.alignment) {
+            content += `<p>Alignment: ${result.monsterData.alignment}</p>`;
+          }
+          
+          // If the monster has a description
+          if (result.monsterData.description) {
+            content += `<p>Description: ${result.monsterData.description}</p>`;
+          }
+          
+          // If the monster has leaders
+          if (result.monsterData.leaders) {
+            content += `<hr><h4>Leaders and Special Members</h4>`;
+            
+            // Special handling for merchant leaders
+            if (result.encounter === "Men, merchant") {
+              // Display merchant leaders
+              if (result.monsterData.leaders.captain) {
+                content += `<p>Captain: Level ${result.monsterData.leaders.captain.level} ${result.monsterData.leaders.captain.class}</p>`;
+              }
+              
+              if (result.monsterData.leaders.lieutenant) {
+                content += `<p>Lieutenant: Level ${result.monsterData.leaders.lieutenant.level} ${result.monsterData.leaders.lieutenant.class}</p>`;
+              }
+              
+              if (result.monsterData.leaders.guards) {
+                content += `<p>Guards: ${result.monsterData.leaders.guards.count} Level ${result.monsterData.leaders.guards.level} ${result.monsterData.leaders.guards.class}</p>`;
+              }
+              
+              if (result.monsterData.leaders.magic_user_chance) {
+                content += `<p>Magic-User: ${result.monsterData.leaders.magic_user_chance} chance of Level ${result.monsterData.leaders.magic_user_level}</p>`;
+              }
+              
+              if (result.monsterData.leaders.cleric_chance) {
+                content += `<p>Cleric: ${result.monsterData.leaders.cleric_chance} chance of Level ${result.monsterData.leaders.cleric_level}</p>`;
+              }
+            }
+            // Handle clerics if present
+            else if (result.monsterData.leaders.clerics) {
+              content += `<p><strong>Clerics:</strong></p>`;
+              
+              Object.entries(result.monsterData.leaders.clerics).forEach(([key, value]) => {
+                if (key !== 'assistants') {
+                  content += `<p>Level ${value.level} ${value.class}: ${value.count}</p>`;
+                }
+              });
+              
+              // Handle clerical assistants if present
+              if (result.monsterData.leaders.clerics.assistants) {
+                content += `<p><strong>Clerical Assistants:</strong></p>`;
+                result.monsterData.leaders.clerics.assistants.forEach(assistant => {
+                  content += `<p>Level ${assistant.level} ${assistant.class}: ${assistant.count}</p>`;
+                });
+              }
+            }
+            
+            // Handle fighters if present
+            if (result.monsterData.leaders.fighters) {
+              content += `<p><strong>Fighters:</strong></p>`;
+              content += `<p>Level ${result.monsterData.leaders.fighters.level} Fighters: ${result.monsterData.leaders.fighters.count}</p>`;
+              if (result.monsterData.leaders.fighters.chance) {
+                content += `<p>(Chance: ${result.monsterData.leaders.fighters.chance})</p>`;
+              }
+            }
+          }
+          
+          // If the monster has treasure
+          if (result.monsterData.treasure) {
+            content += `<hr><h4>Treasure</h4>`;
+            
+            // Special handling for merchant treasure
+            if (result.encounter === "Men, merchant") {
+              if (result.monsterData.treasure.merchants) {
+                content += `<p><strong>Merchants:</strong> ${result.monsterData.treasure.merchants}</p>`;
+              }
+              
+              if (result.monsterData.treasure.mercenaries) {
+                content += `<p><strong>Mercenaries:</strong> ${result.monsterData.treasure.mercenaries}</p>`;
+              }
+              
+              if (result.monsterData.treasure.leaders) {
+                content += `<p><strong>Leaders:</strong> ${result.monsterData.treasure.leaders}</p>`;
+              }
+              
+              if (result.monsterData.treasure.pay_box) {
+                content += `<p><strong>Pay Box:</strong> ${result.monsterData.treasure.pay_box.description}</p>`;
+                content += `<ul>`;
+                if (result.monsterData.treasure.pay_box.gold) {
+                  content += `<li>Gold: ${result.monsterData.treasure.pay_box.gold}</li>`;
+                }
+                if (result.monsterData.treasure.pay_box.platinum) {
+                  content += `<li>Platinum: ${result.monsterData.treasure.pay_box.platinum}</li>`;
+                }
+                if (result.monsterData.treasure.pay_box.gems) {
+                  content += `<li>Gems: ${result.monsterData.treasure.pay_box.gems}</li>`;
+                }
+                content += `</ul>`;
+              }
+              
+              if (result.monsterData.treasure.caravan_goods) {
+                content += `<p><strong>Caravan Goods:</strong></p>`;
+                content += `<ul>`;
+                if (result.monsterData.treasure.caravan_goods.value) {
+                  content += `<li>Value: ${result.monsterData.treasure.caravan_goods.value}</li>`;
+                }
+                if (result.monsterData.treasure.caravan_goods.transport) {
+                  content += `<li>Transport: ${result.monsterData.treasure.caravan_goods.transport}</li>`;
+                }
+                content += `</ul>`;
+              }
+            } else {
+              // Standard treasure handling
+              Object.entries(result.monsterData.treasure).forEach(([key, value]) => {
+                if (key === 'holy_item' && value.chance) {
+                  content += `<p>Holy Item (${value.chance}% chance): ${value.description}</p>`;
+                } else if (Array.isArray(value)) {
+                  content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value.join(', ')}</p>`;
+                } else {
+                  content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value}</p>`;
+                }
+              });
+            }
+          }
+          
+          if (result.notes) {
+            content += `<hr><h4>Notes</h4><p>${result.notes}</p>`;
+          }
+        }
+        else {
           // Standard encounter display for non-patrol regional encounters
           content += `<p>Encounter: ${result.encounter || 'None'}</p>`;
+          
+          // Display number if available
+          if (result.number) {
+            if (typeof result.number === 'object') {
+              content += `<p>Number: ${result.number.total}</p>`;
+            } else {
+              content += `<p>Number: ${result.number}</p>`;
+            }
+          }
+          
+          // Display distance if available
+          if (result.distance !== undefined) {
+            content += `<p>Distance: ${result.distance} yards</p>`;
+          }
+          
+          // Display notes if available
+          if (result.notes) {
+            content += `<p>Notes: ${result.notes}</p>`;
+          }
         }
         break;
       }
