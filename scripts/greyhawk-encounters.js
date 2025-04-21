@@ -933,82 +933,115 @@ export class GreyhawkEncounters {
    * Roll an encounter based on the provided options.
    */
   static async rollEncounter(options) {
-    console.log("Rolling encounter with options:", options);
-
+    console.log("🔍 [rollEncounter] Starting with options:", options);
+  
     try {
       if (!options || !options.encounterType) {
-        console.warn("Missing encounter type in options");
+        console.warn("❌ [rollEncounter] Missing encounter type in options");
         return { result: "No encounter type specified", error: "Missing encounter type" };
       }
-
+  
       let result;
+      console.log(`🎯 [rollEncounter] Processing encounter type: ${options.encounterType}`);
+      
       switch (options.encounterType) {
         case 'regional':
+          console.log("🌍 [rollEncounter] Calling _rollRegionalEncounter");
           result = await this._rollRegionalEncounter(options);
+          console.log("🔄 [rollEncounter] Returned from _rollRegionalEncounter with result:", result);
           break;
         case 'outdoor':
           if (!options.terrain || !options.population) {
-            console.warn("Missing required parameters for outdoor encounter");
+            console.warn("❌ [rollEncounter] Missing required parameters for outdoor encounter");
             return {
               result: "Error generating encounter",
               error: "Missing required parameters for outdoor encounter",
               options: options
             };
           }
+          
           // Create a copy of the options object
           const outdoorOptions = { ...options };
-
+          console.log("📋 [rollEncounter] Created copy of options for outdoor encounter:", outdoorOptions);
+  
           // Ensure forceEncounter is properly set as a boolean
           outdoorOptions.forceEncounter = options.forceEncounter === true;
-
+          console.log(`🚩 [rollEncounter] Set forceEncounter flag to: ${outdoorOptions.forceEncounter}`);
+  
+          console.log(`🏕️ [rollEncounter] Calling rollOutdoorEncounter with terrain=${options.terrain}, population=${options.population}, timeOfDay=${options.timeOfDay}`);
+          
           result = await this.rollOutdoorEncounter(
             options.terrain,
             options.population,
             options.timeOfDay,
             outdoorOptions
           );
+          
+          console.log("🔄 [rollEncounter] Returned from rollOutdoorEncounter with result:", result);
+          
+          // Log specific important values
+          console.log(`👁️ [rollEncounter] Result has encounter: ${result.encounter || 'undefined'}`);
+          console.log(`👁️ [rollEncounter] Result has roll: ${result.roll || 'undefined'}`);
+          console.log(`👁️ [rollEncounter] Result has typeRoll: ${result.typeRoll || 'undefined'}`);
+          console.log(`👁️ [rollEncounter] Result has originalRegionalRoll: ${result.originalRegionalRoll || 'undefined'}`);
+          console.log(`👁️ [rollEncounter] Result has monsterData: ${result.monsterData ? 'yes' : 'no'}`);
+          
           break;
         case 'dungeon':
+          console.log("🏰 [rollEncounter] Calling _rollDungeonEncounter");
           result = await this._rollDungeonEncounter(options);
+          console.log("🔄 [rollEncounter] Returned from _rollDungeonEncounter with result:", result);
           break;
         case 'underwater':
         case 'waterborne':
+          console.log("🌊 [rollEncounter] Calling _rollWaterborneEncounter");
           result = await this._rollWaterborneEncounter(options);
+          console.log("🔄 [rollEncounter] Returned from _rollWaterborneEncounter with result:", result);
           break;
         case 'airborne':
+          console.log("☁️ [rollEncounter] Calling _rollAirborneEncounter");
           result = await this._rollAirborneEncounter(options);
+          console.log("🔄 [rollEncounter] Returned from _rollAirborneEncounter with result:", result);
           break;
         case 'city':
         case 'town':
+          console.log("🏙️ [rollEncounter] Calling _rollCityEncounter");
           result = await this._rollCityEncounter(options);
+          console.log("🔄 [rollEncounter] Returned from _rollCityEncounter with result:", result);
           break;
         case 'astral':
         case 'ethereal':
+          console.log("✨ [rollEncounter] Calling _rollPlanarEncounter");
           result = await this._rollPlanarEncounter(options);
+          console.log("🔄 [rollEncounter] Returned from _rollPlanarEncounter with result:", result);
           break;
         default:
-          console.warn(`Unknown encounter type: ${options.encounterType}`);
+          console.warn(`❌ [rollEncounter] Unknown encounter type: ${options.encounterType}`);
           return {
             result: "No valid encounter type specified",
             error: `Unknown encounter type: ${options.encounterType}`
           };
       }
-
+  
       // Validate result
       if (!result) {
-        console.error(`No result returned from ${options.encounterType} encounter generation`);
+        console.error(`❌ [rollEncounter] No result returned from ${options.encounterType} encounter generation`);
         return {
           result: "Error generating encounter",
           error: "No result returned from encounter generator",
           encounterType: options.encounterType
         };
       }
-
+  
+      // Log the final result before returning
+      console.log("✅ [rollEncounter] Final result to return:", result);
+      
       // Return the successful result
       return result;
-
+  
     } catch (error) {
-      console.error(`Error generating ${options?.encounterType || 'unknown'} encounter:`, error);
+      console.error(`❌ [rollEncounter] Error generating ${options?.encounterType || 'unknown'} encounter:`, error);
+      console.error(`🔍 [rollEncounter] Error stack:`, error.stack);
       return {
         result: "Error generating encounter",
         error: error.message || "Unknown error",
