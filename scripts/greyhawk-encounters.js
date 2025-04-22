@@ -705,6 +705,11 @@ export class GreyhawkEncounters {
           'Unknown Region';
         content += `<p>Region: ${regionName}</p>
                     <p>Roll: ${result.roll || 'N/A'}</p>`;
+        
+        // For outdoor encounters, convert inches to yards (1" = 10 yards)
+        if (result.distance !== undefined) {
+          content += `<p>Encounter Distance: ${result.distance}" (${result.distance * 10} yards)</p>`;
+        }
                     
         // Improved handling for regional encounters - check if it's a patrol encounter
         if (result.result === "Patrol Encounter") {
@@ -797,11 +802,6 @@ export class GreyhawkEncounters {
             }
           } else {
             content += `<p>Number: ${result.number || '1'}</p>`;
-          }
-          
-          // Display distance if available
-          if (result.distance !== undefined) {
-            content += `<p>Distance: ${result.distance} yards</p>`;
           }
           
           // Display Monster Manual data in a special section
@@ -962,11 +962,6 @@ export class GreyhawkEncounters {
             } else {
               content += `<p>Number: ${result.number}</p>`;
             }
-          }
-          
-          // Display distance if available
-          if (result.distance !== undefined) {
-            content += `<p>Distance: ${result.distance} yards</p>`;
           }
           
           // Display notes if available
@@ -1739,6 +1734,7 @@ export class GreyhawkEncounters {
         type: CONST.CHAT_MESSAGE_STYLES.OTHER
       });
   
+      const encounterDistance = this._getEncounterDistance(options.terrain || 'plain');
       return {
         roll: tableRollValue,
         encounter: encounterText,
@@ -1750,7 +1746,8 @@ export class GreyhawkEncounters {
         description: monsterData?.description,
         isLair: isLairEncounter,
         specialMembers,
-        equipmentAssigned
+        equipmentAssigned,
+        distance: encounterDistance
       };
     }
 
