@@ -873,10 +873,15 @@ export class GreyhawkEncounters {
               // Handle clerical assistants if present
               if (result.monsterData.leaders.clerics.assistants) {
                 content += `<p><strong>Clerical Assistants:</strong></p>`;
-                result.monsterData.leaders.clerics.assistants.forEach(assistant => {
+
+                const assistants = result.monsterData.leaders.clerics.assistants;
+                const assistantList = Array.isArray(assistants) ? assistants : [assistants];
+
+                assistantList.forEach(assistant => {
                   content += `<p>Level ${assistant.level} ${assistant.class}: ${assistant.count}</p>`;
                 });
               }
+
             }
             
             // Handle fighters if present
@@ -1247,7 +1252,11 @@ export class GreyhawkEncounters {
                 // Handle clerical assistants if present
                 if (result.monsterData.leaders.clerics.assistants) {
                   content += `<p><strong>Clerical Assistants:</strong></p>`;
-                  result.monsterData.leaders.clerics.assistants.forEach(assistant => {
+
+                  const assistants = result.monsterData.leaders.clerics.assistants;
+                  const assistantList = Array.isArray(assistants) ? assistants : [assistants];
+
+                  assistantList.forEach(assistant => {
                     content += `<p>Level ${assistant.level} ${assistant.class}: ${assistant.count}</p>`;
                   });
                 }
