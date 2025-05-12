@@ -27,43 +27,6 @@ const TERRAIN_CHECK_TIMES = {
   marsh: ['morning', 'noon', 'evening', 'night', 'midnight', 'pre-dawn']
 };
 
-/* function findMonsterByName(name) {
-  const normalized = name.toLowerCase().trim();
-
-  return MONSTER_MANUAL.monsters.find(mon => {
-    // Step 1: Exact name match
-    if (mon.name?.toLowerCase() === normalized) return true;
-
-    // Step 2: Match against name_variants (comma-separated or array)
-    if (mon.name_variants) {
-      const variants = Array.isArray(mon.name_variants)
-        ? mon.name_variants
-        : mon.name_variants.split(",").map(v => v.trim().toLowerCase());
-
-      if (variants.includes(normalized)) return true;
-    }
-
-    // Step 3: Match against embedded structured variant types
-    if (Array.isArray(mon.variants)) {
-      for (const variant of mon.variants) {
-        const fullVariant = `${mon.name}, ${variant.type}`.toLowerCase();
-        if (fullVariant === normalized) {
-          mon._variant = variant; // Attach matched variant
-          return true;
-        }
-      }
-    }
-
-    // Step 4: Singular fallback (strip trailing 's' if needed)
-    if (normalized.endsWith("s")) {
-      const singular = normalized.slice(0, -1);
-      return findMonsterByName(singular);
-    }
-
-    return false;
-  });
-} */
-
 function normalizeEncounterName(name) {
   return name
     .replace(/^Men,\s*/, "Men, ") // Consistent prefix
@@ -474,6 +437,21 @@ const baseParty = generateCharacterParty();
 const leveledParty = assignLevels(baseParty);
 const gearedParty = assignGear(leveledParty);
 console.log("🎲 Men, Characters Wilderness Encounter:", gearedParty);
+
+function formatTreasureEntry(key, value) {
+  if (typeof value === "string") return `<li>${key}: ${value}</li>`;
+  if (typeof value === "object") {
+    const parts = [];
+    if (value.amount) parts.push(`${value.amount}`);
+    if (value.chance) parts.push(`(${value.chance} chance)`);
+    return `<li>${key}: ${parts.join(' ')}</li>`;
+  }
+  return `<li>${key}: ${String(value)}</li>`;
+}
+
+function capitalizeFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -941,14 +919,49 @@ export class GreyhawkEncounters {
             } else {
               // Standard treasure handling
               Object.entries(result.monsterData.treasure).forEach(([key, value]) => {
+                const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
                 if (key === 'holy_item' && value.chance) {
                   content += `<p>Holy Item (${value.chance}% chance): ${value.description}</p>`;
                 } else if (Array.isArray(value)) {
-                  content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value.join(', ')}</p>`;
+                  content += `<p>${label}: ${value.join(', ')}</p>`;
+                } else if (typeof value === 'object') {
+                  content += `<p>${label}:</p><ul>`;
+                  Object.entries(value).forEach(([subKey, subValue]) => {
+                    let display = '';
+                    let labelKey = subKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+                    if (typeof subValue === 'object') {
+                      const amount = subValue.amount || '';
+                      const chance = subValue.chance ? parseInt(subValue.chance) : 100;
+                      const rollChance = Math.floor(Math.random() * 100) + 1;
+
+                      if (rollChance <= chance) {
+                        // Evaluate dice roll
+                        let resultAmount = amount;
+                        try {
+                          const evaluated = new Roll(amount.replace('×', '*'));
+                          evaluated.evaluate({ async: false });
+                          resultAmount = evaluated.total;
+                          display = `${amount} (${subValue.chance} chance, rolled ${resultAmount})`;
+                        } catch {
+                          display = `${amount} (${subValue.chance} chance, included)`;
+                        }
+                      } else {
+                        display = `${amount} (${subValue.chance} chance, not found)`;
+                      }
+                    } else {
+                      display = subValue;
+                    }
+
+                    content += `<li>${labelKey}: ${display}</li>`;
+                  });
+                  content += `</ul>`;
                 } else {
-                  content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value}</p>`;
+                  content += `<p>${label}: ${value}</p>`;
                 }
               });
+
             }
           }
           
@@ -1294,8 +1307,36 @@ export class GreyhawkEncounters {
                     content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</p>`;
                     content += `<ul>`;
                     Object.entries(value).forEach(([nestedKey, nestedValue]) => {
-                      content += `<li>${nestedKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${nestedValue}</li>`;
+                      const label = nestedKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                      let displayValue = '';
+
+                      if (typeof nestedValue === 'object' && nestedValue.amount) {
+                        // Normalize % value
+                        const rawChance = nestedValue.chance || '100';
+                        const chanceVal = parseInt(rawChance.toString().replace('%', '').trim()) || 100;
+                        const rollChance = Math.floor(Math.random() * 100) + 1;
+
+                        if (rollChance <= chanceVal) {
+                          try {
+                            const diceStr = nestedValue.amount.replace('×', '*');
+                            const roll = new Roll(diceStr);
+                            roll.evaluateSync();
+                            displayValue = `${nestedValue.amount} (${chanceVal}% chance, rolled ${roll.total})`;
+                          } catch (err) {
+                            displayValue = `${nestedValue.amount} (${chanceVal}% chance, included)`;
+                          }
+                        } else {
+                          displayValue = `${nestedValue.amount} (${chanceVal}% chance, not found)`;
+                        }
+                      } else if (typeof nestedValue === 'string' || typeof nestedValue === 'number') {
+                        displayValue = nestedValue;
+                      } else {
+                        displayValue = JSON.stringify(nestedValue);
+                      }
+
+                      content += `<li>${label}: ${displayValue}</li>`;
                     });
+
                     content += `</ul>`;
                   } else {
                     content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value}</p>`;
