@@ -1143,6 +1143,35 @@ export class GreyhawkEncounters {
               }
             }
           }
+
+          else if (result.result === "Encounter" && result.encounter === "Character" && (result.partyInfo || result.henchmenInfo)) {
+            content += `<p>Time of Day: ${options.timeOfDay || 'Unknown'}</p>`;
+            
+            if (result.subtableType && result.subtableRoll) {
+              content += `<p>Subtable: ${result.subtableType}</p>
+                        <p>Subtable Roll: ${result.subtableRoll}</p>`;
+            }
+            
+            content += `<p>Encounter: ${result.encounter || 'Unknown Creature'}</p>
+                      <p>Number: ${result.number || '1'}</p>`;
+            
+            // Add detailed party information
+            content += `<hr><h4>Adventuring Party</h4>`;
+            
+            if (result.partyInfo) {
+              content += `<p>${result.partyInfo}</p>`;
+            }
+            
+            if (result.henchmenInfo) {
+              content += `<p>${result.henchmenInfo}</p>`;
+            }
+            
+            // Add any notes
+            if (result.notes) {
+              content += `<hr><h4>Notes</h4><p>${result.notes}</p>`;
+            }
+          }
+
         } else if (result.result === "Encounter") {
           // New section to handle Monster Manual data specifically
           if (result.monsterData && result.encounter) {
@@ -1238,15 +1267,24 @@ export class GreyhawkEncounters {
             if (result.monsterData.treasure) {
               content += `<hr><h4>Treasure</h4>`;
               
-              Object.entries(result.monsterData.treasure).forEach(([key, value]) => {
-                if (key === 'holy_item' && value.chance) {
-                  content += `<p>Holy Item (${value.chance}% chance): ${value.description}</p>`;
-                } else if (Array.isArray(value)) {
-                  content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value.join(', ')}</p>`;
-                } else {
-                  content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value}</p>`;
-                }
-              });
+              if (typeof result.monsterData.treasure === 'string') {
+                // Handle treasure as a single string
+                content += `<p>${result.monsterData.treasure}</p>`;
+              } else if (Array.isArray(result.monsterData.treasure)) {
+                // Handle treasure as an array
+                content += `<p>${result.monsterData.treasure.join(', ')}</p>`;
+              } else if (typeof result.monsterData.treasure === 'object') {
+                // Handle treasure as an object with key-value pairs
+                Object.entries(result.monsterData.treasure).forEach(([key, value]) => {
+                  if (key === 'holy_item' && value.chance) {
+                    content += `<p>Holy Item (${value.chance}% chance): ${value.description}</p>`;
+                  } else if (Array.isArray(value)) {
+                    content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value.join(', ')}</p>`;
+                  } else {
+                    content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value}</p>`;
+                  }
+                });
+              }
             }
 
             if (result.notes) {
