@@ -1866,17 +1866,15 @@ export class GreyhawkEncounters {
     console.log(`📋 [rollOutdoorEncounter] Options:`, options);
     
     // Check if this is a time we should be rolling encounters
-    if (!this._shouldRollEncounterForTime(timeOfDay, terrain, options.partySize || 0)) {
-      console.log(`⛔ [rollOutdoorEncounter] Encounter skipped due to DMG terrain/time rule`);
+    if (!options.forceEncounter && !this._shouldRollEncounterForTime(timeOfDay, terrain, options.partySize || 0)) {
+      console.log(`⛔ [rollOutdoorEncounter] Encounter skipped due to DMG terrain/time rule (force=${options.forceEncounter})`);
       const msg = `🌄 <strong>No encounter check made</strong><br>
       <em>Reason:</em> According to DMG rules, encounters are not checked at <strong>${timeOfDay}</strong> in <strong>${terrain}</strong> terrain unless the party numbers over 100 creatures.`;
-
       await ChatMessage.create({
         user: game.user.id,
         speaker: ChatMessage.getSpeaker(),
         content: msg
       });
-
       console.log(`⛔ Encounter skipped due to DMG terrain/time rule — Time: ${timeOfDay}, Terrain: ${terrain}`);
       return {
         result: "Encounter check skipped",

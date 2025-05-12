@@ -327,6 +327,17 @@ export class GreyhawkEncounterRoller extends Application {
         this._updateRegionList(regionType, html);
       }
     }
+
+    // check for simpleCalendar
+    const useSimpleCalendar = html.find('input[name="useSimpleCalendar"]').is(':checked');
+    if (!useSimpleCalendar) {
+      html.find('.time-of-day-group').show();
+    } else {
+      html.find('.time-of-day-group').hide();
+    }
+
+    // Add a console log to help debug:
+    console.log(`🕒 Time of day group ${!useSimpleCalendar ? 'shown' : 'hidden'}, Simple Calendar is ${useSimpleCalendar ? 'enabled' : 'disabled'}`);
   }
 
   // Save current form values when they change
