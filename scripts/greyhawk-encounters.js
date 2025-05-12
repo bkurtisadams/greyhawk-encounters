@@ -1280,6 +1280,14 @@ export class GreyhawkEncounters {
                     content += `<p>Holy Item (${value.chance}% chance): ${value.description}</p>`;
                   } else if (Array.isArray(value)) {
                     content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value.join(', ')}</p>`;
+                  } else if (typeof value === 'object') {
+                    // Handle nested objects
+                    content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</p>`;
+                    content += `<ul>`;
+                    Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+                      content += `<li>${nestedKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${nestedValue}</li>`;
+                    });
+                    content += `</ul>`;
                   } else {
                     content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value}</p>`;
                   }
