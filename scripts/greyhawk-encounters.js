@@ -918,51 +918,58 @@ export class GreyhawkEncounters {
               }
             } else {
               // Standard treasure handling
-              Object.entries(result.monsterData.treasure).forEach(([key, value]) => {
-                const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+              const treasure = result.monsterData.treasure;
 
-                if (key === 'holy_item' && value.chance) {
-                  content += `<p>Holy Item (${value.chance}% chance): ${value.description}</p>`;
-                } else if (Array.isArray(value)) {
-                  content += `<p>${label}: ${value.join(', ')}</p>`;
-                } else if (typeof value === 'object') {
-                  content += `<p>${label}:</p><ul>`;
-                  Object.entries(value).forEach(([subKey, subValue]) => {
-                    let display = '';
-                    let labelKey = subKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+              if (typeof treasure === 'string') {
+                content += `<p>${treasure}</p>`;
+              } else if (typeof treasure === 'object') {
+                Object.entries(treasure).forEach(([key, value]) => {
+                  const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
-                    if (typeof subValue === 'object') {
-                      const amount = subValue.amount || '';
-                      const chance = subValue.chance ? parseInt(subValue.chance) : 100;
-                      const rollChance = Math.floor(Math.random() * 100) + 1;
+                  if (key === 'holy_item' && value.chance) {
+                    content += `<p>Holy Item (${value.chance}% chance): ${value.description}</p>`;
+                  } else if (Array.isArray(value)) {
+                    content += `<p>${label}: ${value.join(', ')}</p>`;
+                  } else if (typeof value === 'object') {
+                    content += `<p>${label}:</p><ul>`;
+                    Object.entries(value).forEach(([subKey, subValue]) => {
+                      let display = '';
+                      let labelKey = subKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
-                      if (rollChance <= chance) {
-                        // Evaluate dice roll
-                        let resultAmount = amount;
-                        try {
-                          const evaluated = new Roll(amount.replace('×', '*'));
-                          evaluated.evaluate({ async: false });
-                          resultAmount = evaluated.total;
-                          display = `${amount} (${subValue.chance} chance, rolled ${resultAmount})`;
-                        } catch {
-                          display = `${amount} (${subValue.chance} chance, included)`;
+                      if (typeof subValue === 'object') {
+                        const amount = subValue.amount || '';
+                        const chance = subValue.chance ? parseInt(subValue.chance) : 100;
+                        const rollChance = Math.floor(Math.random() * 100) + 1;
+
+                        if (rollChance <= chance) {
+                          let resultAmount = amount;
+                          try {
+                            const evaluated = new Roll(amount.replace('×', '*'));
+                            evaluated.evaluate({ async: false });
+                            resultAmount = evaluated.total;
+                            display = `${amount} (${subValue.chance} chance, rolled ${resultAmount})`;
+                          } catch {
+                            display = `${amount} (${subValue.chance} chance, included)`;
+                          }
+                        } else {
+                          display = `${amount} (${subValue.chance} chance, not found)`;
                         }
                       } else {
-                        display = `${amount} (${subValue.chance} chance, not found)`;
+                        display = subValue;
                       }
-                    } else {
-                      display = subValue;
-                    }
 
-                    content += `<li>${labelKey}: ${display}</li>`;
-                  });
-                  content += `</ul>`;
-                } else {
-                  content += `<p>${label}: ${value}</p>`;
-                }
-              });
-
+                      content += `<li>${labelKey}: ${display}</li>`;
+                    });
+                    content += `</ul>`;
+                  } else {
+                    content += `<p>${label}: ${value}</p>`;
+                  }
+                });
+              } else {
+                content += `<p><em>Treasure data could not be parsed.</em></p>`;
+              }
             }
+
           }
           
           if (result.notes) {
@@ -1288,60 +1295,57 @@ export class GreyhawkEncounters {
             // If the monster has treasure
             if (result.monsterData.treasure) {
               content += `<hr><h4>Treasure</h4>`;
-              
-              if (typeof result.monsterData.treasure === 'string') {
-                // Handle treasure as a single string
-                content += `<p>${result.monsterData.treasure}</p>`;
-              } else if (Array.isArray(result.monsterData.treasure)) {
-                // Handle treasure as an array
-                content += `<p>${result.monsterData.treasure.join(', ')}</p>`;
-              } else if (typeof result.monsterData.treasure === 'object') {
-                // Handle treasure as an object with key-value pairs
-                Object.entries(result.monsterData.treasure).forEach(([key, value]) => {
+
+              const treasure = result.monsterData.treasure;
+
+              if (typeof treasure === 'string') {
+                content += `<p>${treasure}</p>`;
+              } else if (Array.isArray(treasure)) {
+                content += `<p>${treasure.join(', ')}</p>`;
+              } else if (typeof treasure === 'object') {
+                Object.entries(treasure).forEach(([key, value]) => {
+                  const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
                   if (key === 'holy_item' && value.chance) {
                     content += `<p>Holy Item (${value.chance}% chance): ${value.description}</p>`;
                   } else if (Array.isArray(value)) {
-                    content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value.join(', ')}</p>`;
+                    content += `<p>${label}: ${value.join(', ')}</p>`;
                   } else if (typeof value === 'object') {
-                    // Handle nested objects
-                    content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</p>`;
-                    content += `<ul>`;
+                    content += `<p>${label}:</p><ul>`;
                     Object.entries(value).forEach(([nestedKey, nestedValue]) => {
-                      const label = nestedKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                      let displayValue = '';
+                      const subLabel = nestedKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                      let display = '';
 
                       if (typeof nestedValue === 'object' && nestedValue.amount) {
-                        // Normalize % value
-                        const rawChance = nestedValue.chance || '100';
-                        const chanceVal = parseInt(rawChance.toString().replace('%', '').trim()) || 100;
-                        const rollChance = Math.floor(Math.random() * 100) + 1;
+                        const chance = parseInt(nestedValue.chance || '100');
+                        const roll = Math.floor(Math.random() * 100) + 1;
 
-                        if (rollChance <= chanceVal) {
+                        if (roll <= chance) {
                           try {
-                            const diceStr = nestedValue.amount.replace('×', '*');
-                            const roll = new Roll(diceStr);
-                            roll.evaluateSync();
-                            displayValue = `${nestedValue.amount} (${chanceVal}% chance, rolled ${roll.total})`;
-                          } catch (err) {
-                            displayValue = `${nestedValue.amount} (${chanceVal}% chance, included)`;
+                            const evaluated = new Roll(nestedValue.amount.replace('×', '*'));
+                            evaluated.evaluate({ async: false });
+                            display = `${nestedValue.amount} (${chance}% chance, rolled ${evaluated.total})`;
+                          } catch {
+                            display = `${nestedValue.amount} (${chance}% chance, included)`;
                           }
                         } else {
-                          displayValue = `${nestedValue.amount} (${chanceVal}% chance, not found)`;
+                          display = `${nestedValue.amount} (${chance}% chance, not found)`;
                         }
                       } else if (typeof nestedValue === 'string' || typeof nestedValue === 'number') {
-                        displayValue = nestedValue;
+                        display = nestedValue;
                       } else {
-                        displayValue = JSON.stringify(nestedValue);
+                        display = JSON.stringify(nestedValue);
                       }
 
-                      content += `<li>${label}: ${displayValue}</li>`;
+                      content += `<li>${subLabel}: ${display}</li>`;
                     });
-
                     content += `</ul>`;
                   } else {
-                    content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value}</p>`;
+                    content += `<p>${label}: ${value}</p>`;
                   }
                 });
+              } else {
+                content += `<p><em>Treasure data could not be parsed.</em></p>`;
               }
             }
 
@@ -1715,13 +1719,27 @@ export class GreyhawkEncounters {
       table = GREYHAWK_GEOGRAPHICAL_TABLES[region];
       console.log(`🌄 Using fallback geographical table: ${!!table}`);
     }
-  
+
+    // Resolve alias references (e.g., "dreadwood": "axewood")
+    if (typeof table === "string") {
+      const aliasName = table;
+      table = GREYHAWK_GEOGRAPHICAL_TABLES[aliasName];
+      console.log(`🔁 Resolved alias "${region}" -> "${aliasName}"`);
+    }
+
+    // Final fallback if nothing worked
     if (!table) {
       console.warn(`⚠️ No encounter table found for region: ${region}, using Greyhawk`);
       table = GREYHAWK_REGIONAL_TABLES['greyhawk'];
     }
-  
+
+    // Safety check
+    if (!Array.isArray(table)) {
+      throw new Error(`Invalid or missing encounter table for region: ${region}`);
+    }
+
     // Step 3: Roll Encounter
+
     const tableRoll = new Roll("1d100");
     await tableRoll.evaluate();
     const tableRollValue = tableRoll.total;
@@ -1732,6 +1750,7 @@ export class GreyhawkEncounters {
       if (!isMatch) continue;
   
       console.log(`📌 Matched ${entry.min}-${entry.max || "+"} → ${entry.encounter}`);
+      const encounter = entry.encounter;
   
       const fallbackText = entry.encounter?.toLowerCase();
       const isStandardRedirect = entry.useStandard || (
@@ -1794,6 +1813,24 @@ export class GreyhawkEncounters {
       if (lairChance > 0) {
         console.log(`🏰 Rolled ${lairRoll} for % in Lair (≤${lairChance}) → ${isLairEncounter ? "LAIR" : "not lair"}`);
       }
+
+      // Special case: Men, Characters
+      if (encounter === "Men, Characters") {
+        console.log("🧠 Special encounter: Men, Characters — generating party...");
+        const baseParty = generateCharacterParty();
+        const leveledParty = assignLevels(baseParty);
+        const gearedParty = assignGear(leveledParty);
+
+        return {
+          result: "Encounter",
+          encounter: "Men, Characters",
+          roll,
+          number: gearedParty.length,
+          party: gearedParty,
+          distance: this._getEncounterDistance(options.terrain || "plain"),
+          notes: "Wilderness adventuring party generated per DMG Appendix C rules."
+        };
+      }
   
       // Leaders & Equipment
       const specialMembers = (monsterData?.leaders && numberAppearing)
@@ -1827,7 +1864,7 @@ export class GreyhawkEncounters {
         speaker: ChatMessage.getSpeaker(),
         flavor: `📍 <strong>Greyhawk Encounter</strong>`,
         content,
-        type: CONST.CHAT_MESSAGE_STYLES.OTHER
+        type: CONST.CHAT_MESSAGE_TYPES.OTHER
       });
   
       const encounterDistance = this._getEncounterDistance(options.terrain || 'plain');
@@ -1855,12 +1892,12 @@ export class GreyhawkEncounters {
       content: `<strong>Region:</strong> ${region}<br>
                 <strong>Roll:</strong> ${tableRollValue}<br>
                 <strong>Encounter:</strong> <em>N/A (no matching entry)</em>`,
-      type: CONST.CHAT_MESSAGE_STYLES.OTHER
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER
     });
 
     return {
       roll: tableRollValue,
-      encounter: "N/A (no matching entry found)",
+      encounterResult: "N/A (no matching entry found)",
       number: null,
       numberRolls: [],
       rawEncounter: null,
@@ -4012,6 +4049,11 @@ export class GreyhawkEncounters {
     console.log("📦 monsterData.name:", monsterData?.name);
     console.log("📦 totalCount:", totalCount);
     console.log("🌍 terrain:", terrain);
+
+    if (!monsterData || !monsterData.equipment) {
+      console.warn("⚠️ No equipment table found for monster.");
+      return [];
+    }
   
     const assigned = [];
   
@@ -4028,6 +4070,11 @@ export class GreyhawkEncounters {
       const pct = typeof percent === "string" ? parseInt(percent) : percent;
       return isNaN(pct) ? [] : { label, chance: pct };
     });
+
+    if (entries.length === 0) {
+      console.warn("⚠️ No valid equipment entries found.");
+      return assigned;
+    }
   
     console.log("📋 Normalized equipment entries:", entries);
   
@@ -4058,7 +4105,7 @@ export class GreyhawkEncounters {
       // Enforce mount limit
       if (mountedLimit !== null && isMounted && mountedAssigned >= maxMounted) {
         console.log(`⚠️ Mounted limit reached (${mountedAssigned}/${maxMounted}), rerolling non-mounted for unit ${i + 1}`);
-        selected = entries.find(e => !/horse/.test(e.label));
+        selected = entries.find(e => !/horse/.test(e.label)) || entries[0]; // fallback if all entries are mounts
         isMounted = /horse/.test(selected?.label || "");
       }
   
