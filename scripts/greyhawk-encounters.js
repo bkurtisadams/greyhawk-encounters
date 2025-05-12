@@ -2503,10 +2503,21 @@ export class GreyhawkEncounters {
         console.log(`Rolling on men subtable with roll ${subtableRoll}`);
 
         // 10% chance of character encounter from Men subtable
-        if (subtableRoll >= 11 && subtableRoll <= 20) {
-          console.log("Men subtable resulted in Character encounter");
+        const characterRanges = {
+          plain: [11, 20],
+          scrub: [16, 25],
+          forest: [16, 25],
+          rough: [16, 25],
+          desert: [11, 20],
+          hills: [21, 30],
+          mountains: [21, 30],
+          marsh: [11, 20]
+        };
+
+        const range = characterRanges[dmgTerrain];
+        if (range && subtableRoll >= range[0] && subtableRoll <= range[1]) {
+          console.log("Men subtable resulted in Character encounter (terrain-adjusted)");
           const isWilderness = (options.population === 'uninhabited');
-          console.log(`Character encounter in ${isWilderness ? 'wilderness' : 'settled'} area`);
           return this._generateCharacterEncounter(1, isWilderness);
         }
 
@@ -3291,44 +3302,20 @@ export class GreyhawkEncounters {
 
     // For wilderness encounters, use the special note guidelines from the DMG
     if (isWilderness) {
-      // Number of characters in party (standard adventuring party)
-      const characterCount = Math.floor(Math.random() * 4) + 2; // 2-5
+      // 1. Generate the detailed party using the dedicated functions
+      const baseParty = generateCharacterParty();
+      const leveledParty = assignLevels(baseParty);
+      const gearedParty = assignGear(leveledParty); // This now holds the detailed party info
 
-      // Character levels (7-10 for wilderness)
-      const characterLevel = Math.floor(Math.random() * 4) + 7; // 7-10
-
-      // Determine if mounted (90% chance)
-      const isMounted = Math.random() < 0.9;
-
-      // Calculate number of henchmen (approximately half character level)
-      const henchmenCount = 9 - characterCount;
-      const henchmenLevel = Math.ceil(characterLevel / 2);
-
-      // Generate a simple class distribution for the party
-      const classOptions = ["Fighter", "Magic-User", "Cleric", "Thief"];
-      const partyClasses = [];
-
-      for (let i = 0; i < characterCount; i++) {
-        const classIndex = Math.floor(Math.random() * classOptions.length);
-        partyClasses.push(classOptions[classIndex]);
-      }
-
-      // Generate simple mount information if mounted
-      let mountInfo = "";
-      if (isMounted) {
-        const mountTypes = ["light warhorses", "medium warhorses", "heavy warhorses"];
-        const mountType = mountTypes[Math.floor(Math.random() * mountTypes.length)];
-        mountInfo = `Mounted on ${mountType}`;
-      }
-
+      // 2. Return an object containing the detailed party and necessary metadata
       return {
         result: "Encounter",
-        encounter: "Character",
-        number: characterCount + henchmenCount,
-        partyInfo: `${characterCount} adventurers (${partyClasses.join(", ")}) - Level ${characterLevel}`,
-        henchmenInfo: `${henchmenCount} henchmen (Level ${henchmenLevel})`,
-        notes: `Wilderness adventuring party. ${mountInfo}. According to DMG, 90% of wilderness character parties are mounted.`,
-        isMounted: isMounted
+        encounter: "Men, Characters", // DMG Terminology for this type
+        number: gearedParty.length, // Actual number of members in the generated party
+        party: gearedParty, // The detailed party object itself
+        notes: "Wilderness adventuring party. According to DMG Appendix C, 90% are mounted.", // General note
+        // Add a flag so the display function knows how to handle this special result
+        generator: "generateCharacterParty"
       };
     }
 
