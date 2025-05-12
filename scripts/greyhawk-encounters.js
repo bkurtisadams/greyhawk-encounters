@@ -1115,10 +1115,12 @@ export class GreyhawkEncounters {
           }
         } else if (result.result === "Fortress Encounter") {
           // Your existing fortress encounter handling
-          content += `<p>Result: Fortress Encounter</p>
-                      <p>Size: ${result.size}</p>
-                      <p>Type: ${result.type}</p>
-                      <p>Inhabitants: ${result.inhabitants}</p>`;
+          console.log("🏰 [displayResult] Rendering fortress encounter");
+
+          content += `<p><strong>Result:</strong> Fortress Encounter</p>`;
+          content += `<p><strong>Size:</strong> ${result.size}</p>`;
+          content += `<p><strong>Type:</strong> ${result.type}</p>`;
+          content += `<p><strong>Inhabitants:</strong> ${result.inhabitants}</p>`;
           // Rest of fortress display code...
         }
         // Add new case for MM human encounters with special members
@@ -1777,7 +1779,13 @@ export class GreyhawkEncounters {
       // Attempt to resolve encounter via monster data
       const rawName = entry.encounter;
       const normalizedName = normalizeEncounterName(rawName);
+      console.log(`Raw: ${rawName} → Normalized: ${normalizedName}`);
       let monsterData = findMonsterByName(normalizedName);
+
+      if (!monsterData && rawName !== normalizedName) {
+        console.log(`🔍 Fallback match attempt using raw name: ${rawName}`);
+        monsterData = findMonsterByName(rawName);
+      }
   
       if (!monsterData && normalizedName.includes(",")) {
         const alt = normalizedName.split(",")[1].trim();
@@ -1897,15 +1905,19 @@ export class GreyhawkEncounters {
 
     return {
       roll: tableRollValue,
-      encounterResult: "N/A (no matching entry found)",
+      encounter: "N/A (no matching entry found)", // restore 'encounter' for consistency
       number: null,
       numberRolls: [],
       rawEncounter: null,
+      alignment: null,
+      treasure: null,
+      description: null,
       isLair: false,
       specialMembers: [],
-      equipmentAssigned: []
+      equipmentAssigned: [],
+      distance: null,
+      monsterData: null // ✅ keep consistent with successful results
     };
-
 
   } // end of _rollRegionalEncounter()
   
@@ -2251,6 +2263,7 @@ export class GreyhawkEncounters {
 
     return {
       result: "Fortress Encounter",
+      encounter: `${size} ${type} occupied by ${inhabitants}`,
       size: size,
       type: type,
       inhabitants: inhabitants,
