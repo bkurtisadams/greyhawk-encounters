@@ -1974,6 +1974,7 @@ export class GreyhawkEncounters {
     // Step 2: Get Table (fallbacks)
     // First try to get table from political regions
     let table = GREYHAWK_REGIONAL_TABLES[region];
+    let resolvedRegion = region; // Track the resolved region name
 
     // If not found, check geographical tables
     if (!table) {
@@ -1981,22 +1982,61 @@ export class GreyhawkEncounters {
       console.log(`🌄 Using fallback geographical table: ${!!table}`);
     }
 
-    // Resolve alias references (e.g., "dreadwood": "axewood")
-    if (typeof table === "string") {
-      const aliasName = table;
-      table = GREYHAWK_GEOGRAPHICAL_TABLES[aliasName];
-      console.log(`🔁 Resolved alias "${region}" -> "${aliasName}"`);
+    // Resolve alias references (can be multi-level)
+    let aliasDepth = 0;
+    const maxAliasDepth = 3; // Prevent infinite loops with circular references
+    while (typeof table === "string" && aliasDepth < maxAliasDepth) {
+      resolvedRegion = table; // Store the resolved region name
+      console.log(`🔁 Resolved alias "${region}" -> "${resolvedRegion}" (depth: ${aliasDepth + 1})`);
+      table = GREYHAWK_GEOGRAPHICAL_TABLES[resolvedRegion];
+      aliasDepth++;
+    }
+
+    // Check common region name variations if still not found
+    if (!table) {
+      const variations = {
+        'lortmils': 'lortmil_mountains',
+        'crystalmists': 'crystalmist_mountains',
+        'county_of_urnst': 'county_duchy_urnst',
+        'duchy_of_urnst': 'county_duchy_urnst',
+        // Add more variations as needed
+      };
+      
+      if (variations[region]) {
+        const variationRegion = variations[region];
+        console.log(`🔁 Using variation "${region}" -> "${variationRegion}"`);
+        
+        // Try the variation and follow any aliases
+        let variationTable = GREYHAWK_GEOGRAPHICAL_TABLES[variationRegion];
+        if (variationTable) {
+          resolvedRegion = variationRegion;
+          table = variationTable;
+          
+          // Follow aliases if the variation is itself an alias
+          aliasDepth = 0;
+          while (typeof table === "string" && aliasDepth < maxAliasDepth) {
+            resolvedRegion = table;
+            console.log(`🔁 Following variation alias "${variationRegion}" -> "${resolvedRegion}" (depth: ${aliasDepth + 1})`);
+            table = GREYHAWK_GEOGRAPHICAL_TABLES[resolvedRegion];
+            aliasDepth++;
+          }
+        }
+      }
     }
 
     // Final fallback if nothing worked
     if (!table) {
       console.warn(`⚠️ No encounter table found for region: ${region}, using Greyhawk`);
       table = GREYHAWK_REGIONAL_TABLES['greyhawk'];
+      resolvedRegion = 'greyhawk';
     }
+
+    // Log the actual table we're using
+    console.log(`📊 Using table for ${resolvedRegion}:`, table ? `Found (${Array.isArray(table) ? table.length : 'not array'} entries)` : 'Not found');
 
     // Safety check
     if (!Array.isArray(table)) {
-      throw new Error(`Invalid or missing encounter table for region: ${region}`);
+      throw new Error(`Invalid or missing encounter table for region: ${region} (resolved: ${resolvedRegion}). Possibly a circular reference in aliases.`);
     }
 
     // Step 3: Roll Encounter
