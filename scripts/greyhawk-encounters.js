@@ -16,6 +16,121 @@ import { rollPlanarEncounter } from '../data/dmg-planar-tables.js';
 import { MONSTER_MANUAL } from '../data/monster-manual.js';
 import { findMonsterByName, rollNumberFromPattern } from '../utils/utility.js';
 
+const REGION_TABLE_MAP = {
+  // Political Regions
+  "Abbor Alz": "abbor_alz",
+  "Bandit Kingdoms": "bandit_kingdoms",
+  "Bissel": "bissel_gran_march_keoland",
+  "Bone March": "bone_march",
+  "Bright Desert": "bright_desert",
+  "Cairn Hills": "cairn_hills",
+  "Celene": "celene",
+  "County of Ulek": "county_duchy_principality_ulek",
+  "County of Urnst": "county_duchy_urnst",
+  "Duchy of Ulek": "county_duchy_principality_ulek",
+  "Duchy of Urnst": "county_duchy_urnst",
+  "Furyondy": "furyondy_shield_lands_veluna",
+  "Geoff": "geoff_sterich_yeomanry",
+  "Gran March": "bissel_gran_march_keoland",
+  "Great Kingdom": "great_kingdom_medegia_north_province_south_province",
+  "Greyhawk": "greyhawk",
+  "Hestmark Highlands": "hestmark_highlands",
+  "Highfolk": "highfolk",
+  "Hollow Highlands": "hollow_highlands",
+  "Horned Society": "horned_society",
+  "Idee": "idee_irongate_onnwal",
+  "Irongate": "idee_irongate_onnwal",
+  "Iuz": "iuz",
+  "Keoland": "bissel_gran_march_keoland",
+  "Ket": "ket_perrenland",
+  "Lortmil Mountains": "lortmil_mountains",
+  "North Province": "great_kingdom_medegia_north_province_south_province",
+  "Nyrond": "nyrond",
+  "Onnwal": "idee_irongate_onnwal",
+  "Pale": "pale_ratik_tenh",
+  "Perrenland": "ket_perrenland",
+  "Pomarj": "pomarj",
+  "Principality of Ulek": "county_duchy_principality_ulek",
+  "Ratik": "pale_ratik_tenh",
+  "Rovers of the Barrens": "rovers_of_the_barrens",
+  "Scarlet Brotherhood": "scarlet_brotherhood_sunndi",
+  "Sea of Dust": "sea_of_dust",
+  "Sea Princes": "sea_princes",
+  "See of Medegia": "great_kingdom_medegia_north_province_south_province",
+  "Shield Lands": "furyondy_shield_lands_veluna",
+  "South Province": "great_kingdom_medegia_north_province_south_province",
+  "Sterich": "geoff_sterich_yeomanry",
+  "Sunndi": "scarlet_brotherhood_sunndi",
+  "Tenh": "pale_ratik_tenh",
+  "Veluna": "furyondy_shield_lands_veluna",
+  "Wild Coast": "wild_coast",
+  "Yeomanry": "geoff_sterich_yeomanry",
+  
+  // Geographical Features
+  "Adri Forest": "adri_forest",
+  "Amedio Jungle": "amedio_jungle",
+  "Axewood": "axewood", 
+  "Bramblewood": "bramblewood",
+  "Burneal Forest": "burneal_forest",
+  "Celadon Forest": "celadon_forest",
+  "Clatspur Range": "clatspur_range",
+  "Corusk Mountains": "corusk_mountains",
+  "Crystalmist Mountains": "crystalmist_mountains",
+  "Crystalmists": "crystalmist_mountains",
+  "Dim Forest": "dim_forest",
+  "Dreadwood": "axewood",
+  "Fellreev Forest": "fellreev_forest",
+  "Flinty Hills": "flinty_hills",
+  "Forlorn Forest": "forlorn_forest",
+  "Gamboge Forest": "gamboge_forest",
+  "Glorioles": "hestmark_highlands",
+  "Gnarley Forest": "gnarley_forest",
+  "Good Hills": "flinty_hills",
+  "Grandwood Forest": "grandwood_forest",
+  "Griff Mountains": "corusk_mountains",
+  "Gull Cliffs": "flinty_hills",
+  "Headlands": "flinty_hills",
+  "Hellfurnaces": "hellfurnaces",
+  "Hornwood": "dim_forest",
+  "Hraak Forest": "forlorn_forest",
+  "Iron Hills": "flinty_hills",
+  "Jotens": "barrier_peaks",
+  "Kron Hills": "kron_hills",
+  "Little Hills": "flinty_hills",
+  "Loftwood": "loftwood",
+  "Lortmil": "lortmil_mountains",
+  "Lorridges": "flinty_hills",
+  "Menowood": "axewood",
+  "Nutherwood": "bramblewood",
+  "Nyr Dyv": "nyr_dyv",
+  "Oytwood": "dim_forest",
+  "Phostwood": "bramblewood",
+  "Quag Lake": "nyr_dyv",
+  "Rakers": "corusk_mountains",
+  "Rieuwood": "axewood",
+  "Rift Canyon": "rift_canyon",
+  "Sablewood": "sablewood",
+  "Selintan River": "selintan_river",
+  "Sepia Uplands": "sepia_uplands",
+  "Silverwood": "axewood",
+  "Spikey Forest": "sablewood",
+  "Stark Mounds": "flinty_hills",
+  "Sulhaut Mountains": "sulhaut_mountains",
+  "Suss Forest": "suss_forest",
+  "Timberway Forest": "loftwood",
+  "Tusman Hills": "sepia_uplands",
+  "Udgru Forest": "bramblewood",
+  "Ullsprue": "sulhaut_mountains",
+  "Vast Swamp": "vast_swamp",
+  "Velverdyva River": "velverdyva_river",
+  "Veng River": "veng_river",
+  "Vesve Forest East": "vesve_forest_east",
+  "Vesve Forest West": "vesve_forest_west",
+  "Vesve Forest": "vesve_forest_west",
+  "Whyestil Lake": "whyestil_lake",
+  "Yatil Mountains": "clatspur_range",
+  "Yecha Hills": "sepia_uplands"
+};
 
 const TERRAIN_CHECK_TIMES = {
   plain: ['morning', 'evening', 'midnight'],
@@ -1680,43 +1795,81 @@ export class GreyhawkEncounters {
     return rollPlanarEncounter(planeType, options);
   }
 
+  static resolveRegionalTable(region) {
+    // Normalize region name
+    const normalized = region.trim().toLowerCase().replace(/[\s\-]/g, '_');
+    
+    // Check political tables first
+    let table = GREYHAWK_REGIONAL_TABLES[normalized];
+    if (table) return table;
+    
+    // Then check geographical tables
+    table = GREYHAWK_GEOGRAPHICAL_TABLES[normalized];
+    
+    // Handle string aliases in geographical tables
+    if (typeof table === 'string') {
+      return GREYHAWK_GEOGRAPHICAL_TABLES[table];
+    }
+    
+    // If still not found, check common region name variations
+    const variations = {
+      'lortmils': 'lortmil_mountains',
+      'crystalmists': 'crystalmist_mountains',
+      'county_of_urnst': 'county_duchy_urnst',
+      'duchy_of_urnst': 'county_duchy_urnst',
+      // Add more variations as needed
+    };
+    
+    if (variations[normalized]) {
+      return GREYHAWK_GEOGRAPHICAL_TABLES[variations[normalized]] || 
+            GREYHAWK_REGIONAL_TABLES[variations[normalized]];
+    }
+    
+    // Final fallback to greyhawk
+    return GREYHAWK_REGIONAL_TABLES['greyhawk'];
+  }
+  
   /**
    * Roll a regional encounter specific to Greyhawk.
    */
   static async _rollRegionalEncounter(options) {
+    // Normalize region name format (convert spaces to underscores, lowercase)
     const region = options.specificRegion?.trim().toLowerCase().replace(/[\s\-]/g, "_") || "greyhawk";
-    let table = GREYHAWK_REGIONAL_TABLES[region];
-  
+    
     const isWarZone = options.isWarZone ?? false;
     const population = options.population || 'moderate';
     const forceEncounter = options.forceEncounter === true;
-  
+
     console.log(`🗺️ Regional Encounter Starting...`);
     console.log(`  ➤ Region: ${region}`);
     console.log(`  ➤ Population: ${population}`);
     console.log(`  ➤ Is War Zone: ${isWarZone}`);
-  
+
     // Step 1: Encounter Check
     let dieSize = { dense: 20, uninhabited: 10 }[population] || 12;
     const roll = new Roll(`1d${dieSize}`);
     await roll.evaluate();
-  
+
     const encounterDiceResults = roll.dice.flatMap(die => die.results.map(r => r.result));
     await roll.toMessage({
       speaker: ChatMessage.getSpeaker(),
       flavor: `🎲 Encounter Check (${population} area): 1 in d${dieSize}<br><em>Rolled:</em> ${encounterDiceResults.join(', ')} (Total: ${roll.total})`
     });
-  
+
     console.log(`🎲 Encounter check: rolled ${roll.total} on d${dieSize} (success if 1)`);
-  
+
     if (!forceEncounter && roll.total !== 1) {
       console.log(`⛔ No encounter`);
       return { roll: roll.total, encounter: `No encounter (rolled ${roll.total} on d${dieSize})` };
     } else if (forceEncounter) {
       console.log(`⚠️ Forcing encounter due to test mode`);
     }
-  
+
     // Step 2: Get Table (fallbacks)
+    // First try to get table from political regions
+    let table = GREYHAWK_REGIONAL_TABLES[region];
+
+    // If not found, check geographical tables
     if (!table) {
       table = GREYHAWK_GEOGRAPHICAL_TABLES[region];
       console.log(`🌄 Using fallback geographical table: ${!!table}`);

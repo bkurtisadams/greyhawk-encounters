@@ -4,37 +4,70 @@ import { MONSTER_MANUAL } from '../data/monster-manual.js'; // adjust path as ne
 
 
 export function findMonsterByName(name) {
+  console.log(`🔍 Looking up monster: "${name}"`);
   const normalized = name.toLowerCase().trim();
 
-  return MONSTER_MANUAL.monsters.find(mon => {
-    // Step 1: Exact name match
-    if (mon.name?.toLowerCase() === normalized) return true;
+  // Handle cases like "Dwarves, Mountain" → "Mountain Dwarf"
+  const commaSplit = normalized.split(',').map(part => part.trim());
+  if (commaSplit.length > 1) {
+    const reversedName = `${commaSplit[1]} ${commaSplit[0]}`;
+    console.log(`↩️ Trying reversed comma format: "${reversedName}"`);
+    const reversedResult = _findMonsterByNameInner(reversedName);
+    if (reversedResult) return reversedResult;
+  }
 
-    // Step 2: Match against name_variants (comma-separated or array)
+  const directResult = _findMonsterByNameInner(normalized);
+  if (!directResult) {
+    console.warn(`⚠️ Monster not found for: "${name}"`);
+  }
+  return directResult;
+}
+
+// Internal helper with full normalization and fallback logic
+function _findMonsterByNameInner(normalizedRaw) {
+  const normalized = normalizedRaw.toLowerCase().trim();
+
+  return MONSTER_MANUAL.monsters.find(mon => {
+    const monsterName = mon.name?.toLowerCase().trim();
+    if (!monsterName) return false;
+
+    // Step 1: Exact name match
+    if (monsterName === normalized) return true;
+
+    // Step 2: Match against name_variants
     if (mon.name_variants) {
       const variants = Array.isArray(mon.name_variants)
-        ? mon.name_variants
-        : mon.name_variants.split(",").map(v => v.trim().toLowerCase());
-
+        ? mon.name_variants.map(v => v.toLowerCase().trim())
+        : mon.name_variants.split(',').map(v => v.toLowerCase().trim());
       if (variants.includes(normalized)) return true;
     }
 
-    // Step 3: Match against embedded structured variant types
+    // Step 3: Match against structured variants
     if (Array.isArray(mon.variants)) {
       for (const variant of mon.variants) {
-        const fullVariant = `${mon.name}, ${variant.type}`.toLowerCase();
-        if (fullVariant === normalized) {
+        const variantName1 = `${monsterName}, ${variant.type?.toLowerCase()}`.trim();
+        const variantName2 = `${variant.type?.toLowerCase()} ${monsterName}`.trim();
+        if (normalized === variantName1 || normalized === variantName2) {
           mon._variant = variant; // Attach matched variant
           return true;
         }
       }
     }
 
-    // Step 4: Singular fallback (strip trailing 's' if needed)
+    // Step 4: Handle common plural forms (e.g. goblins → goblin, dwarves → dwarf)
     if (normalized.endsWith("s")) {
-      const singular = normalized.slice(0, -1);
-      return findMonsterByName(singular);
+      const singular = normalized.endsWith("ves")
+        ? normalized.slice(0, -3) + "f" // e.g. dwarves → dwarf
+        : normalized.slice(0, -1);     // goblins → goblin
+
+      if (monsterName === singular) return true;
+      if (monsterName.endsWith("s") && normalized === monsterName.slice(0, -1)) return true;
     }
+
+    // Step 5: Try stripped punctuation fallback (e.g. remove commas, parens)
+    const strippedInput = normalized.replace(/[\(\),]/g, '').replace(/\s+/g, ' ').trim();
+    const strippedMonsterName = monsterName.replace(/[\(\),]/g, '').replace(/\s+/g, ' ').trim();
+    if (strippedInput === strippedMonsterName) return true;
 
     return false;
   });

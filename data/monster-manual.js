@@ -4255,6 +4255,59 @@ export const MONSTER_MANUAL = {
     {
       "name": "Dwarf",
       "category": "Demi-Human",
+      "name_variants": "dwarves, dwarfs",
+      "frequency": "Common",
+      "numberAppearing": "40d10",
+      "size": "Small (4 ft tall)",
+      "move": "60 ft",
+      "armorClass": 4,
+      "hitDice": 1,
+      "attacks": 1,
+      "damage": "1d8 or by weapon",
+      "specialAttacks": "+1 to hit orcs and goblins",
+      "specialDefenses": "Save at 4 levels higher; giants, trolls, and ogres fight at -4",
+      "magicResistance": "As above",
+      "lairProbability": "50%",
+      "intelligence": "Very",
+      "alignment": "Lawful good",
+      "levelXP": "2/30+1/hp",
+      "description": "Dwarfs are sturdy humanoids who live in extended clans, often in rocky hills. They hate orcs and goblins, gaining +1 to hit them. Giants, trolls, and ogres fight at -4 when fighting dwarfs. Save vs poison/magic as if 4 levels higher.",
+      "leaders": {
+        "per_40": "1d6 (1 = 2nd level, 2–6 = 6th level) fighter",
+        "over_160": [
+          "1 6th level fighter (chief)",
+          "1 4th level fighter (lieutenant)"
+        ],
+        "over_200": "1 fighter/cleric (3rd–6th level fighter, 4th–7th level cleric)",
+        "over_320": [
+          "1 8th level fighter",
+          "1 7th level fighter",
+          "1 6th level fighter / 7th level cleric"
+        ]
+      },
+      "variants": {
+        "Mountain Dwarf": {
+          "hitDice": "1d8+1",
+          "height": "4½ ft"
+        }
+      },
+      "treasure": {
+        "individual": "2d4×5 gp",
+        "lair": {
+          "gp": { "amount": "10d4×1,000", "chance": "50%" },
+          "pp": { "amount": "1d20×100", "chance": "50%" },
+          "gems1": { "amount": "5d4", "chance": "30%" },
+          "gems2": { "amount": "1d4×20", "chance": "50%" },
+          "jewellery": { "amount": "1d10", "chance": "25%" },
+          "magic_items": { "amount": 4, "chance": "15%" }
+        }
+      }
+    },
+
+    {
+      "name": "Mountain Dwarf",
+      "category": "Demi-Human",
+      "name_variants": "mountain dwarves, mountain dwarfs",
       "frequency": "Common",
       "numberAppearing": "40d10",
       "size": "Small (4 ft tall)",
@@ -6013,6 +6066,7 @@ export const MONSTER_MANUAL = {
     {
       "name": "Halfling",
       "category": "Demi-Human",
+      "name_variants": "halflings, hairfeet",
       "variants": [
         {
           "name": "Hairfoot",

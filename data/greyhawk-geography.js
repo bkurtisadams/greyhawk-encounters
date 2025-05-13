@@ -1,5 +1,6 @@
 import { rollNumberFromPattern } from '../utils/utility.js';
 // Exports geographical area encounter tables for World of Greyhawk
+
 export const GREYHAWK_GEOGRAPHICAL_TABLES = {
     // Forests
     "adri_forest": [
@@ -514,5 +515,10 @@ export const GREYHAWK_GEOGRAPHICAL_TABLES = {
     }
   };
   
+  // aliases after the object is created
+  GREYHAWK_GEOGRAPHICAL_TABLES["lortmil"] = "lortmil_mountains";
+  GREYHAWK_GEOGRAPHICAL_TABLES["crystalmists"] = "crystalmist_mountains";
+  // add any other direct aliases here
+  
   // Export default for easier importing
-  export default GREYHAWK_GEOGRAPHICAL_TABLES;
+  export default GREYHAWK_GEOGRAPHICAL_TABLES; 
