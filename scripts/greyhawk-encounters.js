@@ -777,6 +777,11 @@ export class GreyhawkEncounters {
       console.log("📊 [displayResult] Monster has treasure:", result.monsterData.treasure ? "yes" : "no");
     }
 
+    if (result.encounter === "Men, Characters" && result.party) {
+      console.log("🧠 Displaying Men, Characters party");
+      return displayGeneratedCharacterParty(result.party);
+    }
+    
     const generator = result?.generator ?? result?.monsterData?.generator;
 
     if (generator === "generateCharacterParty") {
@@ -856,10 +861,10 @@ export class GreyhawkEncounters {
           
           // Equipment details
           content += `<p>Equipment:</p>
-                     <ul>
-                       <li>Leaders: Plate mail, shield, lance, flail, and long sword</li>
-                       <li>Soldiers: Chain/scale mail, shield, bow/light crossbow, and hand weapon</li>
-                     </ul>`;
+                    <ul>
+                      <li>Leaders: Plate mail, shield, lance, flail, and long sword</li>
+                      <li>Soldiers: Chain/scale mail, shield, bow/light crossbow, and hand weapon</li>
+                    </ul>`;
           
           // Spellcaster information
           if (result.spellcaster) {
@@ -881,6 +886,76 @@ export class GreyhawkEncounters {
             content += `<hr><h4>Notes</h4><p>Patrol is mounted unless terrain is prohibitive. Leaders ride warhorses.</p>`;
           }
         } 
+        // Add new check for regional patrol encounters
+        else if (result.encounter && result.encounter.includes("Patrol")) {
+          console.log("🛡️ [displayResult] Displaying patrol encounter in regional context");
+          
+          content += `<p>Encounter: ${result.encounter || 'Patrol'}</p>`;
+          content += `<p>Number: ${result.number || 'Unknown'}</p>`;
+          
+          // Add detailed patrol information
+          content += `<hr><h4>Patrol Composition</h4>`;
+          
+          // Display special members if available
+          if (result.specialMembers && result.specialMembers.length > 0) {
+            content += `<p><strong>Officers and Special Members:</strong></p><ul>`;
+            
+            // Group special members by role
+            const membersByRole = {};
+            for (const member of result.specialMembers) {
+              const role = member.role || "unknown";
+              if (!membersByRole[role]) {
+                membersByRole[role] = [];
+              }
+              membersByRole[role].push(member);
+            }
+            
+            // Display each role group
+            for (const [role, members] of Object.entries(membersByRole)) {
+              const roleText = role.charAt(0).toUpperCase() + role.slice(1);
+              content += `<li><strong>${roleText}</strong>: ${members.length} x ${members[0]?.type || 'Fighter'} ${members[0]?.level ? `(Level ${members[0].level})` : ''}</li>`;
+            }
+            
+            content += `</ul>`;
+          } else {
+            // Fallback if no special members data
+            content += `<p>Leader: Level 6-8 Fighter (as per DMG)</p>`;
+            content += `<p>Lieutenant: Level 4-5 Fighter (as per DMG)</p>`;
+            content += `<p>Sergeant: Level 2-3 Fighter (as per DMG)</p>`;
+          }
+          
+          // Equipment details
+          if (result.equipmentAssigned && result.equipmentAssigned.length > 0) {
+            content += `<hr><h4>Equipment Breakdown</h4><ul>`;
+            
+            // Group equipment by role
+            const equipByRole = {};
+            for (const equip of result.equipmentAssigned) {
+              const role = equip.role || "regular";
+              if (!equipByRole[role]) {
+                equipByRole[role] = [];
+              }
+              equipByRole[role].push(equip);
+            }
+            
+            // Display each role's equipment
+            for (const [role, equipment] of Object.entries(equipByRole)) {
+              const roleText = role.charAt(0).toUpperCase() + role.slice(1);
+              content += `<li><strong>${roleText}s (${equipment.length}):</strong> ${equipment[0].equipment}</li>`;
+            }
+            
+            content += `</ul>`;
+          } else {
+            content += `<p><strong>Equipment:</strong> Standard patrol equipment - mounted troops with appropriate weapons and armor.</p>`;
+          }
+          
+          // Notes section if available
+          if (result.notes) {
+            content += `<hr><h4>Notes</h4><p>${result.notes}</p>`;
+          } else {
+            content += `<hr><h4>Notes</h4><p>Patrol is mounted unless terrain is prohibitive. Leaders ride warhorses.</p>`;
+          }
+        }
         // Check for Monster Manual data in regional context
         else if (result.monsterData && result.encounter) {
           console.log("📚 [displayResult] Display Monster Manual data in regional context");
@@ -1229,15 +1304,46 @@ export class GreyhawkEncounters {
             content += `<hr><h4>Notes</h4><p>Patrol is mounted unless terrain is prohibitive. Leaders ride warhorses.</p>`;
           }
         } else if (result.result === "Fortress Encounter") {
-          // Your existing fortress encounter handling
-          console.log("🏰 [displayResult] Rendering fortress encounter");
+            // Your existing fortress encounter handling
+            console.log("🏰 [displayResult] Rendering fortress encounter");
 
-          content += `<p><strong>Result:</strong> Fortress Encounter</p>`;
-          content += `<p><strong>Size:</strong> ${result.size}</p>`;
-          content += `<p><strong>Type:</strong> ${result.type}</p>`;
-          content += `<p><strong>Inhabitants:</strong> ${result.inhabitants}</p>`;
-          // Rest of fortress display code...
-        }
+            content += `<p><strong>Result:</strong> Fortress Encounter</p>`;
+            content += `<p><strong>Size:</strong> ${result.size}</p>`;
+            content += `<p><strong>Type:</strong> ${result.type}</p>`;
+            content += `<p><strong>Inhabitants:</strong> ${result.inhabitants}</p>`;
+            
+            // Add details of inhabitants
+            if (result.details) {
+              if (typeof result.details === 'string') {
+                content += `<p><strong>Details:</strong> ${result.details}</p>`;
+              } else if (result.details.type) {
+                // Human type with details
+                content += `<p><strong>Specific Type:</strong> ${result.details.type}</p>`;
+                if (result.details.number) {
+                  content += `<p><strong>Number:</strong> ${result.details.number}</p>`;
+                }
+                if (result.details.leader) {
+                  content += `<p><strong>Leader:</strong> ${result.details.leader}</p>`;
+                }
+              } else if (result.details.master) {
+                // Character type with details
+                content += `<p><strong>Master:</strong> ${result.details.master}</p>`;
+                if (result.details.henchmen) {
+                  content += `<p><strong>Henchmen:</strong> ${result.details.henchmen}</p>`;
+                }
+                if (result.details.garrison) {
+                  content += `<p><strong>Garrison:</strong></p><ul>`;
+                  result.details.garrison.forEach(unit => {
+                    content += `<li>${unit.count} ${unit.type} (${unit.equipment})</li>`;
+                  });
+                  content += `</ul>`;
+                }
+                if (result.details.description) {
+                  content += `<p>${result.details.description}</p>`;
+                }
+              }
+            }
+          }
         // Add new case for MM human encounters with special members
         else if (result.specialMembers && result.specialMembers.length > 0) {
           content += `<p>Time of Day: ${options.timeOfDay || 'Unknown'}</p>
@@ -4231,6 +4337,79 @@ export class GreyhawkEncounters {
       return assigned;
     }
   
+    // Handle patrol-type equipment format
+    if (/Patrol/.test(monsterData.name) && typeof equipmentTable === 'object') {
+      // For patrols, distribute equipment based on roles
+      const roles = Object.keys(equipmentTable);
+      let remainingTroops = totalCount;
+      
+      // Assign officer equipment
+      if (roles.includes('officer')) {
+        const officerCount = Math.min(1, remainingTroops);
+        for (let i = 0; i < officerCount; i++) {
+          assigned.push({
+            equipment: equipmentTable['officer'],
+            role: 'officer',
+            mounted: true
+          });
+        }
+        remainingTroops -= officerCount;
+      }
+      
+      // Assign subaltern equipment
+      if (roles.includes('subalterns') && remainingTroops > 0) {
+        const subalternCount = Math.min(Math.floor(totalCount / 10) || 1, remainingTroops);
+        for (let i = 0; i < subalternCount; i++) {
+          assigned.push({
+            equipment: equipmentTable['subalterns'],
+            role: 'subaltern',
+            mounted: true
+          });
+        }
+        remainingTroops -= subalternCount;
+      }
+      
+      // Assign sergeant equipment
+      if (roles.includes('serjeants') && remainingTroops > 0) {
+        const sergeantCount = Math.min(Math.floor(totalCount / 5) || 1, remainingTroops);
+        for (let i = 0; i < sergeantCount; i++) {
+          assigned.push({
+            equipment: equipmentTable['serjeants'],
+            role: 'sergeant',
+            mounted: true
+          });
+        }
+        remainingTroops -= sergeantCount;
+      }
+      
+      // Assign veteran equipment to ~20% of remaining troops
+      if (roles.includes('veterans') && remainingTroops > 0) {
+        const veteranCount = Math.min(Math.floor(remainingTroops * 0.2), remainingTroops);
+        for (let i = 0; i < veteranCount; i++) {
+          assigned.push({
+            equipment: equipmentTable['veterans'],
+            role: 'veteran',
+            mounted: true
+          });
+        }
+        remainingTroops -= veteranCount;
+      }
+      
+      // Assign remaining troops as regulars
+      if (roles.includes('regulars') && remainingTroops > 0) {
+        for (let i = 0; i < remainingTroops; i++) {
+          assigned.push({
+            equipment: equipmentTable['regulars'],
+            role: 'regular',
+            mounted: true
+          });
+        }
+      }
+      
+      console.log(`✅ assignEquipment: Assigned ${assigned.length} troops with role-based equipment`);
+      return assigned;
+    }
+
     // Normalize equipment entries
     const entries = Object.entries(equipmentTable).flatMap(([label, percent]) => {
       const pct = typeof percent === "string" ? parseInt(percent) : percent;
