@@ -290,11 +290,11 @@ export class GreyhawkEncounterRoller extends Application {
     
     // Calendar toggle
     html.find('input[name="useSimpleCalendar"]').change(ev => {
-      const checked = ev.currentTarget.checked;
-      game.settings.set('greyhawk-encounters', 'useSimpleCalendar', checked);
-      html.find('.simple-calendar-info').toggle(checked);
-      html.find('.time-of-day-group').toggle(!checked);
-    });
+    const checked = ev.currentTarget.checked;
+    game.settings.set('greyhawk-encounters', 'useSimpleCalendar', checked);
+    //html.find('.simple-calendar-info').toggle(checked);
+    // Do not hide .time-of-day-group – always leave it visible
+  });
     
     // Roll encounter button
     html.find('.roll-encounter-button').click(ev => {
@@ -459,10 +459,9 @@ export class GreyhawkEncounterRoller extends Application {
             break;
             case 'outdoor':
             html.find('.outdoor-options').show();
-            if (!game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
-                html.find('.time-of-day-group').show();
-            }
+            html.find('.time-of-day-group').show(); // ✅ Always show this
             break;
+
             case 'dungeon':
             html.find('.dungeon-options').show();
             break;
@@ -598,6 +597,8 @@ export class GreyhawkEncounterRoller extends Application {
               }
         
               // Handle all other DMG encounter types
+              let result;  // declare once at top
+
               switch (encounterType) {
                 case 'outdoor': {
                   const terrain = html.find('select[name="terrain"]').val() || 'plain';
@@ -606,22 +607,22 @@ export class GreyhawkEncounterRoller extends Application {
                   let timeOfDay = html.find('select[name="timeOfDay"]').val() || 'noon';
                   const forceEncounter = html.find('input[name="forceEncounter"]').is(':checked');
                   const isWarZone = html.find('input[name="isWarZone"]').is(':checked');
-        
+
                   if (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
                     const timeInfo = GreyhawkEncounters.getCurrentTimeInfo();
                     if (timeInfo?.timeOfDay) timeOfDay = timeInfo.timeOfDay;
                   }
-        
+
                   options = { ...options, terrain, population, climate, timeOfDay, isWarZone, forceEncounter };
 
-                  result = await this.rollOutdoorEncounter(/* params */);
-      
-                  // Add this line to preserve the original roll from regional tables
+                  // ✅ Just assign to result — do not redeclare it
+                  result = await GreyhawkEncounters.rollOutdoorEncounter(terrain, population, timeOfDay, options);
+
                   if (options.originalRegionalRoll) {
                     result.roll = options.originalRegionalRoll;
                   }
-                  
-                  break;  // end of 'outdoor' case
+
+                  break;
                 }
         
                 case 'underwater': {
@@ -658,7 +659,7 @@ export class GreyhawkEncounterRoller extends Application {
                 }
               }
         
-              const result = await (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')
+              result = await (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')
                 ? GreyhawkEncounters.rollTimeAwareEncounter(options)
                 : GreyhawkEncounters.rollEncounter(options));
         
@@ -762,7 +763,7 @@ export class GreyhawkEncounterRoller extends Application {
           html.find('.dmg-dungeon-options, .dmg-outdoor-options, .dmg-underwater-options, .dmg-planar-options, .dmg-waterborne-options, .dmg-airborne-options, .dmg-city-options').hide();
           html.find('.wog-regional-options, .wog-patrol-options').hide();
           html.find('.region-options, .outdoor-options, .dungeon-options, .underwater-options, .planar-options').hide();
-          html.find('.time-of-day-group').hide();
+          //html.find('.time-of-day-group').hide();
         }
         
 }
