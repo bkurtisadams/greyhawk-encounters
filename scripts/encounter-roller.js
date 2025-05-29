@@ -327,6 +327,17 @@ export class GreyhawkEncounterRoller extends Application {
         this._updateRegionList(regionType, html);
       }
     }
+
+    // check for simpleCalendar
+    const useSimpleCalendar = html.find('input[name="useSimpleCalendar"]').is(':checked');
+    if (!useSimpleCalendar) {
+      html.find('.time-of-day-group').show();
+    } else {
+      html.find('.time-of-day-group').hide();
+    }
+
+    // Add a console log to help debug:
+    console.log(`🕒 Time of day group ${!useSimpleCalendar ? 'shown' : 'hidden'}, Simple Calendar is ${useSimpleCalendar ? 'enabled' : 'disabled'}`);
   }
 
   // Save current form values when they change
@@ -597,8 +608,6 @@ export class GreyhawkEncounterRoller extends Application {
               }
         
               // Handle all other DMG encounter types
-              let result;  // declare once at top
-
               switch (encounterType) {
                 case 'outdoor': {
                   const terrain = html.find('select[name="terrain"]').val() || 'plain';
@@ -607,22 +616,22 @@ export class GreyhawkEncounterRoller extends Application {
                   let timeOfDay = html.find('select[name="timeOfDay"]').val() || 'noon';
                   const forceEncounter = html.find('input[name="forceEncounter"]').is(':checked');
                   const isWarZone = html.find('input[name="isWarZone"]').is(':checked');
-
+        
                   if (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')) {
                     const timeInfo = GreyhawkEncounters.getCurrentTimeInfo();
                     if (timeInfo?.timeOfDay) timeOfDay = timeInfo.timeOfDay;
                   }
-
+        
                   options = { ...options, terrain, population, climate, timeOfDay, isWarZone, forceEncounter };
 
-                  // ✅ Just assign to result — do not redeclare it
-                  result = await GreyhawkEncounters.rollOutdoorEncounter(terrain, population, timeOfDay, options);
-
+                  result = await this.rollOutdoorEncounter(/* params */);
+      
+                  // Add this line to preserve the original roll from regional tables
                   if (options.originalRegionalRoll) {
                     result.roll = options.originalRegionalRoll;
                   }
-
-                  break;
+                  
+                  break;  // end of 'outdoor' case
                 }
         
                 case 'underwater': {
@@ -659,79 +668,79 @@ export class GreyhawkEncounterRoller extends Application {
                 }
               }
         
-              result = await (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')
+              const result = await (game.settings.get('greyhawk-encounters', 'useSimpleCalendar')
                 ? GreyhawkEncounters.rollTimeAwareEncounter(options)
                 : GreyhawkEncounters.rollEncounter(options));
-        
-              if (result) {
-                GreyhawkEncounters._displayEncounterResult(result, options);
-              } else {
-                ui.notifications.warn("No DMG encounter generated.");
-              }
-        
             }
-        
-            // ─────────────────────────────────────────────────────────────
-            // WoG System Encounter Logic
-            // ─────────────────────────────────────────────────────────────
-            else if (system === 'wog') {
-              const wogType = html.find('select[name="wogEncounterType"]').val() || 'regional';
-              this._updateWogOptions(wogType, html); // Ensure UI is synced
-        
-              const regionType = html.find('select[name="regionType"]').val() || 'political';
-              const region = html.find('select[name="region"]').val();
-              const isWarZone = html.find('input[name="isWarZone"]').is(':checked');
-              const forceEncounter = html.find('input[name="forceEncounter"]').is(':checked');
-        
-              if (!region) {
-                ui.notifications.warn("Please select a specific region");
-                return;
-              }
-        
-              try {
-                const result = await GreyhawkEncounters._rollRegionalEncounter({
-                  specificRegion: region,
-                  regionType,
-                  isWarZone,
-                  forceEncounter,
-                  terrain,
-                  population,
-                  timeOfDay,
-                  climate
-                });
-        
-                if (result) {
-                  await GreyhawkEncounters._displayEncounterResult(result, {
-                    encounterType: 'regional',
-                    specificRegion: region,
-                    regionType,
-                    isWarZone
-                  });
-                } else {
-                  ui.notifications.warn(`No encounter generated for ${region}`);
-                }
-                
-                // restore the selected region after encounter generation
-                html.find('select[name="region"]').val(region);
 
-              } catch (error) {
-                console.error("Error rolling WoG regional encounter:", error);
-                ui.notifications.error(`Error generating encounter for ${region}`);
-              }
-            }
-        
-          } catch (error) {
-            console.error("❌ Error in _rollEncounter:", error);
-            ui.notifications.error("Encounter generation failed.");
-            
-            // Also restore from the catch block, even though currentRegion is out of scope
-            // You'll need to get it again
-            const selectedRegion = html.find('select[name="region"]').val();
-            if (selectedRegion) {
-              html.find('select[name="region"]').val(selectedRegion);
+            if (result) {
+              GreyhawkEncounters._displayEncounterResult(result, options);
+            } else {
+              ui.notifications.warn("No DMG encounter generated.");
             }
           }
+
+          // ─────────────────────────────────────────────────────────────
+          // WoG System Encounter Logic
+          // ─────────────────────────────────────────────────────────────
+          else if (system === 'wog') {
+            const wogType = html.find('select[name="wogEncounterType"]').val() || 'regional';
+            this._updateWogOptions(wogType, html); // Ensure UI is synced
+
+            const regionType = html.find('select[name="regionType"]').val() || 'political';
+            const region = html.find('select[name="region"]').val();
+            const isWarZone = html.find('input[name="isWarZone"]').is(':checked');
+            const forceEncounter = html.find('input[name="forceEncounter"]').is(':checked');
+
+            if (!region) {
+              ui.notifications.warn("Please select a specific region");
+              return;
+            }
+
+            try {
+              const result = await GreyhawkEncounters._rollRegionalEncounter({
+                specificRegion: region,
+                regionType,
+                isWarZone,
+                forceEncounter,
+                terrain,
+                population,
+                timeOfDay,
+                climate
+              });
+
+              if (result) {
+                await GreyhawkEncounters._displayEncounterResult(result, {
+                  encounterType: 'regional',
+                  specificRegion: region,
+                  regionType,
+                  isWarZone
+                });
+              } else {
+                ui.notifications.warn(`No encounter generated for ${region}`);
+              }
+              
+              // restore the selected region after encounter generation
+              html.find('select[name="region"]').val(region);
+
+            } catch (error) {
+              console.error("Error rolling WoG regional encounter:", error);
+              ui.notifications.error(`Error generating encounter for ${region}`);
+            }
+          }
+
+        } catch (error) {
+          console.error("❌ Error in _rollEncounter:", error);
+          ui.notifications.error("Encounter generation failed.");
+          
+          // Also restore from the catch block, even though currentRegion is out of scope
+          // You'll need to get it again
+          const selectedRegion = html.find('select[name="region"]').val();
+          if (selectedRegion) {
+            html.find('select[name="region"]').val(selectedRegion);
+          }
         }
+      }
     
         async _checkLost(html) {
           const terrain = html.find('select[name="terrain"]').val();

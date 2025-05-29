@@ -16,6 +16,121 @@ import { rollPlanarEncounter } from '../data/dmg-planar-tables.js';
 import { MONSTER_MANUAL } from '../data/monster-manual.js';
 import { findMonsterByName, rollNumberFromPattern } from '../utils/utility.js';
 
+const REGION_TABLE_MAP = {
+  // Political Regions
+  "Abbor Alz": "abbor_alz",
+  "Bandit Kingdoms": "bandit_kingdoms",
+  "Bissel": "bissel_gran_march_keoland",
+  "Bone March": "bone_march",
+  "Bright Desert": "bright_desert",
+  "Cairn Hills": "cairn_hills",
+  "Celene": "celene",
+  "County of Ulek": "county_duchy_principality_ulek",
+  "County of Urnst": "county_duchy_urnst",
+  "Duchy of Ulek": "county_duchy_principality_ulek",
+  "Duchy of Urnst": "county_duchy_urnst",
+  "Furyondy": "furyondy_shield_lands_veluna",
+  "Geoff": "geoff_sterich_yeomanry",
+  "Gran March": "bissel_gran_march_keoland",
+  "Great Kingdom": "great_kingdom_medegia_north_province_south_province",
+  "Greyhawk": "greyhawk",
+  "Hestmark Highlands": "hestmark_highlands",
+  "Highfolk": "highfolk",
+  "Hollow Highlands": "hollow_highlands",
+  "Horned Society": "horned_society",
+  "Idee": "idee_irongate_onnwal",
+  "Irongate": "idee_irongate_onnwal",
+  "Iuz": "iuz",
+  "Keoland": "bissel_gran_march_keoland",
+  "Ket": "ket_perrenland",
+  "Lortmil Mountains": "lortmil_mountains",
+  "North Province": "great_kingdom_medegia_north_province_south_province",
+  "Nyrond": "nyrond",
+  "Onnwal": "idee_irongate_onnwal",
+  "Pale": "pale_ratik_tenh",
+  "Perrenland": "ket_perrenland",
+  "Pomarj": "pomarj",
+  "Principality of Ulek": "county_duchy_principality_ulek",
+  "Ratik": "pale_ratik_tenh",
+  "Rovers of the Barrens": "rovers_of_the_barrens",
+  "Scarlet Brotherhood": "scarlet_brotherhood_sunndi",
+  "Sea of Dust": "sea_of_dust",
+  "Sea Princes": "sea_princes",
+  "See of Medegia": "great_kingdom_medegia_north_province_south_province",
+  "Shield Lands": "furyondy_shield_lands_veluna",
+  "South Province": "great_kingdom_medegia_north_province_south_province",
+  "Sterich": "geoff_sterich_yeomanry",
+  "Sunndi": "scarlet_brotherhood_sunndi",
+  "Tenh": "pale_ratik_tenh",
+  "Veluna": "furyondy_shield_lands_veluna",
+  "Wild Coast": "wild_coast",
+  "Yeomanry": "geoff_sterich_yeomanry",
+  
+  // Geographical Features
+  "Adri Forest": "adri_forest",
+  "Amedio Jungle": "amedio_jungle",
+  "Axewood": "axewood", 
+  "Bramblewood": "bramblewood",
+  "Burneal Forest": "burneal_forest",
+  "Celadon Forest": "celadon_forest",
+  "Clatspur Range": "clatspur_range",
+  "Corusk Mountains": "corusk_mountains",
+  "Crystalmist Mountains": "crystalmist_mountains",
+  "Crystalmists": "crystalmist_mountains",
+  "Dim Forest": "dim_forest",
+  "Dreadwood": "axewood",
+  "Fellreev Forest": "fellreev_forest",
+  "Flinty Hills": "flinty_hills",
+  "Forlorn Forest": "forlorn_forest",
+  "Gamboge Forest": "gamboge_forest",
+  "Glorioles": "hestmark_highlands",
+  "Gnarley Forest": "gnarley_forest",
+  "Good Hills": "flinty_hills",
+  "Grandwood Forest": "grandwood_forest",
+  "Griff Mountains": "corusk_mountains",
+  "Gull Cliffs": "flinty_hills",
+  "Headlands": "flinty_hills",
+  "Hellfurnaces": "hellfurnaces",
+  "Hornwood": "dim_forest",
+  "Hraak Forest": "forlorn_forest",
+  "Iron Hills": "flinty_hills",
+  "Jotens": "barrier_peaks",
+  "Kron Hills": "kron_hills",
+  "Little Hills": "flinty_hills",
+  "Loftwood": "loftwood",
+  "Lortmil": "lortmil_mountains",
+  "Lorridges": "flinty_hills",
+  "Menowood": "axewood",
+  "Nutherwood": "bramblewood",
+  "Nyr Dyv": "nyr_dyv",
+  "Oytwood": "dim_forest",
+  "Phostwood": "bramblewood",
+  "Quag Lake": "nyr_dyv",
+  "Rakers": "corusk_mountains",
+  "Rieuwood": "axewood",
+  "Rift Canyon": "rift_canyon",
+  "Sablewood": "sablewood",
+  "Selintan River": "selintan_river",
+  "Sepia Uplands": "sepia_uplands",
+  "Silverwood": "axewood",
+  "Spikey Forest": "sablewood",
+  "Stark Mounds": "flinty_hills",
+  "Sulhaut Mountains": "sulhaut_mountains",
+  "Suss Forest": "suss_forest",
+  "Timberway Forest": "loftwood",
+  "Tusman Hills": "sepia_uplands",
+  "Udgru Forest": "bramblewood",
+  "Ullsprue": "sulhaut_mountains",
+  "Vast Swamp": "vast_swamp",
+  "Velverdyva River": "velverdyva_river",
+  "Veng River": "veng_river",
+  "Vesve Forest East": "vesve_forest_east",
+  "Vesve Forest West": "vesve_forest_west",
+  "Vesve Forest": "vesve_forest_west",
+  "Whyestil Lake": "whyestil_lake",
+  "Yatil Mountains": "clatspur_range",
+  "Yecha Hills": "sepia_uplands"
+};
 
 const TERRAIN_CHECK_TIMES = {
   plain: ['morning', 'evening', 'midnight'],
@@ -26,43 +141,6 @@ const TERRAIN_CHECK_TIMES = {
   mountains: ['morning', 'night'],
   marsh: ['morning', 'noon', 'evening', 'night', 'midnight', 'pre-dawn']
 };
-
-/* function findMonsterByName(name) {
-  const normalized = name.toLowerCase().trim();
-
-  return MONSTER_MANUAL.monsters.find(mon => {
-    // Step 1: Exact name match
-    if (mon.name?.toLowerCase() === normalized) return true;
-
-    // Step 2: Match against name_variants (comma-separated or array)
-    if (mon.name_variants) {
-      const variants = Array.isArray(mon.name_variants)
-        ? mon.name_variants
-        : mon.name_variants.split(",").map(v => v.trim().toLowerCase());
-
-      if (variants.includes(normalized)) return true;
-    }
-
-    // Step 3: Match against embedded structured variant types
-    if (Array.isArray(mon.variants)) {
-      for (const variant of mon.variants) {
-        const fullVariant = `${mon.name}, ${variant.type}`.toLowerCase();
-        if (fullVariant === normalized) {
-          mon._variant = variant; // Attach matched variant
-          return true;
-        }
-      }
-    }
-
-    // Step 4: Singular fallback (strip trailing 's' if needed)
-    if (normalized.endsWith("s")) {
-      const singular = normalized.slice(0, -1);
-      return findMonsterByName(singular);
-    }
-
-    return false;
-  });
-} */
 
 function normalizeEncounterName(name) {
   return name
@@ -475,6 +553,21 @@ const leveledParty = assignLevels(baseParty);
 const gearedParty = assignGear(leveledParty);
 console.log("🎲 Men, Characters Wilderness Encounter:", gearedParty);
 
+function formatTreasureEntry(key, value) {
+  if (typeof value === "string") return `<li>${key}: ${value}</li>`;
+  if (typeof value === "object") {
+    const parts = [];
+    if (value.amount) parts.push(`${value.amount}`);
+    if (value.chance) parts.push(`(${value.chance} chance)`);
+    return `<li>${key}: ${parts.join(' ')}</li>`;
+  }
+  return `<li>${key}: ${String(value)}</li>`;
+}
+
+function capitalizeFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Main module class
@@ -684,6 +777,11 @@ export class GreyhawkEncounters {
       console.log("📊 [displayResult] Monster has treasure:", result.monsterData.treasure ? "yes" : "no");
     }
 
+    if (result.encounter === "Men, Characters" && result.party) {
+      console.log("🧠 Displaying Men, Characters party");
+      return displayGeneratedCharacterParty(result.party);
+    }
+    
     const generator = result?.generator ?? result?.monsterData?.generator;
 
     if (generator === "generateCharacterParty") {
@@ -763,10 +861,10 @@ export class GreyhawkEncounters {
           
           // Equipment details
           content += `<p>Equipment:</p>
-                     <ul>
-                       <li>Leaders: Plate mail, shield, lance, flail, and long sword</li>
-                       <li>Soldiers: Chain/scale mail, shield, bow/light crossbow, and hand weapon</li>
-                     </ul>`;
+                    <ul>
+                      <li>Leaders: Plate mail, shield, lance, flail, and long sword</li>
+                      <li>Soldiers: Chain/scale mail, shield, bow/light crossbow, and hand weapon</li>
+                    </ul>`;
           
           // Spellcaster information
           if (result.spellcaster) {
@@ -788,6 +886,76 @@ export class GreyhawkEncounters {
             content += `<hr><h4>Notes</h4><p>Patrol is mounted unless terrain is prohibitive. Leaders ride warhorses.</p>`;
           }
         } 
+        // Add new check for regional patrol encounters
+        else if (result.encounter && result.encounter.includes("Patrol")) {
+          console.log("🛡️ [displayResult] Displaying patrol encounter in regional context");
+          
+          content += `<p>Encounter: ${result.encounter || 'Patrol'}</p>`;
+          content += `<p>Number: ${result.number || 'Unknown'}</p>`;
+          
+          // Add detailed patrol information
+          content += `<hr><h4>Patrol Composition</h4>`;
+          
+          // Display special members if available
+          if (result.specialMembers && result.specialMembers.length > 0) {
+            content += `<p><strong>Officers and Special Members:</strong></p><ul>`;
+            
+            // Group special members by role
+            const membersByRole = {};
+            for (const member of result.specialMembers) {
+              const role = member.role || "unknown";
+              if (!membersByRole[role]) {
+                membersByRole[role] = [];
+              }
+              membersByRole[role].push(member);
+            }
+            
+            // Display each role group
+            for (const [role, members] of Object.entries(membersByRole)) {
+              const roleText = role.charAt(0).toUpperCase() + role.slice(1);
+              content += `<li><strong>${roleText}</strong>: ${members.length} x ${members[0]?.type || 'Fighter'} ${members[0]?.level ? `(Level ${members[0].level})` : ''}</li>`;
+            }
+            
+            content += `</ul>`;
+          } else {
+            // Fallback if no special members data
+            content += `<p>Leader: Level 6-8 Fighter (as per DMG)</p>`;
+            content += `<p>Lieutenant: Level 4-5 Fighter (as per DMG)</p>`;
+            content += `<p>Sergeant: Level 2-3 Fighter (as per DMG)</p>`;
+          }
+          
+          // Equipment details
+          if (result.equipmentAssigned && result.equipmentAssigned.length > 0) {
+            content += `<hr><h4>Equipment Breakdown</h4><ul>`;
+            
+            // Group equipment by role
+            const equipByRole = {};
+            for (const equip of result.equipmentAssigned) {
+              const role = equip.role || "regular";
+              if (!equipByRole[role]) {
+                equipByRole[role] = [];
+              }
+              equipByRole[role].push(equip);
+            }
+            
+            // Display each role's equipment
+            for (const [role, equipment] of Object.entries(equipByRole)) {
+              const roleText = role.charAt(0).toUpperCase() + role.slice(1);
+              content += `<li><strong>${roleText}s (${equipment.length}):</strong> ${equipment[0].equipment}</li>`;
+            }
+            
+            content += `</ul>`;
+          } else {
+            content += `<p><strong>Equipment:</strong> Standard patrol equipment - mounted troops with appropriate weapons and armor.</p>`;
+          }
+          
+          // Notes section if available
+          if (result.notes) {
+            content += `<hr><h4>Notes</h4><p>${result.notes}</p>`;
+          } else {
+            content += `<hr><h4>Notes</h4><p>Patrol is mounted unless terrain is prohibitive. Leaders ride warhorses.</p>`;
+          }
+        }
         // Check for Monster Manual data in regional context
         else if (result.monsterData && result.encounter) {
           console.log("📚 [displayResult] Display Monster Manual data in regional context");
@@ -873,10 +1041,15 @@ export class GreyhawkEncounters {
               // Handle clerical assistants if present
               if (result.monsterData.leaders.clerics.assistants) {
                 content += `<p><strong>Clerical Assistants:</strong></p>`;
-                result.monsterData.leaders.clerics.assistants.forEach(assistant => {
+
+                const assistants = result.monsterData.leaders.clerics.assistants;
+                const assistantList = Array.isArray(assistants) ? assistants : [assistants];
+
+                assistantList.forEach(assistant => {
                   content += `<p>Level ${assistant.level} ${assistant.class}: ${assistant.count}</p>`;
                 });
               }
+
             }
             
             // Handle fighters if present
@@ -935,16 +1108,58 @@ export class GreyhawkEncounters {
               }
             } else {
               // Standard treasure handling
-              Object.entries(result.monsterData.treasure).forEach(([key, value]) => {
-                if (key === 'holy_item' && value.chance) {
-                  content += `<p>Holy Item (${value.chance}% chance): ${value.description}</p>`;
-                } else if (Array.isArray(value)) {
-                  content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value.join(', ')}</p>`;
-                } else {
-                  content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value}</p>`;
-                }
-              });
+              const treasure = result.monsterData.treasure;
+
+              if (typeof treasure === 'string') {
+                content += `<p>${treasure}</p>`;
+              } else if (typeof treasure === 'object') {
+                Object.entries(treasure).forEach(([key, value]) => {
+                  const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+                  if (key === 'holy_item' && value.chance) {
+                    content += `<p>Holy Item (${value.chance}% chance): ${value.description}</p>`;
+                  } else if (Array.isArray(value)) {
+                    content += `<p>${label}: ${value.join(', ')}</p>`;
+                  } else if (typeof value === 'object') {
+                    content += `<p>${label}:</p><ul>`;
+                    Object.entries(value).forEach(([subKey, subValue]) => {
+                      let display = '';
+                      let labelKey = subKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+                      if (typeof subValue === 'object') {
+                        const amount = subValue.amount || '';
+                        const chance = subValue.chance ? parseInt(subValue.chance) : 100;
+                        const rollChance = Math.floor(Math.random() * 100) + 1;
+
+                        if (rollChance <= chance) {
+                          let resultAmount = amount;
+                          try {
+                            const evaluated = new Roll(amount.replace('×', '*'));
+                            evaluated.evaluate({ async: false });
+                            resultAmount = evaluated.total;
+                            display = `${amount} (${subValue.chance} chance, rolled ${resultAmount})`;
+                          } catch {
+                            display = `${amount} (${subValue.chance} chance, included)`;
+                          }
+                        } else {
+                          display = `${amount} (${subValue.chance} chance, not found)`;
+                        }
+                      } else {
+                        display = subValue;
+                      }
+
+                      content += `<li>${labelKey}: ${display}</li>`;
+                    });
+                    content += `</ul>`;
+                  } else {
+                    content += `<p>${label}: ${value}</p>`;
+                  }
+                });
+              } else {
+                content += `<p><em>Treasure data could not be parsed.</em></p>`;
+              }
             }
+
           }
           
           if (result.notes) {
@@ -1089,13 +1304,46 @@ export class GreyhawkEncounters {
             content += `<hr><h4>Notes</h4><p>Patrol is mounted unless terrain is prohibitive. Leaders ride warhorses.</p>`;
           }
         } else if (result.result === "Fortress Encounter") {
-          // Your existing fortress encounter handling
-          content += `<p>Result: Fortress Encounter</p>
-                      <p>Size: ${result.size}</p>
-                      <p>Type: ${result.type}</p>
-                      <p>Inhabitants: ${result.inhabitants}</p>`;
-          // Rest of fortress display code...
-        }
+            // Your existing fortress encounter handling
+            console.log("🏰 [displayResult] Rendering fortress encounter");
+
+            content += `<p><strong>Result:</strong> Fortress Encounter</p>`;
+            content += `<p><strong>Size:</strong> ${result.size}</p>`;
+            content += `<p><strong>Type:</strong> ${result.type}</p>`;
+            content += `<p><strong>Inhabitants:</strong> ${result.inhabitants}</p>`;
+            
+            // Add details of inhabitants
+            if (result.details) {
+              if (typeof result.details === 'string') {
+                content += `<p><strong>Details:</strong> ${result.details}</p>`;
+              } else if (result.details.type) {
+                // Human type with details
+                content += `<p><strong>Specific Type:</strong> ${result.details.type}</p>`;
+                if (result.details.number) {
+                  content += `<p><strong>Number:</strong> ${result.details.number}</p>`;
+                }
+                if (result.details.leader) {
+                  content += `<p><strong>Leader:</strong> ${result.details.leader}</p>`;
+                }
+              } else if (result.details.master) {
+                // Character type with details
+                content += `<p><strong>Master:</strong> ${result.details.master}</p>`;
+                if (result.details.henchmen) {
+                  content += `<p><strong>Henchmen:</strong> ${result.details.henchmen}</p>`;
+                }
+                if (result.details.garrison) {
+                  content += `<p><strong>Garrison:</strong></p><ul>`;
+                  result.details.garrison.forEach(unit => {
+                    content += `<li>${unit.count} ${unit.type} (${unit.equipment})</li>`;
+                  });
+                  content += `</ul>`;
+                }
+                if (result.details.description) {
+                  content += `<p>${result.details.description}</p>`;
+                }
+              }
+            }
+          }
         // Add new case for MM human encounters with special members
         else if (result.specialMembers && result.specialMembers.length > 0) {
           content += `<p>Time of Day: ${options.timeOfDay || 'Unknown'}</p>
@@ -1143,6 +1391,35 @@ export class GreyhawkEncounters {
               }
             }
           }
+
+          else if (result.result === "Encounter" && result.encounter === "Character" && (result.partyInfo || result.henchmenInfo)) {
+            content += `<p>Time of Day: ${options.timeOfDay || 'Unknown'}</p>`;
+            
+            if (result.subtableType && result.subtableRoll) {
+              content += `<p>Subtable: ${result.subtableType}</p>
+                        <p>Subtable Roll: ${result.subtableRoll}</p>`;
+            }
+            
+            content += `<p>Encounter: ${result.encounter || 'Unknown Creature'}</p>
+                      <p>Number: ${result.number || '1'}</p>`;
+            
+            // Add detailed party information
+            content += `<hr><h4>Adventuring Party</h4>`;
+            
+            if (result.partyInfo) {
+              content += `<p>${result.partyInfo}</p>`;
+            }
+            
+            if (result.henchmenInfo) {
+              content += `<p>${result.henchmenInfo}</p>`;
+            }
+            
+            // Add any notes
+            if (result.notes) {
+              content += `<hr><h4>Notes</h4><p>${result.notes}</p>`;
+            }
+          }
+
         } else if (result.result === "Encounter") {
           // New section to handle Monster Manual data specifically
           if (result.monsterData && result.encounter) {
@@ -1218,7 +1495,11 @@ export class GreyhawkEncounters {
                 // Handle clerical assistants if present
                 if (result.monsterData.leaders.clerics.assistants) {
                   content += `<p><strong>Clerical Assistants:</strong></p>`;
-                  result.monsterData.leaders.clerics.assistants.forEach(assistant => {
+
+                  const assistants = result.monsterData.leaders.clerics.assistants;
+                  const assistantList = Array.isArray(assistants) ? assistants : [assistants];
+
+                  assistantList.forEach(assistant => {
                     content += `<p>Level ${assistant.level} ${assistant.class}: ${assistant.count}</p>`;
                   });
                 }
@@ -1237,16 +1518,58 @@ export class GreyhawkEncounters {
             // If the monster has treasure
             if (result.monsterData.treasure) {
               content += `<hr><h4>Treasure</h4>`;
-              
-              Object.entries(result.monsterData.treasure).forEach(([key, value]) => {
-                if (key === 'holy_item' && value.chance) {
-                  content += `<p>Holy Item (${value.chance}% chance): ${value.description}</p>`;
-                } else if (Array.isArray(value)) {
-                  content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value.join(', ')}</p>`;
-                } else {
-                  content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value}</p>`;
-                }
-              });
+
+              const treasure = result.monsterData.treasure;
+
+              if (typeof treasure === 'string') {
+                content += `<p>${treasure}</p>`;
+              } else if (Array.isArray(treasure)) {
+                content += `<p>${treasure.join(', ')}</p>`;
+              } else if (typeof treasure === 'object') {
+                Object.entries(treasure).forEach(([key, value]) => {
+                  const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+                  if (key === 'holy_item' && value.chance) {
+                    content += `<p>Holy Item (${value.chance}% chance): ${value.description}</p>`;
+                  } else if (Array.isArray(value)) {
+                    content += `<p>${label}: ${value.join(', ')}</p>`;
+                  } else if (typeof value === 'object') {
+                    content += `<p>${label}:</p><ul>`;
+                    Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+                      const subLabel = nestedKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                      let display = '';
+
+                      if (typeof nestedValue === 'object' && nestedValue.amount) {
+                        const chance = parseInt(nestedValue.chance || '100');
+                        const roll = Math.floor(Math.random() * 100) + 1;
+
+                        if (roll <= chance) {
+                          try {
+                            const evaluated = new Roll(nestedValue.amount.replace('×', '*'));
+                            evaluated.evaluate({ async: false });
+                            display = `${nestedValue.amount} (${chance}% chance, rolled ${evaluated.total})`;
+                          } catch {
+                            display = `${nestedValue.amount} (${chance}% chance, included)`;
+                          }
+                        } else {
+                          display = `${nestedValue.amount} (${chance}% chance, not found)`;
+                        }
+                      } else if (typeof nestedValue === 'string' || typeof nestedValue === 'number') {
+                        display = nestedValue;
+                      } else {
+                        display = JSON.stringify(nestedValue);
+                      }
+
+                      content += `<li>${subLabel}: ${display}</li>`;
+                    });
+                    content += `</ul>`;
+                  } else {
+                    content += `<p>${label}: ${value}</p>`;
+                  }
+                });
+              } else {
+                content += `<p><em>Treasure data could not be parsed.</em></p>`;
+              }
             }
 
             if (result.notes) {
@@ -1578,54 +1901,146 @@ export class GreyhawkEncounters {
     return rollPlanarEncounter(planeType, options);
   }
 
+  static resolveRegionalTable(region) {
+    // Normalize region name
+    const normalized = region.trim().toLowerCase().replace(/[\s\-]/g, '_');
+    
+    // Check political tables first
+    let table = GREYHAWK_REGIONAL_TABLES[normalized];
+    if (table) return table;
+    
+    // Then check geographical tables
+    table = GREYHAWK_GEOGRAPHICAL_TABLES[normalized];
+    
+    // Handle string aliases in geographical tables
+    if (typeof table === 'string') {
+      return GREYHAWK_GEOGRAPHICAL_TABLES[table];
+    }
+    
+    // If still not found, check common region name variations
+    const variations = {
+      'lortmils': 'lortmil_mountains',
+      'crystalmists': 'crystalmist_mountains',
+      'county_of_urnst': 'county_duchy_urnst',
+      'duchy_of_urnst': 'county_duchy_urnst',
+      // Add more variations as needed
+    };
+    
+    if (variations[normalized]) {
+      return GREYHAWK_GEOGRAPHICAL_TABLES[variations[normalized]] || 
+            GREYHAWK_REGIONAL_TABLES[variations[normalized]];
+    }
+    
+    // Final fallback to greyhawk
+    return GREYHAWK_REGIONAL_TABLES['greyhawk'];
+  }
+  
   /**
    * Roll a regional encounter specific to Greyhawk.
    */
   static async _rollRegionalEncounter(options) {
+    // Normalize region name format (convert spaces to underscores, lowercase)
     const region = options.specificRegion?.trim().toLowerCase().replace(/[\s\-]/g, "_") || "greyhawk";
-    let table = GREYHAWK_REGIONAL_TABLES[region];
-  
+    
     const isWarZone = options.isWarZone ?? false;
     const population = options.population || 'moderate';
     const forceEncounter = options.forceEncounter === true;
-  
+
     console.log(`🗺️ Regional Encounter Starting...`);
     console.log(`  ➤ Region: ${region}`);
     console.log(`  ➤ Population: ${population}`);
     console.log(`  ➤ Is War Zone: ${isWarZone}`);
-  
+
     // Step 1: Encounter Check
     let dieSize = { dense: 20, uninhabited: 10 }[population] || 12;
     const roll = new Roll(`1d${dieSize}`);
     await roll.evaluate();
-  
+
     const encounterDiceResults = roll.dice.flatMap(die => die.results.map(r => r.result));
     await roll.toMessage({
       speaker: ChatMessage.getSpeaker(),
       flavor: `🎲 Encounter Check (${population} area): 1 in d${dieSize}<br><em>Rolled:</em> ${encounterDiceResults.join(', ')} (Total: ${roll.total})`
     });
-  
+
     console.log(`🎲 Encounter check: rolled ${roll.total} on d${dieSize} (success if 1)`);
-  
+
     if (!forceEncounter && roll.total !== 1) {
       console.log(`⛔ No encounter`);
       return { roll: roll.total, encounter: `No encounter (rolled ${roll.total} on d${dieSize})` };
     } else if (forceEncounter) {
       console.log(`⚠️ Forcing encounter due to test mode`);
     }
-  
+
     // Step 2: Get Table (fallbacks)
+    // First try to get table from political regions
+    let table = GREYHAWK_REGIONAL_TABLES[region];
+    let resolvedRegion = region; // Track the resolved region name
+
+    // If not found, check geographical tables
     if (!table) {
       table = GREYHAWK_GEOGRAPHICAL_TABLES[region];
       console.log(`🌄 Using fallback geographical table: ${!!table}`);
     }
-  
+
+    // Resolve alias references (can be multi-level)
+    let aliasDepth = 0;
+    const maxAliasDepth = 3; // Prevent infinite loops with circular references
+    while (typeof table === "string" && aliasDepth < maxAliasDepth) {
+      resolvedRegion = table; // Store the resolved region name
+      console.log(`🔁 Resolved alias "${region}" -> "${resolvedRegion}" (depth: ${aliasDepth + 1})`);
+      table = GREYHAWK_GEOGRAPHICAL_TABLES[resolvedRegion];
+      aliasDepth++;
+    }
+
+    // Check common region name variations if still not found
+    if (!table) {
+      const variations = {
+        'lortmils': 'lortmil_mountains',
+        'crystalmists': 'crystalmist_mountains',
+        'county_of_urnst': 'county_duchy_urnst',
+        'duchy_of_urnst': 'county_duchy_urnst',
+        // Add more variations as needed
+      };
+      
+      if (variations[region]) {
+        const variationRegion = variations[region];
+        console.log(`🔁 Using variation "${region}" -> "${variationRegion}"`);
+        
+        // Try the variation and follow any aliases
+        let variationTable = GREYHAWK_GEOGRAPHICAL_TABLES[variationRegion];
+        if (variationTable) {
+          resolvedRegion = variationRegion;
+          table = variationTable;
+          
+          // Follow aliases if the variation is itself an alias
+          aliasDepth = 0;
+          while (typeof table === "string" && aliasDepth < maxAliasDepth) {
+            resolvedRegion = table;
+            console.log(`🔁 Following variation alias "${variationRegion}" -> "${resolvedRegion}" (depth: ${aliasDepth + 1})`);
+            table = GREYHAWK_GEOGRAPHICAL_TABLES[resolvedRegion];
+            aliasDepth++;
+          }
+        }
+      }
+    }
+
+    // Final fallback if nothing worked
     if (!table) {
       console.warn(`⚠️ No encounter table found for region: ${region}, using Greyhawk`);
       table = GREYHAWK_REGIONAL_TABLES['greyhawk'];
+      resolvedRegion = 'greyhawk';
     }
-  
+
+    // Log the actual table we're using
+    console.log(`📊 Using table for ${resolvedRegion}:`, table ? `Found (${Array.isArray(table) ? table.length : 'not array'} entries)` : 'Not found');
+
+    // Safety check
+    if (!Array.isArray(table)) {
+      throw new Error(`Invalid or missing encounter table for region: ${region} (resolved: ${resolvedRegion}). Possibly a circular reference in aliases.`);
+    }
+
     // Step 3: Roll Encounter
+
     const tableRoll = new Roll("1d100");
     await tableRoll.evaluate();
     const tableRollValue = tableRoll.total;
@@ -1636,6 +2051,7 @@ export class GreyhawkEncounters {
       if (!isMatch) continue;
   
       console.log(`📌 Matched ${entry.min}-${entry.max || "+"} → ${entry.encounter}`);
+      const encounter = entry.encounter;
   
       const fallbackText = entry.encounter?.toLowerCase();
       const isStandardRedirect = entry.useStandard || (
@@ -1662,7 +2078,13 @@ export class GreyhawkEncounters {
       // Attempt to resolve encounter via monster data
       const rawName = entry.encounter;
       const normalizedName = normalizeEncounterName(rawName);
+      console.log(`Raw: ${rawName} → Normalized: ${normalizedName}`);
       let monsterData = findMonsterByName(normalizedName);
+
+      if (!monsterData && rawName !== normalizedName) {
+        console.log(`🔍 Fallback match attempt using raw name: ${rawName}`);
+        monsterData = findMonsterByName(rawName);
+      }
   
       if (!monsterData && normalizedName.includes(",")) {
         const alt = normalizedName.split(",")[1].trim();
@@ -1698,6 +2120,24 @@ export class GreyhawkEncounters {
       if (lairChance > 0) {
         console.log(`🏰 Rolled ${lairRoll} for % in Lair (≤${lairChance}) → ${isLairEncounter ? "LAIR" : "not lair"}`);
       }
+
+      // Special case: Men, Characters
+      if (encounter === "Men, Characters") {
+        console.log("🧠 Special encounter: Men, Characters — generating party...");
+        const baseParty = generateCharacterParty();
+        const leveledParty = assignLevels(baseParty);
+        const gearedParty = assignGear(leveledParty);
+
+        return {
+          result: "Encounter",
+          encounter: "Men, Characters",
+          roll,
+          number: gearedParty.length,
+          party: gearedParty,
+          distance: this._getEncounterDistance(options.terrain || "plain"),
+          notes: "Wilderness adventuring party generated per DMG Appendix C rules."
+        };
+      }
   
       // Leaders & Equipment
       const specialMembers = (monsterData?.leaders && numberAppearing)
@@ -1731,7 +2171,7 @@ export class GreyhawkEncounters {
         speaker: ChatMessage.getSpeaker(),
         flavor: `📍 <strong>Greyhawk Encounter</strong>`,
         content,
-        type: CONST.CHAT_MESSAGE_STYLES.OTHER
+        type: CONST.CHAT_MESSAGE_TYPES.OTHER
       });
   
       const encounterDistance = this._getEncounterDistance(options.terrain || 'plain');
@@ -1759,20 +2199,24 @@ export class GreyhawkEncounters {
       content: `<strong>Region:</strong> ${region}<br>
                 <strong>Roll:</strong> ${tableRollValue}<br>
                 <strong>Encounter:</strong> <em>N/A (no matching entry)</em>`,
-      type: CONST.CHAT_MESSAGE_STYLES.OTHER
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER
     });
 
     return {
       roll: tableRollValue,
-      encounter: "N/A (no matching entry found)",
+      encounter: "N/A (no matching entry found)", // restore 'encounter' for consistency
       number: null,
       numberRolls: [],
       rawEncounter: null,
+      alignment: null,
+      treasure: null,
+      description: null,
       isLair: false,
       specialMembers: [],
-      equipmentAssigned: []
+      equipmentAssigned: [],
+      distance: null,
+      monsterData: null // ✅ keep consistent with successful results
     };
-
 
   } // end of _rollRegionalEncounter()
   
@@ -1866,17 +2310,15 @@ export class GreyhawkEncounters {
     console.log(`📋 [rollOutdoorEncounter] Options:`, options);
     
     // Check if this is a time we should be rolling encounters
-    if (!this._shouldRollEncounterForTime(timeOfDay, terrain, options.partySize || 0)) {
-      console.log(`⛔ [rollOutdoorEncounter] Encounter skipped due to DMG terrain/time rule`);
+    if (!options.forceEncounter && !this._shouldRollEncounterForTime(timeOfDay, terrain, options.partySize || 0)) {
+      console.log(`⛔ [rollOutdoorEncounter] Encounter skipped due to DMG terrain/time rule (force=${options.forceEncounter})`);
       const msg = `🌄 <strong>No encounter check made</strong><br>
       <em>Reason:</em> According to DMG rules, encounters are not checked at <strong>${timeOfDay}</strong> in <strong>${terrain}</strong> terrain unless the party numbers over 100 creatures.`;
-
       await ChatMessage.create({
         user: game.user.id,
         speaker: ChatMessage.getSpeaker(),
         content: msg
       });
-
       console.log(`⛔ Encounter skipped due to DMG terrain/time rule — Time: ${timeOfDay}, Terrain: ${terrain}`);
       return {
         result: "Encounter check skipped",
@@ -2120,6 +2562,7 @@ export class GreyhawkEncounters {
 
     return {
       result: "Fortress Encounter",
+      encounter: `${size} ${type} occupied by ${inhabitants}`,
       size: size,
       type: type,
       inhabitants: inhabitants,
@@ -2409,10 +2852,21 @@ export class GreyhawkEncounters {
         console.log(`Rolling on men subtable with roll ${subtableRoll}`);
 
         // 10% chance of character encounter from Men subtable
-        if (subtableRoll >= 11 && subtableRoll <= 20) {
-          console.log("Men subtable resulted in Character encounter");
+        const characterRanges = {
+          plain: [11, 20],
+          scrub: [16, 25],
+          forest: [16, 25],
+          rough: [16, 25],
+          desert: [11, 20],
+          hills: [21, 30],
+          mountains: [21, 30],
+          marsh: [11, 20]
+        };
+
+        const range = characterRanges[dmgTerrain];
+        if (range && subtableRoll >= range[0] && subtableRoll <= range[1]) {
+          console.log("Men subtable resulted in Character encounter (terrain-adjusted)");
           const isWilderness = (options.population === 'uninhabited');
-          console.log(`Character encounter in ${isWilderness ? 'wilderness' : 'settled'} area`);
           return this._generateCharacterEncounter(1, isWilderness);
         }
 
@@ -3197,44 +3651,20 @@ export class GreyhawkEncounters {
 
     // For wilderness encounters, use the special note guidelines from the DMG
     if (isWilderness) {
-      // Number of characters in party (standard adventuring party)
-      const characterCount = Math.floor(Math.random() * 4) + 2; // 2-5
+      // 1. Generate the detailed party using the dedicated functions
+      const baseParty = generateCharacterParty();
+      const leveledParty = assignLevels(baseParty);
+      const gearedParty = assignGear(leveledParty); // This now holds the detailed party info
 
-      // Character levels (7-10 for wilderness)
-      const characterLevel = Math.floor(Math.random() * 4) + 7; // 7-10
-
-      // Determine if mounted (90% chance)
-      const isMounted = Math.random() < 0.9;
-
-      // Calculate number of henchmen (approximately half character level)
-      const henchmenCount = 9 - characterCount;
-      const henchmenLevel = Math.ceil(characterLevel / 2);
-
-      // Generate a simple class distribution for the party
-      const classOptions = ["Fighter", "Magic-User", "Cleric", "Thief"];
-      const partyClasses = [];
-
-      for (let i = 0; i < characterCount; i++) {
-        const classIndex = Math.floor(Math.random() * classOptions.length);
-        partyClasses.push(classOptions[classIndex]);
-      }
-
-      // Generate simple mount information if mounted
-      let mountInfo = "";
-      if (isMounted) {
-        const mountTypes = ["light warhorses", "medium warhorses", "heavy warhorses"];
-        const mountType = mountTypes[Math.floor(Math.random() * mountTypes.length)];
-        mountInfo = `Mounted on ${mountType}`;
-      }
-
+      // 2. Return an object containing the detailed party and necessary metadata
       return {
         result: "Encounter",
-        encounter: "Character",
-        number: characterCount + henchmenCount,
-        partyInfo: `${characterCount} adventurers (${partyClasses.join(", ")}) - Level ${characterLevel}`,
-        henchmenInfo: `${henchmenCount} henchmen (Level ${henchmenLevel})`,
-        notes: `Wilderness adventuring party. ${mountInfo}. According to DMG, 90% of wilderness character parties are mounted.`,
-        isMounted: isMounted
+        encounter: "Men, Characters", // DMG Terminology for this type
+        number: gearedParty.length, // Actual number of members in the generated party
+        party: gearedParty, // The detailed party object itself
+        notes: "Wilderness adventuring party. According to DMG Appendix C, 90% are mounted.", // General note
+        // Add a flag so the display function knows how to handle this special result
+        generator: "generateCharacterParty"
       };
     }
 
@@ -3931,6 +4361,11 @@ export class GreyhawkEncounters {
     console.log("📦 monsterData.name:", monsterData?.name);
     console.log("📦 totalCount:", totalCount);
     console.log("🌍 terrain:", terrain);
+
+    if (!monsterData || !monsterData.equipment) {
+      console.warn("⚠️ No equipment table found for monster.");
+      return [];
+    }
   
     const assigned = [];
   
@@ -3942,11 +4377,89 @@ export class GreyhawkEncounters {
       return assigned;
     }
   
+    // Handle patrol-type equipment format
+    if (/Patrol/.test(monsterData.name) && typeof equipmentTable === 'object') {
+      // For patrols, distribute equipment based on roles
+      const roles = Object.keys(equipmentTable);
+      let remainingTroops = totalCount;
+      
+      // Assign officer equipment
+      if (roles.includes('officer')) {
+        const officerCount = Math.min(1, remainingTroops);
+        for (let i = 0; i < officerCount; i++) {
+          assigned.push({
+            equipment: equipmentTable['officer'],
+            role: 'officer',
+            mounted: true
+          });
+        }
+        remainingTroops -= officerCount;
+      }
+      
+      // Assign subaltern equipment
+      if (roles.includes('subalterns') && remainingTroops > 0) {
+        const subalternCount = Math.min(Math.floor(totalCount / 10) || 1, remainingTroops);
+        for (let i = 0; i < subalternCount; i++) {
+          assigned.push({
+            equipment: equipmentTable['subalterns'],
+            role: 'subaltern',
+            mounted: true
+          });
+        }
+        remainingTroops -= subalternCount;
+      }
+      
+      // Assign sergeant equipment
+      if (roles.includes('serjeants') && remainingTroops > 0) {
+        const sergeantCount = Math.min(Math.floor(totalCount / 5) || 1, remainingTroops);
+        for (let i = 0; i < sergeantCount; i++) {
+          assigned.push({
+            equipment: equipmentTable['serjeants'],
+            role: 'sergeant',
+            mounted: true
+          });
+        }
+        remainingTroops -= sergeantCount;
+      }
+      
+      // Assign veteran equipment to ~20% of remaining troops
+      if (roles.includes('veterans') && remainingTroops > 0) {
+        const veteranCount = Math.min(Math.floor(remainingTroops * 0.2), remainingTroops);
+        for (let i = 0; i < veteranCount; i++) {
+          assigned.push({
+            equipment: equipmentTable['veterans'],
+            role: 'veteran',
+            mounted: true
+          });
+        }
+        remainingTroops -= veteranCount;
+      }
+      
+      // Assign remaining troops as regulars
+      if (roles.includes('regulars') && remainingTroops > 0) {
+        for (let i = 0; i < remainingTroops; i++) {
+          assigned.push({
+            equipment: equipmentTable['regulars'],
+            role: 'regular',
+            mounted: true
+          });
+        }
+      }
+      
+      console.log(`✅ assignEquipment: Assigned ${assigned.length} troops with role-based equipment`);
+      return assigned;
+    }
+
     // Normalize equipment entries
     const entries = Object.entries(equipmentTable).flatMap(([label, percent]) => {
       const pct = typeof percent === "string" ? parseInt(percent) : percent;
       return isNaN(pct) ? [] : { label, chance: pct };
     });
+
+    if (entries.length === 0) {
+      console.warn("⚠️ No valid equipment entries found.");
+      return assigned;
+    }
   
     console.log("📋 Normalized equipment entries:", entries);
   
@@ -3977,7 +4490,7 @@ export class GreyhawkEncounters {
       // Enforce mount limit
       if (mountedLimit !== null && isMounted && mountedAssigned >= maxMounted) {
         console.log(`⚠️ Mounted limit reached (${mountedAssigned}/${maxMounted}), rerolling non-mounted for unit ${i + 1}`);
-        selected = entries.find(e => !/horse/.test(e.label));
+        selected = entries.find(e => !/horse/.test(e.label)) || entries[0]; // fallback if all entries are mounts
         isMounted = /horse/.test(selected?.label || "");
       }
   
