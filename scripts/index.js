@@ -74,6 +74,21 @@ Hooks.once('init', async function() {
   loadTemplates(['modules/greyhawk-encounters/templates/encounter-roller.hbs']);
 });
 
+// treasure button hook
+Hooks.on('renderChatMessage', (chatMessage, html, data) => {
+  // Find treasure generation buttons in this chat message
+  html.find('.treasure-generate-btn').click(function(event) {
+    const button = event.currentTarget;
+    const treasureType = button.dataset.treasureType;
+    const monsterCount = parseInt(button.dataset.monsterCount) || 1;
+    
+    console.log("🎲 Generating treasure:", treasureType, "for", monsterCount, "monsters");
+    
+    // Call your treasure generation function
+    GreyhawkEncounters.generateTreasureForEncounter(treasureType, monsterCount);
+  });
+});
+
 Hooks.once('ready', async function() {
   console.log('Greyhawk Encounters | Module ready');
   

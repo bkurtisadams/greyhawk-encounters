@@ -10920,6 +10920,152 @@ export const MONSTER_MANUAL = {
       "description": "Giant wasps are feared hunters that prey on other creatures both for food and as hosts for their eggs. They attack with powerful jaws (2-8 damage) and a poisonous stinger (1-4 damage). Victims stung must save versus poison or become permanently paralyzed, dying in 2-5 days unless treated with neutralize poison or antidote. During this period, paralyzed victims are typically eaten by wasp larvae. While some giant wasps build mud nests, those building paper nests are most dangerous, as their lairs contain 21-40 adults. Their wings are highly vulnerable to fire - exposure to flames renders them flightless but doesn't otherwise harm them."
     },
     {
+      "name": "Werebear",
+      "category": "Lycanthrope",
+      "frequency": "Rare",
+      "numberAppearing": "1d4",
+      "size": "Large",
+      "move": "90 ft",
+      "armorClass": 2,
+      "hitDice": "7+3",
+      "TREASURE TYPE": "R, T, X",
+      "attacks": 3,
+      "damage": "1d3/1d3/2d8",
+      "specialAttacks": "Hug for 2d16 on 18-20",
+      "specialDefenses": "Hit only by silver or +1 or better magic weapons",
+      "magicResistance": "Standard",
+      "lairProbability": "10%",
+      "intelligence": "Exceptional",
+      "alignment": "Chaotic good",
+      "levelXP": "7/1,250+10/hp",
+      "description": "Great werebears are the most powerful of all lycanthropes. 50% likely to be in company with 1-6 brown bears. Can summon 1-6 brown bears in 2-12 turns if within one mile. Heal wounds at three times normal rate, immune to disease, can cure disease in others in 1-4 weeks.",
+      "treasure": {
+        "individual": "Nil",
+        "lair": {
+          "gold": "2d4×1,000 (40%)",
+          "platinum": "10d6×100 (50%)",
+          "gems": "4d8 (55%)",
+          "jewellery": "1d12 (45%)",
+          "scrolls": "1d4 (50%)",
+          "miscMagic": "1 misc magic + 1 potion (60%)"
+        }
+      }
+    },
+    {
+      "name": "Wereboar",
+      "category": "Lycanthrope",
+      "frequency": "Rare",
+      "numberAppearing": "2d4",
+      "size": "Large",
+      "move": "120 ft",
+      "armorClass": 4,
+      "hitDice": "5+2",
+      "TREASURE TYPE": "B, S",
+      "attacks": 1,
+      "damage": "2d12",
+      "specialAttacks": "Nil",
+      "specialDefenses": "Hit only by silver or +1 or better magic weapons",
+      "magicResistance": "Standard",
+      "lairProbability": "20%",
+      "intelligence": "Average",
+      "alignment": "Neutral evil",
+      "levelXP": "5/275+6/hp",
+      "description": "Found in dense woodlands, wereboars are of ugly temper and likely to attack. In human form they are hot tempered and irascible with typical berserker nature. 15% chance to mingle with normal boars.",
+      "treasure": {
+        "individual": "1d8×1,000 cp (50%), 1d6×1,000 sp (25%), 1d4×1,000 ep (25%), 1d3×1,000 gp (25%)",
+        "lair": {
+          "scrolls": "2d4 potions (40%)"
+        }
+      }
+    },
+    {
+      "name": "Wererat",
+      "category": "Lycanthrope",
+      "frequency": "Uncommon",
+      "numberAppearing": "4d6",
+      "size": "Small to Medium",
+      "move": "120 ft",
+      "armorClass": 6,
+      "hitDice": "3+1",
+      "TREASURE TYPE": "C",
+      "attacks": 1,
+      "damage": "1d8 (sword)",
+      "specialAttacks": "Surprise on 1-4",
+      "specialDefenses": "Hit only by silver or +1 or better magic weapons",
+      "magicResistance": "Standard",
+      "lairProbability": "30%",
+      "intelligence": "Very",
+      "alignment": "Lawful evil",
+      "levelXP": "3/65+4/hp",
+      "description": "Sometimes known as ratmen, these sly creatures inhabit subterranean tunnel complexes beneath cities. Can take three forms: human, human-sized ratman, and giant rat. Use human form to dupe humans. Can summon and control 2d12 giant rats.",
+      "treasure": {
+        "cp": "1d12×1,000 (20%)",
+        "sp": "1d6×1,000 (30%)",
+        "ep": "1d4×1,000 (10%)",
+        "gems": "1d6 (25%)",
+        "jewellery": "1d3 (20%)",
+        "magicItems": "any 2 magic items (10%)"
+      }
+    },
+    {
+      "name": "Weretiger",
+      "category": "Lycanthrope",
+      "frequency": "Very rare",
+      "numberAppearing": "1d6",
+      "size": "Large",
+      "move": "120 ft",
+      "armorClass": 3,
+      "hitDice": "6+2",
+      "TREASURE TYPE": "D, Q (×5)",
+      "attacks": 3,
+      "damage": "1d4/1d4/1d12",
+      "specialAttacks": "Rake for 2d5/2d5",
+      "specialDefenses": "Hit only by silver or +1 or better magic weapons",
+      "magicResistance": "Standard",
+      "lairProbability": "15%",
+      "intelligence": "Average",
+      "alignment": "Neutral",
+      "levelXP": "6/570+8/hp",
+      "description": "Similar to normal tigers in habitat, most often female. Only 5% likely to mingle with normal cats. Can speak with all sorts of cats, and cats are 75% likely to be friendly due to this ability.",
+      "treasure": {
+        "individual": "1d8×1,000 cp (10%), 1d12×1,000 sp (15%), 1d8×1,000 ep (15%), 1d6×1,000 gp (50%)",
+        "lair": {
+          "gems": "10d8 (90%)",
+          "jewellery": "5d6 (80%)",
+          "magicItems": "1 of each magic excluding potions & scrolls (70%)"
+        }
+      }
+    },
+    {
+      "name": "Werewolf",
+      "category": "Lycanthrope",
+      "frequency": "Common",
+      "numberAppearing": "3d6",
+      "size": "Medium",
+      "move": "150 ft",
+      "armorClass": 5,
+      "hitDice": "4+3",
+      "TREASURE TYPE": "C",
+      "attacks": 1,
+      "damage": "2d8",
+      "specialAttacks": "Surprise on 1-3",
+      "specialDefenses": "Hit only by silver or +1 or better magic weapons",
+      "magicResistance": "Standard",
+      "lairProbability": "25%",
+      "intelligence": "Average",
+      "alignment": "Chaotic evil",
+      "levelXP": "4/125+5/hp",
+      "description": "Very difficult to detect in human form. Prone to retain bipedal form in wolf state. Packs of 5-8 are family groups with male, female, and 3-6 young. Male fights at +2 to hit if female attacked, female at +3 if young attacked. Young fight at -4 to -1 to hit based on maturity.",
+      "treasure": {
+        "cp": "1d12×1,000 (20%)",
+        "sp": "1d6×1,000 (30%)",
+        "ep": "1d4×1,000 (10%)",
+        "gems": "1d6 (25%)",
+        "jewellery": "1d3 (20%)",
+        "magicItems": "any 2 magic items (10%)"
+      }
+    },
+    {
       "name": "Weasel",
       "category": "Animal",
       "variants": [

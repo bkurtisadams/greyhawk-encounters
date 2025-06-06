@@ -26,21 +26,6 @@ if (typeof MONSTER_MANUAL === 'undefined') {
   console.warn('Greyhawk Encounters: Monster Manual data not available');
 }
 
-// Add this outside the GreyhawkEncounters class, near the top of the file
-function getTreasureAPI() {
-  // Try multiple access methods for the treasure module
-  if (game.modules.get("adnd-treasure")?.api) {
-    return game.modules.get("adnd-treasure").api;
-  }
-  
-  if (window.adndTreasure) {
-    return window.adndTreasure;
-  }
-  
-  console.warn("AD&D Treasure module not found or API not available");
-  return null;
-}
-
 const TERRAIN_CHECK_TIMES = {
   plain: ['morning', 'evening', 'midnight'],
   scrub: ['morning', 'evening', 'night', 'pre-dawn'],
@@ -50,43 +35,6 @@ const TERRAIN_CHECK_TIMES = {
   mountains: ['morning', 'night'],
   marsh: ['morning', 'noon', 'evening', 'night', 'midnight', 'pre-dawn']
 };
-
-/* function findMonsterByName(name) {
-  const normalized = name.toLowerCase().trim();
-
-  return MONSTER_MANUAL.monsters.find(mon => {
-    // Step 1: Exact name match
-    if (mon.name?.toLowerCase() === normalized) return true;
-
-    // Step 2: Match against name_variants (comma-separated or array)
-    if (mon.name_variants) {
-      const variants = Array.isArray(mon.name_variants)
-        ? mon.name_variants
-        : mon.name_variants.split(",").map(v => v.trim().toLowerCase());
-
-      if (variants.includes(normalized)) return true;
-    }
-
-    // Step 3: Match against embedded structured variant types
-    if (Array.isArray(mon.variants)) {
-      for (const variant of mon.variants) {
-        const fullVariant = `${mon.name}, ${variant.type}`.toLowerCase();
-        if (fullVariant === normalized) {
-          mon._variant = variant; // Attach matched variant
-          return true;
-        }
-      }
-    }
-
-    // Step 4: Singular fallback (strip trailing 's' if needed)
-    if (normalized.endsWith("s")) {
-      const singular = normalized.slice(0, -1);
-      return findMonsterByName(singular);
-    }
-
-    return false;
-  });
-} */
 
 function normalizeEncounterName(name) {
   return name
@@ -508,49 +456,37 @@ const gearedParty = assignGear(leveledParty);
 console.log("🎲 Men, Characters Wilderness Encounter:", gearedParty);
 
 // Helper to format complex treasure objects for display
+// Add this logging to the existing _formatTreasureDetails function:
 function _formatTreasureDetails(treasureObj) {
+  console.log("💰 [_formatTreasureDetails] Starting with treasureObj:", treasureObj);
+  console.log("💰 [_formatTreasureDetails] treasureObj type:", typeof treasureObj);
+  console.log("💰 [_formatTreasureDetails] treasureObj is null:", treasureObj === null);
+  
   if (!treasureObj || typeof treasureObj !== 'object') {
+    console.log("💰 [_formatTreasureDetails] Returning as string:", String(treasureObj));
     return String(treasureObj); // Return as string if not an object or null
   }
 
+  console.log("💰 [_formatTreasureDetails] Processing as object");
+  console.log("💰 [_formatTreasureDetails] Object.entries(treasureObj):", Object.entries(treasureObj));
+  
   const details = [];
   for (const [key, value] of Object.entries(treasureObj)) {
+    console.log("💰 [_formatTreasureDetails] Processing key:", key, "value:", value);
     const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
     if (typeof value === 'object' && value !== null) {
-      if (value.amount !== undefined || value.chance !== undefined || value.note !== undefined || value.type !== undefined || value.description !== undefined) {
-        // Handle {"amount": "...", "chance": "...", "note": "...", "type": "...", "description": "..."}
-        let itemDetails = [];
-        if (value.amount) {
-          itemDetails.push(`Amount: ${value.amount}`);
-        }
-        if (value.chance) {
-          itemDetails.push(`Chance: ${value.chance}%`);
-        }
-        if (value.type) { // For cases like 'magic_items: {"type": "weapon", "chance": "10%"}'
-          itemDetails.push(`Type: ${value.type}`);
-        }
-        if (value.description) { // For cases like 'holy_item: {"description": "..."}'
-          itemDetails.push(`Description: ${value.description}`);
-        }
-        if (value.notes) { // Sometimes 'notes' instead of 'note'
-          itemDetails.push(`Notes: ${value.notes}`);
-        }
-
-        details.push(`<li>${formattedKey}: ${itemDetails.join(', ')}</li>`);
-      } else if (Array.isArray(value)) {
-        // Handle array of strings or simple values
-        details.push(`<li>${formattedKey}: ${value.join(', ')}</li>`);
-      } else {
-        // Fallback for unexpected nested objects
-        details.push(`<li>${formattedKey}: [Complex Object]</li>`);
-      }
+      console.log("💰 [_formatTreasureDetails] Value is object");
+      // ... rest of existing object handling code
     } else {
+      console.log("💰 [_formatTreasureDetails] Value is primitive:", typeof value);
       // Handle simple string/number values directly
       details.push(`<li>${formattedKey}: ${value}</li>`);
     }
   }
 
+  console.log("💰 [_formatTreasureDetails] Final details array:", details);
+  
   if (details.length > 0) {
     return `<ul>${details.join('')}</ul>`;
   }
@@ -993,12 +929,21 @@ export class GreyhawkEncounters {
           }
           
           // If the monster has treasure
-          // In scripts/greyhawk-encounters.js, replace the treasure section:
+          // Replace the treasure display section in _displayEncounterResult with this version:
           if (result.monsterData.treasure || result.monsterData["treasure type"]) {
+            console.log("🏆 [displayResult] Starting treasure display section");
+            console.log("🏆 [displayResult] result.monsterData.treasure:", result.monsterData.treasure);
+            console.log("🏆 [displayResult] result.monsterData['treasure type']:", result.monsterData["treasure type"]);
+            console.log("🏆 [displayResult] treasure type:", typeof result.monsterData.treasure);
+            console.log("🏆 [displayResult] treasure is string:", typeof result.monsterData.treasure === "string");
+            console.log("🏆 [displayResult] treasure is object:", typeof result.monsterData.treasure === "object");
+            console.log("🏆 [displayResult] treasure is null:", result.monsterData.treasure === null);
+            
             content += `<hr><h4>Treasure</h4>`;
 
             // Handle AD&D Monster Manual "treasure type" (simple format)
             if (result.monsterData["treasure type"]) {
+              console.log("🏆 [displayResult] Processing treasure type:", result.monsterData["treasure type"]);
               content += `<p><strong>Treasure Type:</strong> ${result.monsterData["treasure type"]}`;
               
               // Add button to generate treasure
@@ -1009,18 +954,30 @@ export class GreyhawkEncounters {
             }
 
             // Handle OSRIC "treasure" (detailed format) 
+            // Find and replace this section that's causing the character-by-character iteration:
             if (result.monsterData.treasure) {
+              console.log("🔍 [displayResult] About to process treasure");
+              console.log("🔍 [displayResult] Treasure value:", result.monsterData.treasure);
+              console.log("🔍 [displayResult] Treasure type:", typeof result.monsterData.treasure);
+              
+              content += `<hr><h4>Treasure</h4>`;
+              
+              // REMOVE THIS PROBLEMATIC CODE that's iterating character by character:
+              // Object.entries(result.monsterData.treasure).forEach(([key, value]) => {
+              //   ... this is what's causing the character iteration
+              // });
+              
+              // REPLACE WITH:
               if (typeof result.monsterData.treasure === "string") {
+                console.log("🔍 [displayResult] Displaying treasure as string");
                 content += `<p><strong>Treasure:</strong> ${result.monsterData.treasure}</p>`;
               } else if (typeof result.monsterData.treasure === "object" && result.monsterData.treasure !== null) {
-                // Handle complex treasure objects as before
-                if (result.encounter === "Men, merchant" || result.encounter === "Men, Merchant") {
-                  content += this._formatMerchantTreasure(result.monsterData.treasure);
-                } else {
-                  content += this._formatGenericTreasure(result.monsterData.treasure);
-                }
+                console.log("🔍 [displayResult] Processing treasure as object");
+                content += _formatTreasureDetails(result.monsterData.treasure);
               }
             }
+            
+            console.log("🏆 [displayResult] Finished treasure display section");
           }
           
           if (result.notes) {
@@ -1311,18 +1268,87 @@ export class GreyhawkEncounters {
             }
             
             // If the monster has treasure
-            if (result.monsterData.treasure) {
-              content += `<hr><h4>Treasure</h4>`;
+            if (result.monsterData.treasure || result.monsterData["TREASURE TYPE"]) {
+              console.log("🏆 [displayResult] Processing Monster Manual treasure");
+              console.log("🏆 [displayResult] Treasure Type:", result.monsterData["TREASURE TYPE"]);
+              console.log("🏆 [displayResult] Treasure details:", result.monsterData.treasure);
               
-              Object.entries(result.monsterData.treasure).forEach(([key, value]) => {
-                if (key === 'holy_item' && value.chance) {
-                  content += `<p>Holy Item (${value.chance}% chance): ${value.description}</p>`;
-                } else if (Array.isArray(value)) {
-                  content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value.join(', ')}</p>`;
-                } else {
-                  content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value}</p>`;
+              content += `<hr><h4>Treasure</h4>`;
+
+              // Enhanced treasure type detection
+              const isTreasureType = (treasureValue) => {
+                if (typeof treasureValue !== "string") return false;
+                const cleaned = treasureValue.trim();
+                
+                // Handle simple formats: "E", "H, S, T", "Q (x20)"
+                if (/^[A-Z](\s*\([^)]+\))?(,\s*[A-Z](\s*\([^)]+\))?)*$/.test(cleaned)) {
+                  return true;
                 }
-              });
+                
+                // Handle complex formats: "Individuals M (x10); Lair: G, Q (x20), R"
+                if (/Individual|Lair/i.test(cleaned)) {
+                  return true;
+                }
+                
+                return false;
+              };
+
+              let treasureTypeToUse = result.monsterData["TREASURE TYPE"] || 
+                                      (isTreasureType(result.monsterData.treasure) ? result.monsterData.treasure : null);
+
+              if (treasureTypeToUse) {
+                console.log("🏆 [displayResult] Found treasure type for generation:", treasureTypeToUse);
+                
+                // Parse treasure types properly for the button
+                let treasureTypesForButton = treasureTypeToUse;
+                
+                // Handle complex treasure formats like "Individuals M (x10); Lair: G, Q (x20), R"
+                if (treasureTypeToUse.includes(":")) {
+                  const allTreasureTypes = [];
+                  
+                  // Extract Individual treasure types
+                  const individualMatch = treasureTypeToUse.match(/Individual(?:s)?\s*:?\s*([A-Z](?:\s*\([^)]+\))?(?:,\s*[A-Z](?:\s*\([^)]+\))?)*)/i);
+                  if (individualMatch) {
+                    const individualTypes = individualMatch[1].match(/[A-Z]/g);
+                    if (individualTypes) {
+                      allTreasureTypes.push(...individualTypes);
+                    }
+                  }
+                  
+                  // Extract Lair treasure types
+                  const lairMatch = treasureTypeToUse.match(/Lair\s*:?\s*([A-Z](?:\s*\([^)]+\))?(?:,\s*[A-Z](?:\s*\([^)]+\))?)*)/i);
+                  if (lairMatch) {
+                    const lairTypes = lairMatch[1].match(/[A-Z]/g);
+                    if (lairTypes) {
+                      allTreasureTypes.push(...lairTypes);
+                    }
+                  }
+                  
+                  if (allTreasureTypes.length > 0) {
+                    // Remove duplicates and join
+                    treasureTypesForButton = [...new Set(allTreasureTypes)].join(", ");
+                  }
+                }
+                // Handle formats like "Q (x20)" or "A, B (x5)"
+                else if (isTreasureType(treasureTypeToUse)) {
+                  // Extract just the letters, removing any parenthetical info
+                  const letters = treasureTypeToUse.match(/[A-Z]/g);
+                  if (letters) {
+                    treasureTypesForButton = letters.join(", ");
+                  }
+                }
+                
+                console.log("🏆 [displayResult] Parsed treasure types for button:", treasureTypesForButton);
+                
+                content += `<p><strong>Treasure Type:</strong> ${treasureTypeToUse}`;
+                content += ` <button onclick="GreyhawkEncounters.generateTreasureForEncounter('${treasureTypesForButton}', ${result.number?.total || result.number || 1})" 
+                                    style="margin-left: 10px; padding: 2px 8px; font-size: 12px; background: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer;">
+                              🎲 Generate Treasure
+                            </button></p>`;
+              }
+
+              // Rest of treasure handling code...
+              console.log("🏆 [displayResult] Finished treasure processing");
             }
 
             if (result.notes) {
@@ -4077,42 +4103,64 @@ export class GreyhawkEncounters {
 /**
  * Generate treasure for an encounter using the treasure module
  */
-static async generateTreasureForEncounter(treasureType, monsterCount = 1) {
-  const treasureAPI = GreyhawkEncounters.getTreasureAPI();
-  
-  if (!treasureAPI) {
-    ui.notifications.warn("AD&D Treasure module not available. Please install and enable it.");
-    return;
-  }
-  
-  console.log(`Generating treasure type ${treasureType} for ${monsterCount} monsters`);
-  
-  try {
-    // Reset treasure totals in the treasure module
-    if (treasureAPI.TreasureManager?.resetTotals) {
-      treasureAPI.TreasureManager.resetTotals();
+/**
+     * Generate treasure for an encounter
+     * @param {Array} monsterData - Array of monster objects with name, count, and treasureType
+     * @param {boolean} isInLair - Whether the encounter is in the monster's lair
+     */
+    static generateTreasureForEncounter(monsterData, isInLair = false) {
+        const treasureAPI = this.getTreasureAPI();
+        if (!treasureAPI) {
+            ui.notifications.warn("AD&D Treasure Generator module is required but not available");
+            return;
+        }
+
+        // Reset treasure totals
+        if (treasureAPI.TreasureManager && treasureAPI.TreasureManager.resetTotals) {
+            treasureAPI.TreasureManager.resetTotals();
+        }
+
+        // Handle each monster group
+        for (const monster of monsterData) {
+            const { name, count, treasureType } = monster;
+            
+            if (!treasureType || treasureType.toLowerCase() === 'nil') {
+                console.log(`${name} has no treasure`);
+                continue;
+            }
+
+            // Handle multiple treasure types (comma-separated like "M, G, Q, R")
+            if (treasureType.includes(',')) {
+                const types = treasureType.split(',').map(t => t.trim().toUpperCase());
+                
+                for (const type of types) {
+                    console.log(`Generating treasure type ${type} for ${count} ${name}(s)`);
+                    
+                    // Use the Monster Manual treasure generation
+                    if (treasureAPI.generateMMTreasure) {
+                        treasureAPI.generateMMTreasure(type, count);
+                    } else {
+                        console.warn("generateMMTreasure function not available in treasure API");
+                    }
+                }
+            } else {
+                // Single treasure type
+                const type = treasureType.trim().toUpperCase();
+                console.log(`Generating treasure type ${type} for ${count} ${name}(s)`);
+                
+                if (treasureAPI.generateMMTreasure) {
+                    treasureAPI.generateMMTreasure(type, count);
+                } else {
+                    console.warn("generateMMTreasure function not available in treasure API");
+                }
+            }
+        }
+
+        // Display the totals
+        if (treasureAPI.TreasureManager && treasureAPI.TreasureManager.displayTotals) {
+            treasureAPI.TreasureManager.displayTotals();
+        }
     }
-    
-    // Generate the treasure
-    if (treasureAPI.generateMMTreasure) {
-      treasureAPI.generateMMTreasure(treasureType, monsterCount);
-    } else if (treasureAPI.generateTreasureForMonster) {
-      treasureAPI.generateTreasureForMonster("Monster", treasureType, monsterCount);
-    } else {
-      console.warn("No treasure generation function found in API");
-      ui.notifications.warn("Treasure generation function not available");
-    }
-    
-    // Display totals
-    if (treasureAPI.TreasureManager?.displayTotals) {
-      treasureAPI.TreasureManager.displayTotals();
-    }
-    
-  } catch (error) {
-    console.error("Error generating treasure:", error);
-    ui.notifications.error("Failed to generate treasure");
-  }
-}
 
 /**
  * Generate contextual treasure (lair vs individual)
@@ -4152,4 +4200,78 @@ static async openTreasureGenerator() {
     console.log("Available treasure functions:", Object.keys(treasureAPI));
   }
 }
+
+/**
+     * Get the AD&D Treasure Generator API if available
+     * @returns {Object|null} The treasure API object or null if not available
+     */
+    static getTreasureAPI() {
+        // First check if the module is loaded and has the API exposed
+        const treasureModule = game.modules.get("adnd-treasure");
+        if (!treasureModule || !treasureModule.active) {
+            console.warn("AD&D Treasure Generator module not found or not active");
+            return null;
+        }
+
+        // Check if the API is available on the module
+        if (treasureModule.api) {
+            return treasureModule.api;
+        }
+
+        // Fallback: check the global window object (as your module sets window.adndTreasure)
+        if (window.adndTreasure) {
+            return window.adndTreasure;
+        }
+
+        console.warn("AD&D Treasure Generator API not available");
+        return null;
+    }
+
+        /**
+       * Add treasure generation button to encounter dialog
+       * @param {jQuery} html - The dialog HTML
+       * @param {Object} encounterData - The encounter data
+       */
+      addTreasureGenerationButton(html, encounterData) {
+      // Check if treasure API is available before adding button
+      if (!this.getTreasureAPI()) {
+          return; // Don't add button if treasure module isn't available
+      }
+
+      // Add the treasure generation button
+      const treasureButton = $(`
+          <button type="button" class="treasure-btn" style="margin: 5px 0;">
+              <i class="fas fa-coins"></i> Generate Treasure
+          </button>
+      `);
+
+      treasureButton.on('click', () => {
+          // Extract monster data from the encounter
+          const monsters = [];
+          
+          // Parse the encounter data to extract monsters and their treasure types
+          if (encounterData.monsters) {
+              for (const monster of encounterData.monsters) {
+                  if (monster.treasureType && monster.treasureType !== 'Nil') {
+                      monsters.push({
+                          name: monster.name,
+                          count: monster.count || 1,
+                          treasureType: monster.treasureType
+                      });
+                  }
+              }
+          }
+
+          if (monsters.length === 0) {
+              ui.notifications.info("No monsters in this encounter have treasure");
+              return;
+          }
+
+          // Generate treasure for the encounter
+          this.generateTreasureForEncounter(monsters, false); // Assuming not in lair by default
+      });
+
+      // Add the button to the dialog
+      html.find('.dialog-buttons').prepend(treasureButton);
+  }
 }
