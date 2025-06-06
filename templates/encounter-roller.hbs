@@ -86,6 +86,32 @@
     </div>
   </fieldset>
 
+    <!-- NEW SECTION: ADD HERE -->
+  <fieldset class="dmg-timing-rules">
+    <legend>DMG Encounter Timing Rules</legend>
+    
+    <!-- Compact reference table -->
+    <div class="timing-reference">
+      <table class="compact-timing-table">
+        <tr><td><strong>Forest/Marsh:</strong></td><td>All times (6 checks/day)</td></tr>
+        <tr><td><strong>Scrub:</strong></td><td>Morning, Evening, Night, Pre-dawn</td></tr>
+        <tr><td><strong>Plain/Hills:</strong></td><td>Morning, Evening, Midnight</td></tr>
+        <tr><td><strong>Mountains:</strong></td><td>Morning, Night</td></tr>
+        <tr><td><strong>Desert:</strong></td><td>Morning, Night, Pre-dawn</td></tr>
+      </table>
+    </div>
+    
+    <!-- Dynamic warning -->
+    <div class="timing-warning" style="display: none;"></div>
+    
+    <!-- Quick override for large parties -->
+    <div class="checkbox-row">
+      <input type="checkbox" name="largeTravelingParty" id="largeTravelingParty">
+      <label for="largeTravelingParty">Large traveling party (100+ creatures) - ignores timing rules</label>
+    </div>
+  </fieldset>
+  <!-- END NEW SECTION -->
+
   <!-- DMG-Specific Section -->
   <div class="dmg-system-container" style="display: none;">
     <fieldset>

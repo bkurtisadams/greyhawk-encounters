@@ -149,22 +149,86 @@ function flattenLeaderData(leaders, totalCount, isLair = false) {
     return 0;
   };
 
-  for (const [key, value] of Object.entries(leaders)) {
-    if (key.startsWith('per_')) {
-      const per = parseInt(key.split('_')[1]);
-      const slots = Math.floor(totalCount / per);
-      if (value.level && value.class) {
-        for (let i = 0; i < (slots * (value.count || 1)); i++) {
+  // Helper to process a single leader/special member data object
+  const processLeaderEntry = (rolePrefix, data) => {
+    if (!data || typeof data !== 'object') return;
+
+    let count = rollCount(data.count || data.countFormula || 1);
+    if (data.chance) { // For chance-based entries like 'magicUser' in bandit
+        const chanceRoll = Math.floor(Math.random() * 100) + 1;
+        if (chanceRoll > (parseInt(data.chance) || 0)) {
+            return; // Chance failed, don't add this member
+        }
+    }
+    if (data.chanceFormula) { // For chance-formula-based entries like 'magicUser' in bandit
+        const num = totalCount; // 'number' variable for eval
+        const chance = eval(data.chanceFormula);
+        const chanceRoll = Math.floor(Math.random() * 100) + 1;
+        if (chanceRoll > chance) {
+            return; // Chance failed, don't add this member
+        }
+    }
+
+    if (data.level && data.class) {
+      for (let i = 0; i < count; i++) {
+        specialMembers.push({
+          role: `${rolePrefix}`,
+          level: parseLevel(data.level),
+          type: data.class
+        });
+      }
+    } else if (data.notes) {
+      specialMembers.push({
+        role: `${rolePrefix}`,
+        notes: data.notes
+      });
+    }
+
+    // Handle nested assistants (e.g., Cleric assistants)
+    if (data.assistants) {
+      const assistants = Array.isArray(data.assistants) ? data.assistants : [data.assistants];
+      for (const assistant of assistants) {
+        const assistantCount = rollCount(assistant.count || assistant.countFormula || 1);
+        for (let i = 0; i < assistantCount; i++) {
           specialMembers.push({
-            role: key,
-            level: parseLevel(value.level),
-            type: value.class
+            role: `${rolePrefix} (Assistant)`,
+            level: parseLevel(assistant.level),
+            type: assistant.class
           });
         }
       }
     }
+  };
 
-    // Commander-type scaling roles
+  for (const [key, value] of Object.entries(leaders)) {
+    // Handle 'per_' based entries (e.g., 'per_12' in Bugbear)
+    if (key.startsWith('per_')) {
+      const per = parseInt(key.split('_')[1]);
+      const slots = Math.floor(totalCount / per);
+      if (typeof value === 'object' && value.leader) { // Assuming 'per_' structures have a 'leader' object inside
+        const numLeaders = rollCount(value.leader.count || 1); // Check for count in the leader object
+        for (let i = 0; i < numLeaders; i++) {
+          // If the leader is a simple type/level
+          if (value.leader.level && value.leader.class) {
+            processLeaderEntry(`${key} Leader`, { ...value.leader, count: slots * (value.leader.count || 1) });
+          } else {
+            // For complex 'leader' definitions, like Bugbear's HP/AC bonuses
+            specialMembers.push({
+              role: `${key} Leader`,
+              notes: `HP: ${value.leader.hitPoints}, AC: ${value.leader.armorClass}, Damage: ${value.leader.damage || 'Special'}`
+            });
+          }
+        }
+      } else if (typeof value === 'object' && value.additions) { // For Bugbear 'per_24'
+        for (const addition of value.additions) {
+          if (addition.chief) processLeaderEntry(`${key} Chief`, { ...addition.chief, count: slots * (addition.chief.count || 1) });
+          if (addition.subChief) processLeaderEntry(`${key} Sub-Chief`, { ...addition.subChief, count: slots * (addition.subChief.count || 1) });
+        }
+      } else { // Generic fallback for per_
+        processLeaderEntry(key, value);
+      }
+    }
+    // Handle commander-type scaling roles (e.g., 'commander', 'war_chief')
     else if (['commander', 'war_chief', 'captain'].includes(key)) {
       for (const [rangeKey, data] of Object.entries(value)) {
         const pass =
@@ -176,92 +240,36 @@ function flattenLeaderData(leaders, totalCount, isLair = false) {
           (rangeKey === 'less_than_200' && totalCount < 200) ||
           (rangeKey === 'more_than_200' && totalCount >= 200);
         if (pass) {
-          const c = rollCount(data.count || 1);
-          for (let i = 0; i < c; i++) {
-            specialMembers.push({
-              role: key,
-              level: parseLevel(data.level),
-              type: data.class
-            });
+          processLeaderEntry(key, data);
+        }
+      }
+    }
+    // Handle specific high-level leader definitions (e.g., for Elf or Dwarf)
+    else if (['over_100', 'over_160', 'over_200', 'over_320'].includes(key)) {
+      if (totalCount >= parseInt(key.split('_')[1])) {
+        const entries = Array.isArray(value) ? value : [value];
+        for (const entry of entries) {
+          if (entry.main) { // For complex nested structures like Elf's 'over_160'
+            processLeaderEntry(`${key} (Main)`, entry.main);
+          } else if (entry.retainers) {
+            processLeaderEntry(`${key} (Retainer)`, entry.retainers);
+          } else {
+            processLeaderEntry(key, entry);
           }
         }
       }
     }
-
-    // Compound leader groups (fighters, clerics, magic_users, etc.)
-    else if (typeof value === 'object' && !Array.isArray(value)) {
-      // Check if it's a percent chance trigger group
-      if (value.chance) {
-        const rollsPassed = rollChance(value.chance);
-        for (let i = 0; i < rollsPassed; i++) {
-          if (value.main) {
-            const mainCount = rollCount(value.main.count || 1);
-            for (let j = 0; j < mainCount; j++) {
-              specialMembers.push({
-                role: `${key} (main)`,
-                level: parseLevel(value.main.level),
-                type: value.main.class || 'unknown'
-              });
-            }
-          }
-
-          if (value.assistants) {
-            const assistants = Array.isArray(value.assistants) ? value.assistants : [value.assistants];
-            for (const assistant of assistants) {
-              const aCount = rollCount(assistant.count || 1);
-              for (let j = 0; j < aCount; j++) {
-                specialMembers.push({
-                  role: `${key} (assistant)`,
-                  level: parseLevel(assistant.level),
-                  type: assistant.class
-                });
-              }
-            }
-          }
-
-          if (value.permanent) {
-            const pCount = rollCount(value.permanent.count || 1);
-            for (let j = 0; j < pCount; j++) {
-              specialMembers.push({
-                role: `${key} (permanent)`,
-                level: parseLevel(value.permanent.level),
-                type: value.permanent.class
-              });
-            }
-          }
+    // Handle general special members which might be objects or arrays
+    else if (typeof value === 'object' && value !== null) {
+      if (Array.isArray(value)) { // NEW: Handle top-level arrays (e.g., 'clerics' for Pilgrim)
+        for (const item of value) {
+            processLeaderEntry(key, item);
         }
-      }
-
-      // Handle other compound keys like 'fighters', 'clerics' with sub-tables
-      else {
-        for (const [subKey, subData] of Object.entries(value)) {
-          if (subKey === 'assistants') {
-            const assistants = Array.isArray(subData) ? subData : [subData];
-            for (const assistant of assistants) {
-              const aCount = rollCount(assistant.count || 1);
-              for (let j = 0; j < aCount; j++) {
-                specialMembers.push({
-                  role: `${key} Assistant`,
-                  level: assistant.level,
-                  type: assistant.class
-                });
-              }
-            }
-          } else if (subData?.level && subData?.class) {
-            const count = rollCount(subData.count || 1);
-            for (let i = 0; i < count; i++) {
-              specialMembers.push({
-                role: `${key} ${subKey}`,
-                level: parseLevel(subData.level),
-                type: subData.class
-              });
-            }
-          }
-        }
+      } else { // Existing object handling (e.g., 'monk' for Pilgrim, or generic 'cleric' object)
+        processLeaderEntry(key, value);
       }
     }
-
-    // Notes or summaries
+    // Notes or summaries (should be less common now with better object parsing)
     else if (typeof value === 'string') {
       specialMembers.push({
         role: key,
@@ -475,6 +483,56 @@ const leveledParty = assignLevels(baseParty);
 const gearedParty = assignGear(leveledParty);
 console.log("🎲 Men, Characters Wilderness Encounter:", gearedParty);
 
+// Helper to format complex treasure objects for display
+function _formatTreasureDetails(treasureObj) {
+  if (!treasureObj || typeof treasureObj !== 'object') {
+    return String(treasureObj); // Return as string if not an object or null
+  }
+
+  const details = [];
+  for (const [key, value] of Object.entries(treasureObj)) {
+    const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+    if (typeof value === 'object' && value !== null) {
+      if (value.amount !== undefined || value.chance !== undefined || value.note !== undefined || value.type !== undefined || value.description !== undefined) {
+        // Handle {"amount": "...", "chance": "...", "note": "...", "type": "...", "description": "..."}
+        let itemDetails = [];
+        if (value.amount) {
+          itemDetails.push(`Amount: ${value.amount}`);
+        }
+        if (value.chance) {
+          itemDetails.push(`Chance: ${value.chance}%`);
+        }
+        if (value.type) { // For cases like 'magic_items: {"type": "weapon", "chance": "10%"}'
+          itemDetails.push(`Type: ${value.type}`);
+        }
+        if (value.description) { // For cases like 'holy_item: {"description": "..."}'
+          itemDetails.push(`Description: ${value.description}`);
+        }
+        if (value.notes) { // Sometimes 'notes' instead of 'note'
+          itemDetails.push(`Notes: ${value.notes}`);
+        }
+
+        details.push(`<li>${formattedKey}: ${itemDetails.join(', ')}</li>`);
+      } else if (Array.isArray(value)) {
+        // Handle array of strings or simple values
+        details.push(`<li>${formattedKey}: ${value.join(', ')}</li>`);
+      } else {
+        // Fallback for unexpected nested objects
+        details.push(`<li>${formattedKey}: [Complex Object]</li>`);
+      }
+    } else {
+      // Handle simple string/number values directly
+      details.push(`<li>${formattedKey}: ${value}</li>`);
+    }
+  }
+
+  if (details.length > 0) {
+    return `<ul>${details.join('')}</ul>`;
+  }
+  return 'No specific details.';
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Main module class
@@ -557,6 +615,27 @@ export class GreyhawkEncounters {
       weekday: currentDate.weekday || '',
       isDay: (hour >= 6 && hour < 19)
     };
+  }
+
+  // Helper to roll on an alignment probability table (e.g., {LG: 35, CG: 20})
+  static _rollOnAlignmentTable(alignmentTable) {
+    if (typeof alignmentTable === 'string') {
+      return alignmentTable; // Already a string, no roll needed
+    }
+    if (!alignmentTable || typeof alignmentTable !== 'object') {
+      return 'Unknown'; // Invalid format
+    }
+
+    const roll = Math.floor(Math.random() * 100) + 1;
+    let cumulativeChance = 0;
+
+    for (const [align, chance] of Object.entries(alignmentTable)) {
+      cumulativeChance += chance;
+      if (roll <= cumulativeChance) {
+        return align.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      }
+    }
+    return 'Unknown'; // Should not happen if table sums to 100
   }
 
   /**
@@ -890,62 +969,114 @@ export class GreyhawkEncounters {
           }
           
           // If the monster has treasure
-          if (result.monsterData.treasure) {
+          if (result.monsterData.treasure || result.monsterData["treasure type"]) {
             content += `<hr><h4>Treasure</h4>`;
-            
-            // Special handling for merchant treasure
-            if (result.encounter === "Men, merchant") {
-              if (result.monsterData.treasure.merchants) {
-                content += `<p><strong>Merchants:</strong> ${result.monsterData.treasure.merchants}</p>`;
-              }
-              
-              if (result.monsterData.treasure.mercenaries) {
-                content += `<p><strong>Mercenaries:</strong> ${result.monsterData.treasure.mercenaries}</p>`;
-              }
-              
-              if (result.monsterData.treasure.leaders) {
-                content += `<p><strong>Leaders:</strong> ${result.monsterData.treasure.leaders}</p>`;
-              }
-              
-              if (result.monsterData.treasure.pay_box) {
-                content += `<p><strong>Pay Box:</strong> ${result.monsterData.treasure.pay_box.description}</p>`;
-                content += `<ul>`;
-                if (result.monsterData.treasure.pay_box.gold) {
-                  content += `<li>Gold: ${result.monsterData.treasure.pay_box.gold}</li>`;
-                }
-                if (result.monsterData.treasure.pay_box.platinum) {
-                  content += `<li>Platinum: ${result.monsterData.treasure.pay_box.platinum}</li>`;
-                }
-                if (result.monsterData.treasure.pay_box.gems) {
-                  content += `<li>Gems: ${result.monsterData.treasure.pay_box.gems}</li>`;
-                }
-                content += `</ul>`;
-              }
-              
-              if (result.monsterData.treasure.caravan_goods) {
-                content += `<p><strong>Caravan Goods:</strong></p>`;
-                content += `<ul>`;
-                if (result.monsterData.treasure.caravan_goods.value) {
-                  content += `<li>Value: ${result.monsterData.treasure.caravan_goods.value}</li>`;
-                }
-                if (result.monsterData.treasure.caravan_goods.transport) {
-                  content += `<li>Transport: ${result.monsterData.treasure.caravan_goods.transport}</li>`;
-                }
-                content += `</ul>`;
-              }
-            } else {
-              // Standard treasure handling
-              Object.entries(result.monsterData.treasure).forEach(([key, value]) => {
-                if (key === 'holy_item' && value.chance) {
-                  content += `<p>Holy Item (${value.chance}% chance): ${value.description}</p>`;
-                } else if (Array.isArray(value)) {
-                  content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value.join(', ')}</p>`;
+
+            // Check if there's a treasure type (1st Ed AD&D format)
+            if (result.monsterData["treasure type"]) {
+              content += `<p><strong>Treasure Type:</strong> ${result.monsterData["treasure type"]}</p>`;
+            }
+
+            // Check if there's detailed treasure info (OSRIC format)
+            if (result.monsterData.treasure) {
+              if (typeof result.monsterData.treasure === "string") {
+                // Display the OSRIC treasure string directly
+                content += `<p><strong>Treasure:</strong> ${result.monsterData.treasure}</p>`;
+              } else if (typeof result.monsterData.treasure === "object" && result.monsterData.treasure !== null) {
+                // Handle object-based treasure (like merchants)
+                if (result.encounter === "Men, merchant") {
+                  // Merchant-specific treasure handling (keep existing logic)
+                  if (result.monsterData.treasure.merchants) {
+                    content += `<p><strong>Merchants:</strong> ${
+                      Array.isArray(result.monsterData.treasure.merchants)
+                        ? result.monsterData.treasure.merchants.join(", ")
+                        : result.monsterData.treasure.merchants
+                    }</p>`;
+                  }
+                  if (result.monsterData.treasure.mercenaries) {
+                    content += `<p><strong>Mercenaries:</strong> ${
+                      Array.isArray(result.monsterData.treasure.mercenaries)
+                        ? result.monsterData.treasure.mercenaries.join(", ")
+                        : result.monsterData.treasure.mercenaries
+                    }</p>`;
+                  }
+                  if (result.monsterData.treasure.leaders) {
+                    content += `<p><strong>Leaders:</strong> ${
+                      Array.isArray(result.monsterData.treasure.leaders)
+                        ? result.monsterData.treasure.leaders.join(", ")
+                        : result.monsterData.treasure.leaders
+                    }</p>`;
+                  }
+                  if (result.monsterData.treasure.pay_box) {
+                    content += `<p><strong>Pay Box:</strong> ${result.monsterData.treasure.pay_box.description}</p>`;
+                    content += `<ul>`;
+                    if (result.monsterData.treasure.pay_box.gold) {
+                      content += `<li>Gold: ${result.monsterData.treasure.pay_box.gold}</li>`;
+                    }
+                    if (result.monsterData.treasure.pay_box.platinum) {
+                      content += `<li>Platinum: ${result.monsterData.treasure.pay_box.platinum}</li>`;
+                    }
+                    if (result.monsterData.treasure.pay_box.gems) {
+                      content += `<li>Gems: ${result.monsterData.treasure.pay_box.gems}</li>`;
+                    }
+                    content += `</ul>`;
+                  }
+                  if (result.monsterData.treasure.caravan_goods) {
+                    content += `<p><strong>Caravan Goods:</strong></p>`;
+                    content += `<ul>`;
+                    if (result.monsterData.treasure.caravan_goods.value) {
+                      content += `<li>Value: ${result.monsterData.treasure.caravan_goods.value}</li>`;
+                    }
+                    if (result.monsterData.treasure.caravan_goods.transport) {
+                      content += `<li>Transport: ${result.monsterData.treasure.caravan_goods.transport}</li>`;
+                    }
+                    content += `</ul>`;
+                  }
                 } else {
-                  content += `<p>${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${value}</p>`;
+                  // Handle other object-based treasure formats
+                  Object.entries(result.monsterData.treasure).forEach(([key, value]) => {
+                    const formattedKey = key
+                      .replace(/_/g, " ")
+                      .replace(/\b\w/g, (l) => l.toUpperCase());
+
+                    if (key === "individual") {
+                      if (typeof value === "string") {
+                        content += `<p>${formattedKey}: ${value}</p>`;
+                      } else if (typeof value === "object" && value !== null) {
+                        content += `<p>${formattedKey}:</p>${_formatTreasureDetails(value)}`;
+                      }
+                    } else if (key === "lair") {
+                      content += `<p>${formattedKey}:</p>${_formatTreasureDetails(value)}`;
+                    } else if (key === "holy_item" && typeof value === "object" && value.chance) {
+                      content += `<p>Holy Item (${value.chance}% chance): ${value.description}</p>`;
+                    } else if (Array.isArray(value)) {
+                      content += `<p>${formattedKey}: ${value.join(", ")}</p>`;
+                    } else if (
+                      typeof value === "object" &&
+                      value !== null &&
+                      (value.amount !== undefined ||
+                        value.chance !== undefined ||
+                        value.note !== undefined ||
+                        value.type !== undefined ||
+                        value.description !== undefined)
+                    ) {
+                      let detail = [];
+                      if (value.amount) detail.push(`Amount: ${value.amount}`);
+                      if (value.chance) detail.push(`Chance: ${value.chance}%`);
+                      if (value.note) detail.push(`Note: ${value.note}`);
+                      if (value.type) detail.push(`Type: ${value.type}`);
+                      if (value.description) detail.push(`Description: ${value.description}`);
+                      content += `<p>${formattedKey}: ${detail.join(", ")}</p>`;
+                    } else {
+                      content += `<p>${formattedKey}: ${value}</p>`;
+                    }
+                  });
                 }
-              });
+              }
             }
           }
+
+
           
           if (result.notes) {
             content += `<hr><h4>Notes</h4><p>${result.notes}</p>`;
@@ -2762,7 +2893,7 @@ export class GreyhawkEncounters {
       number: baseNumber,
       specialMembers: specialMembers,
       distance: this._getEncounterDistance(terrain),
-      alignment: mmTable.alignment,
+      alignment: GreyhawkEncounters._rollOnAlignmentTable(mmTable.alignment),
       notes: notes
     };
   }

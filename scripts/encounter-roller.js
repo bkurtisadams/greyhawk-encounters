@@ -236,7 +236,35 @@ export class GreyhawkEncounterRoller extends Application {
       ]
     };
   }
-  
+
+  _updateTimingWarning(html) {
+    const terrain = html.find('select[name="terrain"]').val();
+    const timeOfDay = html.find('select[name="timeOfDay"]').val();
+    const largeTravelingParty = html.find('input[name="largeTravelingParty"]').is(':checked');
+    const useSimpleCalendar = html.find('input[name="useSimpleCalendar"]').is(':checked');
+    
+    // Don't show warning if using Simple Calendar (time is automatic)
+    if (useSimpleCalendar) {
+      html.find('.timing-warning').hide();
+      return;
+    }
+    
+    const shouldCheck = GreyhawkEncounters._shouldRollEncounterForTime(timeOfDay, terrain, largeTravelingParty ? 101 : 0);
+    const warningDiv = html.find('.timing-warning');
+    
+    if (!shouldCheck && !largeTravelingParty) {
+      warningDiv.html(`
+        <div class="warning-box">
+          <i class="fas fa-exclamation-triangle"></i>
+          <strong>DMG Rule:</strong> No encounter checks at ${timeOfDay} in ${terrain} terrain 
+          unless party exceeds 100 creatures
+        </div>
+      `).show();
+    } else {
+      warningDiv.hide();
+    }
+  }
+
   activateListeners(html) {
     super.activateListeners(html);
   
@@ -247,6 +275,15 @@ export class GreyhawkEncounterRoller extends Application {
     html.find('select, input').change(ev => {
       this._saveCurrentFormValues();
     });
+
+    // Timing warning updates
+    html.find('select[name="terrain"], select[name="timeOfDay"], input[name="largeTravelingParty"], input[name="useSimpleCalendar"]').change(ev => {
+      this._updateTimingWarning(html);
+      this._saveCurrentFormValues(); // Save the new checkbox state
+    });
+    
+    // Initial timing warning check
+    this._updateTimingWarning(html);
   
     // System selection (DMG vs WoG)
     html.find('select[name="encounterSystem"]').change(ev => {
