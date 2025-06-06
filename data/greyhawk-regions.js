@@ -271,7 +271,6 @@ export const GREYHAWK_REGIONAL_TABLES = {
     { "min": 49, "max": 50, "encounter": "Halfling, Tallfellow" },
     { "min": 51, "max": 53, "encounter": "Humanoid" },
     { "min": 54, "max": 55, "encounter": "Men, Bandit" },
-    { "min": 54, "max": 55, "encounter": "Men, Bandit" },
     { "min": 56, "max": 57, "encounter": "Men, Brigand" },
     { "min": 58, "max": 63, "encounter": "Men, Merchant" },
     { "min": 64, "max": 77, "encounter": "Men, Patrol (Light)" },

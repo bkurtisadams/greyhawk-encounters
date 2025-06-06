@@ -212,7 +212,7 @@ export class GreyhawkEncounterRoller extends Application {
         { id: "elven_patrol", label: "Elven Patrol" },
         // other patrol types...
       ],
-      terrainTypes: [
+      /* terrainTypes: [
         { id: 'plain', label: 'Plain' },
         { id: 'scrub', label: 'Scrub' },
         { id: 'forest', label: 'Forest' },
@@ -220,7 +220,7 @@ export class GreyhawkEncounterRoller extends Application {
         { id: 'hills', label: 'Hills' },
         { id: 'mountains', label: 'Mountains' },
         { id: 'marsh', label: 'Marsh' }
-      ],
+      ], */
       populationTypes: [
         { id: 'dense', label: 'Dense' },
         { id: 'moderate', label: 'Moderate' },

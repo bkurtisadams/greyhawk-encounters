@@ -7,14 +7,24 @@ import SUBTABLES from '../data/subtables.js'; // Import the subtables if needed
 import { rollPatrolEncounter, GREYHAWK_PATROL_TYPES } from '../data/greyhawk-patrols.js';
 //import { rollOnOutdoorTable } from '../data/dmg-outdoor-tables.js';
 //import TEMPERATE_TABLES from '../data/dmg-monster-tables.js';
-import { rollOnTemperateTable } from '../data/dmg-monster-tables.js';
+//import { rollOnTemperateTable } from '../data/dmg-monster-tables.js';
 import { rollWaterborneEncounter } from '../data/dmg-waterborne-tables.js';
 import { rollAirborneEncounter } from '../data/dmg-airborne-tables.js';
 import { rollCityEncounter } from '../data/dmg-city-tables.js';
-//import { rollNumberFromPattern } from '../utils/utility.js';
+
+import { findMonsterByName, rollNumberFromPattern } from '../utils/utility.js';
 import { rollPlanarEncounter } from '../data/dmg-planar-tables.js';
 import { MONSTER_MANUAL } from '../data/monster-manual.js';
-import { findMonsterByName, rollNumberFromPattern } from '../utils/utility.js';
+
+// Add after existing imports:
+// Validate required data is loaded
+if (typeof GREYHAWK_REGIONAL_TABLES === 'undefined') {
+  console.error('Greyhawk Encounters: Regional tables failed to load');
+}
+
+if (typeof MONSTER_MANUAL === 'undefined') {
+  console.warn('Greyhawk Encounters: Monster Manual data not available');
+}
 
 
 const TERRAIN_CHECK_TIMES = {

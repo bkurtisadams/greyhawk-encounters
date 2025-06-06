@@ -86,3 +86,66 @@
   .greyhawk-encounters .simple-calendar-info p {
     margin: 4px 0;
   }
+
+  /* Add to styles/greyhawk-encounters.css */
+.greyhawk-encounters .form-fields {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  flex-wrap: wrap;
+}
+
+.greyhawk-encounters .form-fields select,
+.greyhawk-encounters .form-fields input {
+  width: auto;
+  margin-bottom: 0;
+}
+
+.greyhawk-encounters .checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.greyhawk-encounters fieldset {
+  border: 1px solid #888;
+  border-radius: 4px;
+  padding: 0.75em;
+  margin-bottom: 1em;
+  background-color: #f9f9f9;
+}
+
+.greyhawk-encounters legend {
+  font-weight: bold;
+  padding: 0 0.5em;
+}
+
+/* DMG timing styles */
+.compact-timing-table {
+  font-size: 0.9em;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5em 0;
+}
+
+.compact-timing-table td {
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+}
+
+.timing-warning {
+  margin: 0.5em 0;
+}
+
+.warning-box {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 4px;
+  padding: 8px;
+  color: #856404;
+}
+
+.warning-box i {
+  margin-right: 0.5em;
+}
