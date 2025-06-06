@@ -364,6 +364,11 @@ export class GreyhawkEncounterRoller extends Application {
         this._updateRegionList(regionType, html);
       }
     }
+
+    // Treasure generator button
+    html.find('.treasure-generator-button').click(ev => {
+      GreyhawkEncounters.openTreasureGenerator();
+    });
   }
 
   // Save current form values when they change

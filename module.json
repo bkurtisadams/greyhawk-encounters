@@ -30,6 +30,10 @@
         "compatibility": {
           "verified": "2.3.0"
         }
+      },
+      {
+        "id": "adnd-treasure", 
+        "type": "module"
       }
     ]
   },
